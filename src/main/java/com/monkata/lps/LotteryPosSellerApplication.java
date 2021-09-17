@@ -33,7 +33,7 @@ import com.monkata.lps.entity.Bank;
 	    
 	    @PostConstruct
 	    public void init() {
-	    	String utc ="UTC-5";
+	    	String utc ="America/New_York";
 	    	try {
 	    	List<Bank>  bks = bank.findAll();
 	    	if(bks.size()>0) {
@@ -42,17 +42,18 @@ import com.monkata.lps.entity.Bank;
 	        	   utc = bk.getFuseau_horaire();
 	              TimeZone.setDefault(TimeZone.getTimeZone(bk.getFuseau_horaire()));
 	           } else {
-	        	   TimeZone.setDefault(TimeZone.getTimeZone("UTC-5")); 
+	        	   TimeZone.setDefault(TimeZone.getTimeZone(utc)); 
 	           }
 	    	  } else {
-	    		 TimeZone.setDefault(TimeZone.getTimeZone("UTC-5"));
+	    		 TimeZone.setDefault(TimeZone.getTimeZone(utc));
 	    	 }
-	    	
 	        System.out.println(" \n Date in ("+utc+") ====> " + LocalDateTime.now() +"\n");
-	 	   
 	    	} catch(Exception e) {
+	    		 TimeZone.setDefault(TimeZone.getTimeZone(utc));
 	    		System.out.println("TIME => ***********("+ e.getMessage()+" )********");
 	    	}
+	    	
+	    	System.out.println("\n DEFAULT TIME ZONE========================> ("+TimeZone.getDefault()+") <==============================\n");
 	    	
 	    }
 	    
