@@ -662,5 +662,12 @@ public class AppCtrl extends BaseCtrl {
 		return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa."));
 		
 	}
+	
+	@RequestMapping(value = "/resendEmail", method = RequestMethod.GET)
+	public ResponseEntity<?> resendEmail(Authentication auth) throws Exception {
+		UserEntity utt = getUser(auth);
+	        Object jr = UserDetails.resendPin(utt);
+	    	return ResponseEntity.ok(jr);
+	}
 
 }

@@ -187,14 +187,8 @@ public class JwtUserDetailsService implements UserDetailsService {
         headers.set("Appkey",MCC.appkey);  
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setContentType(MediaType.APPLICATION_JSON);
-     //   headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, DepoReqToMK > map= new LinkedMultiValueMap<String,DepoReqToMK>();
-          map.add("data",d);
-//        map.add("id_user",d.getId_user().toString());
-//        map.add("amount",d.getAmount().toString());
-//        map.add("type_order",d.getType_order().toString());
-//        map.add("method_payment",""+d.getMethod_payment());
-//        map.add("coupon",u.getCp());
+        map.add("data",d);
         HttpEntity<MultiValueMap<String, DepoReqToMK>> request = new HttpEntity<MultiValueMap<String,DepoReqToMK >>(map, headers);
         Object result = restTemplate.postForObject(MCC.url_depo, request, Object.class);
         return result;
@@ -218,7 +212,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         	   if(o.getCoupon()!=null && !o.equals("")) {	  
         	      Coupon cp = cpRep.findByCode(o.getCoupon());
         	      if(cp!=null) {
-	        	    if(cp.isActive()) {
+	        	    if(cp.isActive() && cp.getMin()<=o.getAmount()) {
 	        	    	o.setBonis(cp.getPrice());
 		        	    	  if(cp.type_coupon) {
 		        	    	     o.addBonisToAmount(cp.getPrice());
@@ -434,9 +428,11 @@ public class JwtUserDetailsService implements UserDetailsService {
 	        map.add("data",mail);
 	        HttpEntity<MultiValueMap<String, Mail>> request = new HttpEntity<MultiValueMap<String, Mail>>(map, headers);
 	        Object result = restTemplate.postForObject(MCC.url_mail, request, Object.class);
+	        Log.d("***************SEND***************");
 	        return result;
+	       
 		    } catch(Exception e) {
-		    	return null;
+		    	return e;
 		    }
 	}
     
@@ -453,6 +449,14 @@ public class JwtUserDetailsService implements UserDetailsService {
 		public Mail() {
 			
 		}
+	}
+
+	public Object resendPin(UserEntity utt) {
+		Long pin = (long)BaseCtrl.getNewPin(100000,999999);
+		utt.setPin(pin);
+		userInfoRepository.save(utt);  
+		String msg = "Bonjou \n Men nouvo Pin ou an : "+pin+".\n Ou ka itilize PIN sa pou valide kont ou.";
+	    return  sendMail(utt.getEmail(), utt.getFirstName()+" "+utt.getLastName(), msg, "Nouvo pin");
 	}
 
 }

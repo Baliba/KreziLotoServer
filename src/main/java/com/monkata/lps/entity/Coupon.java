@@ -30,6 +30,9 @@ public class  Coupon  extends cObj implements Serializable {
 	    @Column(unique=true)
 	    private String code;
 	    
+	    @Column(nullable=true, columnDefinition = "int default 30")
+	    int min;
+	    
 	    private int price;
 	    public  boolean type_coupon;
 	    public  boolean active;
