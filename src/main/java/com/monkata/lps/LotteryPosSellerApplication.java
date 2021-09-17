@@ -42,10 +42,10 @@ import com.monkata.lps.entity.Bank;
 	        	   utc = bk.getFuseau_horaire();
 	              TimeZone.setDefault(TimeZone.getTimeZone(bk.getFuseau_horaire()));
 	           } else {
-	        	   TimeZone.setDefault(TimeZone.getTimeZone("GMT-5")); 
+	        	   TimeZone.setDefault(TimeZone.getTimeZone("UTC-5")); 
 	           }
 	    	  } else {
-	    		 TimeZone.setDefault(TimeZone.getTimeZone("GMT-5"));
+	    		 TimeZone.setDefault(TimeZone.getTimeZone("UTC-5"));
 	    	 }
 	    	
 	        System.out.println(" \n Date in ("+utc+") ====> " + LocalDateTime.now() +"\n");
