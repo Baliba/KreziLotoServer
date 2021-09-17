@@ -424,19 +424,22 @@ public class JwtUserDetailsService implements UserDetailsService {
 	        headers.set("apikey",MCC.apikey);    
 	        headers.set("appkey",MCC.appkey);   
 	        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-	        MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
-	        map.add("email",email);
-	        map.add("name", nom);
-	        map.add("message",msg);
-	        map.add("sujet",sujet);
-	        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+	        headers.setContentType(MediaType.APPLICATION_JSON);
+	        MultiValueMap<String, Mail> map= new LinkedMultiValueMap<String, Mail>();
+	        Mail mail = new Mail();
+	        mail.setEmail(email);
+	        mail.setName(nom);
+	        mail.setMessage(msg);
+	        mail.setSujet(sujet);
+	        map.add("data",mail);
+	        HttpEntity<MultiValueMap<String, Mail>> request = new HttpEntity<MultiValueMap<String, Mail>>(map, headers);
 	        Object result = restTemplate.postForObject(MCC.url_mail, request, Object.class);
 	        return result;
 		    } catch(Exception e) {
 		    	return null;
 		    }
 	}
-
+    
 	public JwtResponse addCouponNow(CouponDto cp, LocalDate day) {
 		Log.d(cp.getCode()+"/"+cp.getPrice()+"/"+cp.isActive()+"/"+cp.isType_coupon());
 	    Coupon ncp = new Coupon(cp.getCode(),cp.getPrice(),cp.isType_coupon(),cp.isActive(),day.plusDays(cp.getDate_exp()));
@@ -444,5 +447,12 @@ public class JwtUserDetailsService implements UserDetailsService {
 		return new JwtResponse<Coupon>(false,cpo,"Siksè");
 	}
 	
+	@Data
+	class Mail{
+		String email, name, message, sujet;
+		public Mail() {
+			
+		}
+	}
 
 }
