@@ -276,7 +276,6 @@ public class AppCtrl extends BaseCtrl {
 		if (utt.isEnabled()) {
 		
 			MaxSellError mse = sticket.checkLotsOfTickets(tk.getLots(), CGAME);
-			
 			if (mse.isError()) {
 				rst.setData(mse);
 				rst.setCode(201);
