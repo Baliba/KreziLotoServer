@@ -19,6 +19,7 @@ import com.monkata.lps.components.RoleName;
 import com.monkata.lps.dao.BankRepository;
 import com.monkata.lps.dao.BouleClientRepository;
 import com.monkata.lps.dao.BouleRepository;
+import com.monkata.lps.dao.DepoDao;
 import com.monkata.lps.dao.GameMasterRepository;
 import com.monkata.lps.dao.GameRepository;
 import com.monkata.lps.dao.ModeGameRepository;
@@ -42,8 +43,9 @@ import dto.CouponDto;
 
 @RestController
 public class AdminCtrl extends BaseCtrl {
-	 @Autowired
-	 NotService nots;
+	
+	@Autowired
+	NotService nots;
 
 	@Autowired
 	public UserRepository userRepository, user;
@@ -96,6 +98,9 @@ public class AdminCtrl extends BaseCtrl {
 	
 	@Autowired
 	PayoutRepository payDao;
+	
+	@Autowired
+	DepoDao depoDoa;
 
 	public UserEntity getUser(Authentication authentication) {
 		UserDetails me = (UserDetails) authentication.getPrincipal();
@@ -150,6 +155,41 @@ public class AdminCtrl extends BaseCtrl {
 		            return ResponseEntity.ok(jr);
 			    }
 				return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
+	    
+	    
+	    @RequestMapping(value = "/api/NTracking/{game}/{day}/{mode}/{live}", method = RequestMethod.GET)
+	    public ResponseEntity<?> Ntracking (@PathVariable("live") int live, @PathVariable("mode") int mode, @PathVariable("day") int day, @PathVariable("game") Long game, Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	JwtResponse jr = sticket.getTrackingNumber(game,day,mode, live);
+		            return ResponseEntity.ok(jr);
+			    }
+			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
+	    
+	    @RequestMapping(value = "/api/getDepotAdmin/{index}/{day}", method = RequestMethod.GET)
+	    public ResponseEntity<?> getPastDepotByAdmin (@PathVariable("day") int day, @PathVariable("index") int index, Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	
+		        	      JwtResponse jr = UserDetails.getPastDepotByAdmin(day,index);
+		                  return ResponseEntity.ok(jr);
+			    }
+			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
+	    
+	    @RequestMapping(value = "/api/getDepotStat", method = RequestMethod.GET)
+	    public ResponseEntity<?> getDepotStat (Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	      JwtResponse jr = UserDetails.getDepoStat();
+		                  return ResponseEntity.ok(jr);
+			    }
+			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
 		        
 	    }
 	

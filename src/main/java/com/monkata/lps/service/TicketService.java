@@ -37,15 +37,20 @@ import com.monkata.lps.Tiraj.NumberFormater;
 import com.monkata.lps.Tiraj.NumberFormater.FreeWinLots;
 import com.monkata.lps.Tiraj.NumberFormater.WinLots;
 import com.monkata.lps.Tiraj.Tiraj;
+import com.monkata.lps.controller.BaseCtrl;
 import com.monkata.lps.dao.BouleClientRepository;
+import com.monkata.lps.dao.DepoDao;
 import com.monkata.lps.dao.GameMasterRepository;
 import com.monkata.lps.dao.TicketClientRepository;
 import com.monkata.lps.dao.TicketRepository;
 import com.monkata.lps.dao.TirajRepository;
 import com.monkata.lps.dao.WinNameRepository;
+import com.monkata.lps.entity.Depot;
 import com.monkata.lps.entity.UserEntity;
 import com.monkata.lps.response.JwtResponse;
 
+import dto.ChekBoul;
+import dto.NumberTracking;
 import dto.Sold;
 import lombok.Data;
 
@@ -116,23 +121,47 @@ public class TicketService {
 	
 	public MaxSellError checkLotsOfTickets(List<RBoule> nbs, Game CGAME) {
 		MaxSellError mse = new MaxSellError();
-		 for(RBoule nb : nbs) {
-			ModeGame mg = UtilGame.getModeGame(CGAME, nb.getId_mg());
-			Optional<Double> m = bclient.getTotalLotsSell(this.getDate(),nb.getId_mg(),CGAME.getId());
-			if(!m.isPresent()) {
-				continue;
-			}
-			double nm = m.get();
-			double mt = nm + nb.getMontant();
-            if(mt> mg.getMax_sell()) {
-            	mse.setError(true);
-            	mse.setRb(nb);
-            	mse.setA_sell(nm);
-            	mse.setMax_sell(mg.getMax_sell());
-            	break;
-            }
-		 }
+		mse.setError(false);
+		ChekBoul ck = CheckBouleNow(nbs, CGAME );
+		int size = ck.getRbs().size();
+	    if(size>0) {
+    	  mse.setError(true);
+    	  mse.setRb(ck.getRbs());
+	    }
 		return mse;
+	}
+	
+	private ChekBoul CheckBouleNow(List<RBoule> nbs,Game CGAME ) {
+      List<RBoule>	rbs = new ArrayList<>();	
+      ChekBoul cb = new ChekBoul();
+      for(RBoule rb : nbs) {
+   	  try {
+   		Optional<Double> m = bclient.getTotalLotsSell(rb.getLot(),BaseCtrl.toDay(),rb.getId_mg(),CGAME.getId());
+   		
+   		if(m.isPresent()) {
+	    	   for(ModeGame mg : CGAME.getModegames()) {
+	    		   if(mg.getId()==rb.getId_mg()) {
+	    			   double ts =  m.get()+rb.getMontant();
+	    			  // Log.d("|Lot|->"+ rb.getLot() +"| SELL->("+m+"G)| MAX SEL->"+mg.getMax_sell()+" NT->"+ts);
+	    			   if ( ts > mg.getMax_sell()) {
+	    			        rb.setMax_sell(mg.getMax_sell());
+	    			        double cp = mg.getMax_sell() - m.get();
+	    			        if(cp>0) {
+	    			             rb.setCan_play(cp);
+	    			        } else {
+	    				          rb.setCan_play(cp);
+	    			        }
+	    				    rbs.add(rb);
+	    			   }
+	    	    }
+	    	  }
+   		  }
+        } catch(Exception e) {
+   	      continue;
+         }
+      }
+      cb.setRbs(rbs);
+	  return cb;
 	}
 	
 	
@@ -147,7 +176,7 @@ public class TicketService {
 	 
 	@Data
     public class MaxSellError{
-    	RBoule rb;
+    	List<RBoule> rb;
     	boolean error;
     	
     	double max_sell;
@@ -178,8 +207,14 @@ public class TicketService {
 		   return vr;	
 		}
 	    // CHeck if date 
-	    if(ld.toLocalDate().isAfter(now)) {
-		    VResp vr = new VResp(tk,"Fich sa expire "+ld.toString(),202);
+		boolean rep = now.isBefore(ld.toLocalDate());
+	    if(!rep) {
+	    	tk.setWin_pay(0);
+			tk.setOver(true);
+			tk.setPay(true);
+			tk.setDate_pay(LocalDate.now());
+			tk = ticketc.save(tk);
+		    VResp vr = new VResp(tk," Jodya "+now.toString()+", fich sa expire depi : "+ld.toLocalDate().toString(),202);
 			return vr;
 	    }
 	    
@@ -209,6 +244,7 @@ public class TicketService {
 				  }
 			}
 		}
+		
 		tk.setWin_pay(sold);
 		tk.setOver(true);
 		tk.setPay(true);
@@ -218,10 +254,10 @@ public class TicketService {
 		VResp vr = new VResp(lwl, tk, nf.getLots(), sold);
 		vr.setCode(200);
 		if(sold>0) {
-		  vr.setMsg("Bravo !!! ou fè HTG "+sold);
-		  nots.add(idu,"Ou fèk sot genyen "+sold+"G nan yon fich.",1L);
+		  vr.setMsg("Bravo !!! ou fè "+sold+" G");
+		  nots.add(idu,"Ou fèk sot genyen "+sold+" G nan yon fich.",1L);
 		} else {
-			vr.setMsg("Pa gen youn nan boul ki nan fich ou a ki soti, Ou fè HTG "+sold);
+			vr.setMsg("Pa gen youn nan boul ki nan fich ou a ki soti, Ou fè  "+sold+" G");
 		}
 		return vr ;
 		} else {
@@ -426,5 +462,24 @@ public class TicketService {
 		}
 		return new JwtResponse<List<TicketClient>>(false,tc,"Siksè");
 	}
+
+
+	public JwtResponse getTrackingNumber(Long game, int day, int mode,int live) {
+		boolean lv = (live==1) ? true : false;
+		// TODO Auto-generated method stub
+		List<NumberTracking> nt;
+		if(mode==0) {
+				if(game==0) {
+					 nt  = bclient.getNumberTrackingByDayOnly(day,lv);
+				   } else {
+					 nt  = bclient.getNumberTrackingByGameAndDay(day,game,lv);
+				 }
+		} else {
+			nt = ticketc.getGameTrackingByDayOnly(day,lv);
+		}
+		return new JwtResponse<List<NumberTracking>>(false,nt,"Siksè");
+	}
+    
+	
 
 }

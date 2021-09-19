@@ -10,6 +10,7 @@ import lombok.Data;
 public class WinName {
   @Id
   public String name;
+  
   public String syntax;
   public String code_mg;
   

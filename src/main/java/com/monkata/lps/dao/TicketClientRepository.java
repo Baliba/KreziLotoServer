@@ -18,6 +18,7 @@ import com.monkata.lps.Game.TicketClient;
 import com.monkata.lps.entity.Bank;
 import com.monkata.lps.entity.UserEntity;
 
+import dto.NumberTracking;
 import dto.Sold;
 
 
@@ -25,7 +26,7 @@ import dto.Sold;
 @CrossOrigin("*")
 @RepositoryRestResource
 public interface TicketClientRepository extends JpaRepository<TicketClient, Long> {
-	@Query("SELECT t from TicketClient t WHERE t.id_user = :id AND t.over=false")
+	@Query("SELECT t from TicketClient t WHERE t.id_user = :id AND t.over=false ORDER BY date_ticket DESC")
 	List<TicketClient> getMytickets(@Param("id") Long id );
 	
 	@Query("SELECT t from TicketClient t WHERE t.id_user = :idu  AND t.id=:id")
@@ -70,5 +71,8 @@ public interface TicketClientRepository extends JpaRepository<TicketClient, Long
 	
 	@Query("SELECT t from TicketClient t WHERE date_ticket > CURRENT_DATE - :day  AND id_gamemaster = :id AND over = true AND win_pay=0 ")
 	List<TicketClient> getTicketByGameLost(Long id, int day);
+	
+	@Query("SELECT new dto.NumberTracking(bc.game_name,bc.game_name,COUNT(bc.id_game), SUM(bc.total_price), SUM(bc.win_pay)) FROM TicketClient  bc WHERE bc.over=:live AND bc.date_ticket > CURRENT_DATE - :day GROUP BY bc.id_game, bc.game_name ORDER BY bc.game_name ASC ")	
+	List<NumberTracking> getGameTrackingByDayOnly(@Param("day") int day,@Param("live")  boolean live);
 
 }

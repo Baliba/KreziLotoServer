@@ -84,6 +84,7 @@ import com.monkata.lps.service.TicketService.MaxSellError;
 import com.monkata.lps.service.TicketService.VResp;
 
 import dto.BankAndLang;
+import dto.ChekBoul;
 import dto.NParamsGame;
 import dto.NRole;
 import lombok.Data;
@@ -191,7 +192,9 @@ public class AppCtrl extends BaseCtrl {
 	public ResponseEntity<?> verify(@PathVariable("id") Long id, Authentication auth) {
 		UserEntity utt = getUser(auth);
 		Optional<ParamsGame> opg = pgame.findById(utt.getParamgame());
+		
 		VResp tcs = sticket.verify(utt.getId(), id, opg.get());
+		
 		return ResponseEntity.ok(new AppResponse<VResp>(false,"Tike",tcs));
 	}
 	
@@ -236,12 +239,34 @@ public class AppCtrl extends BaseCtrl {
 	@Transactional
 	@RequestMapping(value = "/addTicketClient/{pay}", method = RequestMethod.POST)
 	public ResponseEntity<?> addTicketClient(@PathVariable("pay") int pay, @RequestBody TicketRequestClient tk,
-			Authentication auth) throws Exception {
+	    Authentication auth) throws Exception {
+		// 
 		UserEntity utt = getUser(auth);
-
+		// 
+		Optional<ParamsGame> opg = pgame.findById(utt.getParamgame());
+		ParamsGame pg = opg.get();
+		Game CGAME = UtilGame.getGame(pg, tk.getId_game());
+		//
+		
+//		// verify boul 
+//		ChekBoul ch =  this.CheckBouleNow(tk, CGAME);
+//		
+//		if(ch.getRbs().size()>0) {
+//			RSTicketClient nrst = new RSTicketClient<List<RBoule>>();
+//			nrst.setMessage("Fich ou an gen boul ki fermen ladan li.");
+//			nrst.setData(ch.getRbs());
+//			nrst.setCode(999);
+//			return ResponseEntity.ok(nrst);	
+//		}
+		
 		RSTicketClient rst = new RSTicketClient<MaxSellError>();
+		Bank bank = this.getBankConfig();
+		if(bank!=null && bank.isBlock_make_ticket()) {
+			rst.setMessage("Systèm nan pa disponib pou kounya");
+			return ResponseEntity.ok(rst);	
+		}
+		
 		rst.setId_user(utt.getId());
-
 		if (!utt.getRole().getName().equals(RoleName.CLIENT)) {
 			rst.setMessage("Ou pa ka jwe ak kont sa ");
 			return ResponseEntity.ok(rst);
@@ -249,14 +274,13 @@ public class AppCtrl extends BaseCtrl {
 
 		LocalTime now = LocalTime.now();
 		if (utt.isEnabled()) {
-			Optional<ParamsGame> opg = pgame.findById(utt.getParamgame());
-			ParamsGame pg = opg.get();
-			Game CGAME = UtilGame.getGame(pg, tk.getId_game());
-
+		
 			MaxSellError mse = sticket.checkLotsOfTickets(tk.getLots(), CGAME);
+			
 			if (mse.isError()) {
 				rst.setData(mse);
 				rst.setCode(201);
+				rst.setMessage("Fich ou an gen boul ki fèmen ladan li.");
 				return ResponseEntity.ok(rst);
 			}
 
@@ -269,8 +293,8 @@ public class AppCtrl extends BaseCtrl {
 			}
 			if (CGAME != null) {
 				// Dont forget to add delai from game
-				TicketClient nt = new TicketClient(tk, utt.getId(), CGAME, "dd-MM-yyyy HH:mm:ss",
-						CGAME.getGamemaster().getDelai());
+				Bank bk = this.getBankConfig();
+				TicketClient nt = new TicketClient(tk, utt.getId(), CGAME,bk.getDateTimeFormat(),CGAME.getGamemaster().getDelai());
 				nt.setId_pg(pg.getId());
 				nt.setId_user(utt.getId());
 				List<BouleClient> lots = new ArrayList<>();
@@ -321,6 +345,7 @@ public class AppCtrl extends BaseCtrl {
 		}
 	}
 
+
 	// is seller
 	@Transactional
 	@RequestMapping(value = "/addTicket", method = RequestMethod.POST)
@@ -328,6 +353,13 @@ public class AppCtrl extends BaseCtrl {
 		UserEntity utt = getUser(auth);
 
 		RSTicket rst = new RSTicket();
+		
+		Bank bank = this.getBankConfig();
+		if(bank!=null && bank.isBlock_make_ticket()) {
+			rst.setMessage("Systèm nan pa disponib pou kounya");
+			return ResponseEntity.ok(rst);	
+		}
+		
 		rst.setId_user(utt.getId());
 		if (!utt.getRole().getName().equals(RoleName.SELLER)) {
 			rst.setMessage("Ou pa gen dwa vann fich");
@@ -560,6 +592,12 @@ public class AppCtrl extends BaseCtrl {
 	@RequestMapping(value = "/depotMoncash", method = RequestMethod.POST)
 	public ResponseEntity<?> depot(@RequestBody DepoReq u, Authentication auth) throws Exception {
 		UserEntity utt = getUser(auth);
+		Bank bank = this.getBankConfig();
+		if(bank!=null && bank.isBlock_depo()) {
+			
+			return ResponseEntity.ok(new AppResponse<String>(true,"Depo an bloke pou kounya an",""));
+			
+		}
 		return ResponseEntity.ok(UserDetails.prepareDepo(u, utt.getId()));
 	}
 	

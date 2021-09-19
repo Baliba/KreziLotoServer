@@ -28,11 +28,13 @@ import lombok.Data;
  private String code_mg;
  private Long   id_game;
  private Long   id_gamemaster;
- private String lot;
- private double montant;
+ public String  lot;
+ public double  montant;
+ 
  private double pwin;
  @Column(nullable=true, columnDefinition = "int default 0")
  int win;
+ 
  @Column(nullable=false, columnDefinition = "int default 0" )
  private  double win_price;
  

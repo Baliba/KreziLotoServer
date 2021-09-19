@@ -12,6 +12,6 @@ import com.monkata.lps.entity.Bank;
 
 @CrossOrigin("*")
 @RepositoryRestResource
-public interface WinNameRepository extends JpaRepository<WinName, Long> {
+public interface WinNameRepository extends JpaRepository<WinName, String> {
     
 }

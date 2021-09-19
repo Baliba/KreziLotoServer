@@ -31,7 +31,9 @@ import com.monkata.lps.dao.RoleRepository;
 import com.monkata.lps.dao.TicketRepository;
 import com.monkata.lps.dao.TirajRepository;
 import com.monkata.lps.dao.UserRepository;
+import com.monkata.lps.entity.Bank;
 import com.monkata.lps.entity.UserEntity;
+import com.monkata.lps.response.AppResponse;
 import com.monkata.lps.response.JwtResponse;
 import com.monkata.lps.service.JwtUserDetailsService;
 import com.monkata.lps.service.KenoService;
@@ -160,18 +162,23 @@ public class TirajCtrl extends BaseCtrl {
 	    @RequestMapping(value = "/startGameNow", method = RequestMethod.GET)
 	    public ResponseEntity<?> startGameNow(Authentication auth) throws Exception {
 	    	   UserEntity user = this.getUser(auth);
+	    	   Bank bank = this.getBankConfig();
+	   		   if(bank!=null && bank.isBlock_roulette()) {
+	   			return ResponseEntity.ok(new AppResponse<String>(true,"Jwèt roulèt la bloke pou kounya.",""));
+	   		   }
+	   		   
 	    	   return ResponseEntity.ok(keno.play(user)); 
 	    
 	    }
 	    
 
 	    
-	    @RequestMapping(value = "/addfakeBonus", method = RequestMethod.GET)
-	    public ResponseEntity<?> addfakeBonus(Authentication auth) throws Exception {
-	    	   UserEntity user = this.getUser(auth);
-	    	   return ResponseEntity.ok(UserDetails.addBonus(1000, user.getId())); 
-	    
-	    }
+//	    @RequestMapping(value = "/addfakeBonus", method = RequestMethod.GET)
+//	    public ResponseEntity<?> addfakeBonus(Authentication auth) throws Exception {
+//	    	   UserEntity user = this.getUser(auth);
+//	    	   return ResponseEntity.ok(UserDetails.addBonus(1000, user.getId())); 
+//	    
+//	    }
 	    
 	   
 	  

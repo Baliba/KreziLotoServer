@@ -1,12 +1,15 @@
 package com.monkata.lps.entity;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import com.monkata.lps.response.Order;
 
@@ -48,8 +51,10 @@ public class Depot  extends cObj implements Serializable  {
 	    
 	    
 	    @Column(nullable=true, columnDefinition = "int default 0")
-	    int id_deposant;
+	    Long id_deposant;
 	    
+	    @CreationTimestamp
+	    private LocalDateTime date_created;
 	    
 	    public Depot(Order o, Long id_user) {
 	    	this.token_order = o.getToken_order();

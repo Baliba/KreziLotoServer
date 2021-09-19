@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import com.monkata.lps.entity.Depot;
 import com.monkata.lps.response.JwtResponse;
 
+import dto.Sold;
+
 
 
 @CrossOrigin("*")
@@ -22,5 +24,15 @@ public interface DepoDao extends JpaRepository<Depot, Long> {
   
   @Query("SELECT d FROM Depot d WHERE id_user =:id AND  created_at > CURRENT_DATE - :day ")
   List<Depot> getPastDepot(@Param("id") Long id, @Param("day") int d);
+  
+  @Query("SELECT d FROM Depot d WHERE type_depot=:index AND created_at > CURRENT_DATE - :day ")
+  List<Depot> getPastDepotByAdmin( @Param("day") int d, int index);
+  
+  
+  @Query("SELECT  new dto.Sold(SUM(d.montant)) from Depot d  ")
+  Optional<Sold> getTotalDepo();
+	
+  @Query("SELECT new dto.Sold(SUM(d.montant)) from Depot d WHERE type_depot=:index ")
+  Optional<Sold> getTotalDepoOther(int index);
   
 }

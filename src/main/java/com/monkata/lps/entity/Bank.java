@@ -28,8 +28,35 @@ public class Bank  extends cObj implements Serializable {
 	    private String dateTimeFormat="dd-MM-yyyy HH:mm:ss";
 	    private String fuseau_horaire="";
 	    private String slogan;
+	    
+
+	    
 	    @Column(columnDefinition = "int default 1")
 	    public  int lang;
+	    
+	    // BLOKER GAME, DEPO,  FICH, LOGIN, REG, 
+	          
+	    @Column(columnDefinition = "boolean default false")
+	    private boolean block_depo;
+	    
+	    @Column(columnDefinition = "boolean default false")
+	    private boolean block_payout;
+	    
+	    @Column(columnDefinition = "boolean default false")
+	    private boolean block_make_ticket;
+	    
+	    @Column(columnDefinition = "boolean default false")
+	    private boolean block_login;
+	    
+	    @Column(columnDefinition = "boolean default false")
+	    private boolean block_register;
+	    
+	    @Column(columnDefinition = "boolean default false")
+	    private boolean block_roulette;
+	    
+	    //**************************//
+	    
+	    
 	    public Bank() {}
 		public Bank(Long id, String nom, String adress, String phone, String phone_b, String email) {
 			super();

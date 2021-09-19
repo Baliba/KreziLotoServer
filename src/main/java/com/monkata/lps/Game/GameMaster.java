@@ -30,8 +30,13 @@ public class GameMaster  extends cObj  {
 	    private  String  hour_to_start_sell;
 	    private  String  hour_to_block;
 	    private  String  hour_draw;
+	    //------------------------------------
+	    @Column(columnDefinition = "int default 100000")
 	    private int      max_ticket;
+	    
+	    @Column(columnDefinition = "int default 50000")
 	    private double   max_price_sell;
+	    // ----------------------
 	    private int      index;
 	    @Column(columnDefinition = "int default 90")
 	    private int  delai;

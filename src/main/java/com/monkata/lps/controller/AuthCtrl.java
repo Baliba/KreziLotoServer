@@ -19,8 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.monkata.lps.Request.JwtRequest;
 import com.monkata.lps.Request.RegRequest;
+import com.monkata.lps.components.RoleName;
 import com.monkata.lps.dao.UserRepository;
+import com.monkata.lps.entity.Bank;
 import com.monkata.lps.entity.UserEntity;
+import com.monkata.lps.response.AppResponse;
 import com.monkata.lps.response.JwtResponse;
 import com.monkata.lps.security.JwtToken;
 import com.monkata.lps.service.BankService;
@@ -62,17 +65,26 @@ public class AuthCtrl  extends BaseCtrl{
 		            return ResponseEntity.ok(new JwtResponse<UserEntity>(true, null,sb.word("MSG_BAD_USER")));
 		        }
 	            UserDetails user = jwtUserDetailsService.loadUserByUsername(username);
+	            
 
 	            if(!user.isEnabled()) {
 	        	  return ResponseEntity.ok(new JwtResponse<UserEntity>(true, null,sb.word("MSG_BLOCK_ACCOUNT")));
 	            }
-	            UserEntity u = null;
+	             UserEntity u = null;
 	             boolean rep = jwtUserDetailsService.autoLogin(user, username, password);
+	             
 	             if(!rep) {
 		        	 return ResponseEntity.ok(new JwtResponse<UserEntity>(true, null,sb.word("MSG_BAD_PASS")));
 		         }
-	             
+	      
 		         u = jwtUserDetailsService.getUserInfo(username);
+		         
+		          Bank bank = this.getBankConfig();
+		    	  if(bank!=null && bank.isBlock_login()) {
+		    			  if(!u.getRole().getName().equals(RoleName.ADMIN) &&  !u.getRole().getName().equals(RoleName.MASTER) ) {
+		    		         return ResponseEntity.ok(new JwtResponse<String>(true, null,"Pou kounya system nan pa bay dwa pou moun konekte retounen pita."));
+		    			   }
+		    	  }
 		         u.setToken(jwtToken.generateToken(user));
 		         jwtUserDetailsService.setLoginInfo(u.getId(), request);
 		         return ResponseEntity.ok(new JwtResponse<UserEntity>(false, u,sb.word("MSG_SUCCESS")));
@@ -84,6 +96,12 @@ public class AuthCtrl  extends BaseCtrl{
 	    @RequestMapping(value = "/api/register", method = RequestMethod.POST)
 	    public ResponseEntity<?> register(@RequestBody RegRequest reg) throws Exception {
 	            String username = reg.getUsername();
+	            
+	            Bank bank = this.getBankConfig();
+	    		if(bank!=null && bank.isBlock_register()) {
+	    		    return ResponseEntity.ok(new JwtResponse<String>(true, null,"Pou kounya system nan pa bay dwa pou moun enskri retounen pita."));
+	    		}
+	    		
 		        if (userInfoRepository.existsByUsername(username)){
 		            return ResponseEntity.ok(new JwtResponse<UserEntity>(true, null,sb.word("MSG_PHONE_EXIST")));
 		         }

@@ -3,6 +3,7 @@ package com.monkata.lps.controller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.monkata.lps.dao.BankRepository;
+import com.monkata.lps.entity.Bank;
 import com.monkata.lps.entity.UserEntity;
 import com.monkata.lps.service.JwtUserDetailsService;
 
@@ -59,7 +62,7 @@ public class BaseCtrl {
 	  	 //  String   sd =   localDateTime.format(formatter);  
 	  	   return localDateTime;
 	 }
-	 public String toDay () {
+	 public static String toDay () {
   	   LocalDateTime  localDateTime = LocalDateTime.now();
   	   LocalDate ld = localDateTime.toLocalDate();
   	   DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -94,5 +97,17 @@ public class BaseCtrl {
 		  Random rand = new Random(); 
 		 return  rand.nextInt((max - min) + 1) + min;
 	  }
+	  
+	  
+	    @Autowired
+	    BankRepository bank;
+	    
+	    public Bank getBankConfig() {
+	    	List<Bank>  bks = bank.findAll();
+	    	if(bks.size()>0) {
+	          return  bks.get(0);
+	    	}
+	    	return null;
+	    }
 		 
 }

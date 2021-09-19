@@ -48,6 +48,7 @@ import com.monkata.lps.entity.Depot;
 import com.monkata.lps.entity.Notification;
 import com.monkata.lps.entity.Payout;
 import com.monkata.lps.entity.UserEntity;
+import com.monkata.lps.response.AppResponse;
 import com.monkata.lps.response.JwtResponse;
 import com.monkata.lps.service.JwtUserDetailsService;
 import com.monkata.lps.service.KenoService;
@@ -136,7 +137,11 @@ public class McCtrl  extends BaseCtrl {
 	    @Transactional
 	    @RequestMapping(value = "/payout", method = RequestMethod.POST)
 	    public ResponseEntity<?> add(@RequestBody PayoutReq pay, Authentication auth) throws Exception {
-	    	 UserEntity user = this.getUser(auth);
+	    	   UserEntity user = this.getUser(auth);
+	    	   Bank bank = this.getBankConfig();
+	  		   if(bank!=null && bank.isBlock_payout()) {
+	  			return ResponseEntity.ok(new JwtResponse<String>(true,null,"Ou pa ka fè retrè pou kounya."));
+	  		   }
 	    	  if(new  BCryptPasswordEncoder().matches(pay.getPass(), user.getPassword())) {
 	    	   JwtResponse pe =  payouts.setPay(user, pay);
 	    	   return ResponseEntity.ok(pe); 

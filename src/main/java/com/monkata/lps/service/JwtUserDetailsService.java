@@ -73,7 +73,9 @@ import com.monkata.lps.response.JwtResponse;
 import com.monkata.lps.response.Order;
 
 import dto.CouponDto;
+import dto.DepoStat;
 import dto.NParamsGame;
+import dto.Sold;
 import lombok.Data;
 import net.minidev.json.JSONObject;
 
@@ -224,7 +226,8 @@ public class JwtUserDetailsService implements UserDetailsService {
 	        	      }
         	      }
         	   }
-        	   Depot d = new Depot(o, u.getId());	  
+        	   Depot d = new Depot(o, u.getId());	
+        	   d.setDate_created(LocalDateTime.now());
         	   Depot nd = dpDao.save(d);
         	   u.makeDepo(o.amount);
         	   userInfoRepository.save(u);
@@ -458,5 +461,56 @@ public class JwtUserDetailsService implements UserDetailsService {
 		String msg = "Bonjou \n Men nouvo Pin ou an : "+pin+".\n Ou ka itilize PIN sa pou valide kont ou.";
 	    return  sendMail(utt.getEmail(), utt.getFirstName()+" "+utt.getLastName(), msg, "Nouvo pin");
 	}
+
+
+	public JwtResponse getPastDepotByAdmin(int day,  int index) {
+		List<Depot> dps = dpDao.getPastDepotByAdmin(day, index);
+		return new JwtResponse<List<Depot>>(false,dps,"Siksè");
+	}
+
+	public JwtResponse getDepoStat() {
+		// TODO Auto-generated method stub
+		DepoStat ds = new DepoStat();
+		try {
+			Optional<Sold> s1 =  dpDao.getTotalDepo();
+			if(s1.isPresent()) {
+				ds.setDepo_tt(s1.get().getSold());
+			}
+		}
+		catch(Exception e) {
+			
+		}
+		// *************** ||**************//
+		try {
+			Optional<Sold> s2 =  dpDao.getTotalDepoOther(0);
+			if(s2.isPresent()) {
+				ds.setDepo_mc(s2.get().getSold());
+			} 
+		 } catch(Exception e) {
+			
+		}
+		
+		// *************** ||**************//
+	    try {
+	    Optional<Sold> s2 =  dpDao.getTotalDepoOther(1);
+		if(s2.isPresent()) {
+		   ds.setDepo_slr(s2.get().getSold());
+		}
+	     }
+	    catch(Exception e) {
+				
+		}
+		// *************** ||**************//
+	    try {
+		    Optional<Sold>  s2 =  dpDao.getTotalDepoOther(2);
+			if(s2.isPresent()) {
+				ds.setDepo_cc(s2.get().getSold());
+			}
+	    } catch(Exception e) {
+			
+	    }
+		return new JwtResponse<DepoStat>(false,ds,"Siksè");
+	}
+
 
 }

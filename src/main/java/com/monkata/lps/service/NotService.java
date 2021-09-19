@@ -43,7 +43,7 @@ public class NotService {
     	not.setMessage(msg);
     	not.setVu(0L);
     	not.setId_sender(id);
-    	not.setDate_not(BaseCtrl.toDayFixe());
+    	not.setDate_not(LocalDateTime.now());
     	notd.save(not);
     }
     

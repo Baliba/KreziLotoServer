@@ -30,8 +30,8 @@ public class Notification extends cObj  {
 	    
 	    String message;
 	    
-        @Column(nullable = true, updatable = false)
-	    private LocalDateTime    date_not;
+        @Column(nullable = true)
+	    public LocalDateTime    date_not;
 	    
 	    @Column(nullable=true)
 	    Long vu;

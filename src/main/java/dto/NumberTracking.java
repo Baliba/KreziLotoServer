@@ -25,14 +25,27 @@ import org.hibernate.annotations.NotFoundAction;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.monkata.lps.Game.BouleClient;
 import com.monkata.lps.Request.TicketRequest;
 
 import lombok.Data;
 
 @Data
 public class NumberTracking {
+ String mg;	
  String boule;
- int play_time;
+ Long play_time;
  double win ;
  double lost; 
+ public NumberTracking() {
+ }
+ public NumberTracking(String mg , String bc, Long pt, double win, double win_price) {
+	 this.mg = mg;
+	 this.boule = bc;
+	 this.play_time = pt;
+	 this.win = win;
+	 this.lost = win_price;
+ }
+ 
+
 }

@@ -39,6 +39,10 @@ public Sold(double sold ) {
 		this.sold = 0;
 	}
 }
+
+ public Sold() {
+	
+ } 
   
  
 }
