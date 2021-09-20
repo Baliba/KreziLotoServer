@@ -156,12 +156,13 @@ public class AuthCtrl  extends BaseCtrl{
 	    public ResponseEntity<?> validerCompte (@PathVariable("pin") Long pin, Authentication auth) throws Exception {
 		        UserEntity utt = getUser(auth);
 		        Log.d(utt.getPin() +"=="+ pin);
-		        if(utt.getPin() == pin) {
+		        if((long)utt.getPin() == (long) pin) {
 		           utt.setValider(1);
 		           utt = userInfoRepository.save(utt);
 		           return ResponseEntity.ok(new JwtResponse<UserEntity>(false, utt ,"Siksè"));
+		        }else {
+		          return ResponseEntity.ok(new JwtResponse<UserEntity>(true, utt ,"Pin nan pa bon."));
 		        }
-		        return ResponseEntity.ok(new JwtResponse<UserEntity>(true, utt ,"Pin nan pa bon."));
 		        
 	    }
 	    
