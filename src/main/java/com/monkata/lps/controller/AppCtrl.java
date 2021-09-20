@@ -689,11 +689,11 @@ public class AppCtrl extends BaseCtrl {
 		
 	}
 	
-	@RequestMapping(value = "/validerUser/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> validerUser(Authentication auth, @PathVariable("id") Long id) throws Exception {
+	@RequestMapping(value = "/validerUser/{pin}", method = RequestMethod.GET)
+	public ResponseEntity<?> validerUser(Authentication auth, @PathVariable("pin") Long pin) throws Exception {
 		UserEntity utt = getUser(auth);
 	    if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
-	    	JwtResponse jr = UserDetails.validerUser(utt.getId(), id );
+	    	JwtResponse jr = UserDetails.validerUser(utt.getId(), pin );
 	    	return ResponseEntity.ok(jr);
 	    }
 		return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa."));

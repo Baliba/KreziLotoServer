@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.monkata.lps.Helper.Log;
 import com.monkata.lps.Request.JwtRequest;
 import com.monkata.lps.Request.RegRequest;
 import com.monkata.lps.components.RoleName;
@@ -154,6 +155,7 @@ public class AuthCtrl  extends BaseCtrl{
 	    @RequestMapping(value = "/api/valider/{pin}", method = RequestMethod.GET)
 	    public ResponseEntity<?> validerCompte (@PathVariable("pin") Long pin, Authentication auth) throws Exception {
 		        UserEntity utt = getUser(auth);
+		        Log.d(utt.getPin() +"=="+ pin);
 		        if(utt.getPin() == pin) {
 		           utt.setValider(1);
 		           utt = userInfoRepository.save(utt);
