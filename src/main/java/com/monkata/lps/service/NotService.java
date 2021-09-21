@@ -37,12 +37,12 @@ public class NotService {
     NotDao notd;
     
     
-    public void add(Long id_user, String msg, Long id) {
+    public void add(Long id_user, String msg, Long sender_id) {
     	Notification not = new Notification();
     	not.setId_receiver(id_user);
     	not.setMessage(msg);
     	not.setVu(0L);
-    	not.setId_sender(id);
+    	not.setId_sender(sender_id);
     	not.setDate_not(LocalDateTime.now());
     	notd.save(not);
     }

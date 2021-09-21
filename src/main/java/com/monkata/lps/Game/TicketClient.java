@@ -55,13 +55,19 @@ private static final long serialVersionUID = 1L;
   private double win_pay;
   
   @Column(nullable=true)
+  private Long id_tiraj;
+  
+  @Column(nullable=true)
   private LocalDate   date_pay;
   
   @Column(nullable=true)
   private Long   who_pay;
   
   @Column(nullable=true)
-  private boolean pay, over;
+  private boolean pay;
+  
+  @Column(nullable=true)
+  private boolean over;
   
   @Column(nullable=true)
   private  String  hour_draw;

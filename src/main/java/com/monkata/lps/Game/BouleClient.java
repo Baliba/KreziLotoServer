@@ -63,5 +63,8 @@ import lombok.Data;
     	}
     }
  }
+ public void setWin_priceInc(double win2) {
+	this.win_price +=win2;
+ }
  
  }

@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -153,6 +154,12 @@ public class TirajCtrl extends BaseCtrl {
 	    public ResponseEntity<?> getDrawYDay (Authentication auth){
 	    	 String date = yDay();
 	    	 List<Tiraj> t =tiraj.getDrawsByDate(date);
+	    	 return ResponseEntity.ok(t);
+	    }
+	    
+	    @GetMapping("/getDrawById/{id}")
+	    public ResponseEntity<?> getDrawById (@PathVariable("id") Long id, Authentication auth){
+	    	 Tiraj t =tiraj.findById(id).get(); 
 	    	 return ResponseEntity.ok(t);
 	    }
 	    

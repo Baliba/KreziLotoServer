@@ -225,10 +225,14 @@ public class TicketService {
 		Game game  = getGame(tk.getId_game(), pg.getGames());
 		List<WinLots> lwl = new ArrayList<>();
 		for(BouleClient bc : tk.getLots()) {
-		 WinLots wl =	nf.checkNumberIsWin(bc, getMG(bc.getCode_mg(),game));
-		 if(wl!=null) {
-		   lwl.add(wl);
-		 }
+		   // WinLots wl =	nf.checkNumberIsWin(bc, getMG(bc.getCode_mg(),game));
+           //if(wl!=null) {
+           //lwl.add(wl);
+           //}
+		  List<WinLots>	wls = nf.checkNumberIsWinArray(bc, getMG(bc.getCode_mg(),game));
+		  for(WinLots wl : wls) {
+			  lwl.add(wl);
+		  }
 		}
 		
 		double sold = 0;
@@ -238,7 +242,7 @@ public class TicketService {
 			for(int i =0; i<tk.getLots().size(); i++) {
 				  if(wl.getBc().getId() == tk.getLots().get(i).getId()) {
 					  tk.getLots().get(i).setWin(1);
-					  tk.getLots().get(i).setWin_price(win);
+					  tk.getLots().get(i).setWin_priceInc(win);
 				      bclient.save(tk.getLots().get(i));
 				      break;
 				  }
@@ -249,6 +253,7 @@ public class TicketService {
 		tk.setOver(true);
 		tk.setPay(true);
 		tk.setDate_pay(LocalDate.now());
+		tk.setId_tiraj(tj.getId());
 		tk = ticketc.save(tk);
 	    user.addAmount(sold, idu);
 		VResp vr = new VResp(lwl, tk, nf.getLots(), sold);
@@ -475,7 +480,9 @@ public class TicketService {
 					 nt  = bclient.getNumberTrackingByGameAndDay(day,game,lv);
 				 }
 		} else {
+			
 			nt = ticketc.getGameTrackingByDayOnly(day,lv);
+			
 		}
 		return new JwtResponse<List<NumberTracking>>(false,nt,"Siksè");
 	}

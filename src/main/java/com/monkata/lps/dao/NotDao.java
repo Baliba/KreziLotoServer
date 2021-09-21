@@ -22,7 +22,7 @@ public interface NotDao extends JpaRepository<Notification, Long>{
 	@Query("SELECT COUNT(n) from Notification n WHERE n.id_receiver =:id AND n.vu=0  ")
     Long  countNot(@Param("id") Long id);
 	
-	@Query("SELECT n from Notification n WHERE (date_not > CURRENT_DATE - 7 OR date_not IS NULL) AND  n.id_receiver =:id   ORDER BY n.date_not DESC")
+	@Query("SELECT n from Notification n WHERE (date_not > CURRENT_DATE - 7 OR date_not IS NULL) AND  n.id_receiver =:id ORDER BY n.date_not DESC")
     List<Notification> getNotByUser(@Param("id") Long id);
 	
 	@Modifying

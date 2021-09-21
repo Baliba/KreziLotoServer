@@ -115,7 +115,9 @@ public class PayoutService {
 		  pay.setPay_by_admin(utt.getId());
 		  pay.setPay(1);
 		  pay.setDate_pay_by_admin(BaseCtrl.toDayFixe());
-		  return null;
+		  String msg = "Retrè ou te mande an prè ou ka rele nan +(509) 3138-1388, Oubyen wap resevwal sou nimewo moncash ou te bay la.";
+		  nots.add( pay.id_user, msg,utt.getId());
+		  return   new JwtResponse<String>(true,"","Siksè");
 	}
 	
 	

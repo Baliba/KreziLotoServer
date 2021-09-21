@@ -35,6 +35,7 @@ public class NumberFormater {
     public WinLots checkNumberIsWin(BouleClient lot, ModeGame mg){
     	int pos = -1;
     	WinLots wl = null ; 
+    	List<WinLots> wls = new ArrayList<>();
     	boolean win = false;
     	for(WinName wn : winNames) {
     		if(lot.getCode_mg().equals(wn.getCode_mg())) {
@@ -50,11 +51,40 @@ public class NumberFormater {
     				}
     			}
     			if(win) {
-    				break;
+    				if(!lot.getCode_mg().equals("BOR")) {
+    			     	break;
+    				}
     			}
     		}
     	}
     	return wl;
+    }
+    
+    public List<WinLots> checkNumberIsWinArray(BouleClient lot, ModeGame mg){
+    	int pos = -1;
+    	List<WinLots> wls = new ArrayList<>();
+    	boolean win = false;
+    	for(WinName wn : winNames) {
+    		if(lot.getCode_mg().equals(wn.getCode_mg())) {
+    			pos++;
+    			String b = lot.getLot();
+    			b = b.replace(mg.getMask(),"");
+    			List<String> ll = formatLot(wn.getSyntax());
+    			for(String s : ll ) {
+    				if (s.equals(b)) {
+    					wls.add(new WinLots(lot,pos, mg, wn.getName()));
+    					win = true;
+    					break;
+    				}
+    			}
+    			if(win) {
+    				if(!lot.getCode_mg().equals("BOR")) {
+    			     	break;
+    				}
+    			}
+    		}
+    	}
+    	return wls;
     }
     
     
