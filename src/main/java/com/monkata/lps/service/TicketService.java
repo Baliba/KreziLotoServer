@@ -155,6 +155,25 @@ public class TicketService {
 	    			   }
 	    	    }
 	    	  }
+   		  } else { 
+   			  
+   			 for(ModeGame mg : CGAME.getModegames()) {
+	    		   if(mg.getId()==rb.getId_mg()) {
+	    			   double ts = rb.getMontant();
+	    			  // Log.d("|Lot|->"+ rb.getLot() +"| SELL->("+m+"G)| MAX SEL->"+mg.getMax_sell()+" NT->"+ts);
+	    			   if ( ts > mg.getMax_sell()) {
+	    			        rb.setMax_sell(mg.getMax_sell());
+	    			        double cp = mg.getMax_sell();
+	    			        if(cp>0) {
+	    			             rb.setCan_play(cp);
+	    			        } else {
+	    				          rb.setCan_play(cp);
+	    			        }
+	    				    rbs.add(rb);
+	    			   }
+	    	    }
+	    	  }
+   			  
    		  }
         } catch(Exception e) {
    	      continue;

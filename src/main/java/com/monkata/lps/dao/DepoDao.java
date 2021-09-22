@@ -19,13 +19,13 @@ import dto.Sold;
 @RepositoryRestResource
 public interface DepoDao extends JpaRepository<Depot, Long> {
 	
-  @Query("SELECT d FROM Depot d WHERE token_order =:tko")	
+  @Query("SELECT d FROM Depot d WHERE token_order =:tko ORDER BY created_at DESC")	
   Optional<Depot> findDepoByTKO(@Param("tko") String tko);
   
-  @Query("SELECT d FROM Depot d WHERE id_user =:id AND  created_at > CURRENT_DATE - :day ")
+  @Query("SELECT d FROM Depot d WHERE id_user =:id AND  created_at > CURRENT_DATE - :day ORDER BY created_at DESC ")
   List<Depot> getPastDepot(@Param("id") Long id, @Param("day") int d);
   
-  @Query("SELECT d FROM Depot d WHERE type_depot=:index AND created_at > CURRENT_DATE - :day ")
+  @Query("SELECT d FROM Depot d WHERE type_depot=:index AND created_at > CURRENT_DATE - :day ORDER BY created_at DESC ")
   List<Depot> getPastDepotByAdmin( @Param("day") int d, int index);
   
   
