@@ -182,11 +182,33 @@ public class AdminCtrl extends BaseCtrl {
 		        
 	    }
 	    
+	    @RequestMapping(value = "/api/depoByAdmin/{id}/{sold}/{pin}", method = RequestMethod.GET)
+	    public ResponseEntity<?> depoByAdmin (@PathVariable("id") Long id,@PathVariable("sold") int sold, @PathVariable("pin") Long pin, Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	      JwtResponse jr = UserDetails.depoByAdmin(utt, id,pin,sold);
+		                  return ResponseEntity.ok(jr);
+			    }
+			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
+	    
 	    @RequestMapping(value = "/api/getDepotStat", method = RequestMethod.GET)
 	    public ResponseEntity<?> getDepotStat (Authentication auth) throws Exception {
 		        UserEntity utt = getUser(auth);
 		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
 		        	      JwtResponse jr = UserDetails.getDepoStat();
+		                  return ResponseEntity.ok(jr);
+			    }
+			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
+	    
+	    @RequestMapping(value = "/api/getUserByPhone/{phone}", method = RequestMethod.GET)
+	    public ResponseEntity<?> getUserByPhone (@PathVariable("phone") String phone, Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	      JwtResponse jr = UserDetails.getUserByPhone(phone);
 		                  return ResponseEntity.ok(jr);
 			    }
 			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));

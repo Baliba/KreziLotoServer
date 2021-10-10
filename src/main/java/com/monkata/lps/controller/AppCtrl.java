@@ -313,7 +313,7 @@ public class AppCtrl extends BaseCtrl {
 					rst.setMessage("Ou pa gen ase Kob pou jwe");
 					return ResponseEntity.ok(rst);
 				}
-				UserDetails.getAmount(sticket.getTotalSoldTicktets(tk.getLots()), utt);
+				 UserDetails.getAmount(sticket.getTotalSoldTicktets(tk.getLots()), utt);
 				 nt.setId_user(utt.getId());
 				 nt.setTotalPrice(sticket.getTotalSoldTicktets(tk.getLots()));
 				 nt = ticketc.save(nt);

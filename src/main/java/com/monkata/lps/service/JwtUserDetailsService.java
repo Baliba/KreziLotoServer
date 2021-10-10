@@ -512,5 +512,25 @@ public class JwtUserDetailsService implements UserDetailsService {
 		return new JwtResponse<DepoStat>(false,ds,"Siksè");
 	}
 
+	public JwtResponse depoByAdmin(UserEntity utt, Long id, Long pin, int sold) {
+	
+		if(utt.getPin().equals(pin)) {
+			// Log.d("*********************("+utt.getPin()+")*********************");
+			UserEntity eu = this.userId(id).get();
+			           eu.add(sold);
+			           eu =userInfoRepository.save(eu);
+		  return new JwtResponse<UserEntity>(false,eu,"Siksè");           
+		}
+		return new JwtResponse<String>(true,"","Pin nan pa bon");
+	}
+
+   public  JwtResponse getUserByPhone(String phone) {
+	      Optional<UserEntity> user  = userInfoRepository.getUserByPhone(phone);
+	      if (user.isPresent()) {
+		    return new JwtResponse<UserEntity>(false,user.get(),"Siksè");  
+	      }
+	      return new JwtResponse<UserEntity>(true,null,"Nou pa jwenn numero sa");  
+	}
+
 
 }
