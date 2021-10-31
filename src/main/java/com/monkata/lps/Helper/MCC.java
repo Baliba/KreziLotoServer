@@ -5,7 +5,7 @@ import java.net.URI;
 public class MCC {
  
    // public static String   url       =   "http://192.168.1.11:82/wallet/";	 
-   public static String   url       =    "http://wallet.monkata.com/";
+   public static String   url       =    "https://wallet.monkata.com/";
    public static String   save_depo =    url+"BO/@MC/order/";
    public static String   url_depo  =    url+"BO/@App/pay";
    public static String   url_mail  =    url+"BO/@App/mail"; 

@@ -64,6 +64,7 @@ import com.monkata.lps.dao.UserRepository;
 import com.monkata.lps.entity.Coupon;
 import com.monkata.lps.entity.Depot;
 import com.monkata.lps.entity.LoginUser;
+import com.monkata.lps.entity.Payout;
 import com.monkata.lps.entity.Role;
 import com.monkata.lps.entity.UserEntity;
 import com.monkata.lps.entity.UserEntityReq;
@@ -168,10 +169,12 @@ public class JwtUserDetailsService implements UserDetailsService {
 	        UserEntity u = userInfoRepository.save(user);
 	        String not = "Bonjou \n Byenvini sou sistem bolet nou an, nou few kado 5g bonis, pouw ka jwe lawoulet. Fè premye depow ak moncash pouw komanse jwe boul chans.";
 	        nots.add(u.getId(), not, 1L);
+	        sendMailforNewUser(u);
 	        return  Optional.of(u);
     	}
     	return Optional.ofNullable(null);
     }
+    
     @Transactional 
     public   Object prepareDepo(DepoReq u, Long idu) {
         Long sold  = u.getSold();
@@ -197,8 +200,9 @@ public class JwtUserDetailsService implements UserDetailsService {
     }
 
     @Transactional
-	public DError setDepoNow(String tko, UserEntity ut) {
+	public DError setDepoNow(String tko) {
 	 DError ed = new DError(true,"");
+	 UserEntity ut ;
 	 Optional<Depot> odp=	dpDao.findDepoByTKO(tko);
 	 try {
 	  if(!odp.isPresent()) {
@@ -208,7 +212,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         	  Order o = ap.getData();
         	  
         	  if(o.getIs_over()==1 && o.getIs_fail()==0) {
-        		UserEntity u = getUserInfo(ut.getUsername());		  
+        		ut = this.userId(o.getId_user()).get();  
         		String bmsg ="";  
         		
         	   if(o.getCoupon()!=null && !o.equals("")) {	  
@@ -220,21 +224,23 @@ public class JwtUserDetailsService implements UserDetailsService {
 		        	    	     o.addBonisToAmount(cp.getPrice());
 		        	    	     bmsg = " Pou Kod-koupon an nou mete "+cp.getPrice()+"G pou ou sou kont ou.";
 		        	    	  } else {
-		        	    		  u.addBonus(o.getBonis());
+		        	    		  ut.addBonus(o.getBonis());
 		        	    		  bmsg = "Pou Kod-koupon an nou mete "+cp.getPrice()+"G pou ou sou kont bonis ou pou ou.";
 		        	    	  } 
 	        	      }
         	      }
         	   }
-        	   Depot d = new Depot(o, u.getId());	
+        	   Depot d = new Depot(o, ut.getId());	
         	   d.setDate_created(LocalDateTime.now());
+        	   d.setBonis(o.getBonis());
         	   Depot nd = dpDao.save(d);
-        	   u.makeDepo(o.amount);
-        	   userInfoRepository.save(u);
+        	   ut.makeDepo(o.amount);
+        	   userInfoRepository.save(ut);
         	   ed.setMsg("succes");
         	   ed.setAmount(o.getAmount());
                ed.setError(false);
                nots.add(ut.getId(), "Ou fèk sot fè on depo "+o.getAmount()+"G."+bmsg, 1L);
+               sendMailforDepo(ut,nd);
         	  } else {
         		  ed.setCode_error(101);
         		  ed.setMsg("Depo sa echwe ou byen li fet deja");
@@ -255,7 +261,23 @@ public class JwtUserDetailsService implements UserDetailsService {
 		  return ed;
 	 }
 	}
-
+    
+    public void sendMailforDepo(UserEntity ut, Depot d) {
+    	  String msg = ut.getFirstName()+" "+ut.getLastName()+" fek depoze "+d.getMontant()+"G pa moncash sou system bolet ou an"+ 
+          ", Kod depo an se "+d.getId()+" "+d.getBonis()+"G";
+    	  sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo depo moncash");
+    	
+    }
+    public void sendMailforNewUser(UserEntity ut) {
+    	String msg = ut.getFirstName()+" "+ut.getLastName()+" fek enskri sou sistem bolet ou an sou nimero sa :"+ut.getUsername();
+    	    	  sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo itilizate");
+    }
+    
+    public void sendMailforPayout(UserEntity ut, Payout p) {
+  	  String msg = ut.getFirstName()+" "+ut.getLastName()+" fek fon demand retre de  "+p.getSold()+"G  sou system bolet ou an"+ 
+  	          ", Kod retre  an se "+p.getId()+", Komisyon an se "+p.getMoncashnumber()+"G";
+  	    	  sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo depo moncash");
+    }
 	public void getAmount(double t, UserEntity  ut ) {
       UserEntity utt = getUserInfo(ut.getUsername());
 	  utt.remain(t);

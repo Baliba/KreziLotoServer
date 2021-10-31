@@ -31,7 +31,8 @@ public class Depot  extends cObj implements Serializable  {
 	    public Long id_user;
 	    
 	    //
-	    public float montant;
+	    @Column(nullable=true, columnDefinition = "int default 0")
+	    public float montant, bonis;
 	    
 	    @Column(nullable=true, columnDefinition = "int default 0")
 	    public String no_mc;

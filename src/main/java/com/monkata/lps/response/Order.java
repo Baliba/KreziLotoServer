@@ -15,7 +15,7 @@ public class Order {
     public String date_trans;
     public String valider;
     public String see_by_admin;
-    public String id_user;
+    public Long id_user;
     public int type_order;
     public String id_app_order;
     public String method_payment;
@@ -25,6 +25,7 @@ public class Order {
     public String phone;
     public String coupon;
     public  int bonis;
+    
 	public void addBonisToAmount(int price) {
 	   this.amount += price;
 	}

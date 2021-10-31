@@ -88,9 +88,10 @@ public class PayoutService {
         user =  users.userId(user.getId()).get();
        if(user.getCompte()>=pay.getSold()) {
     	   user.remain(pay.getSold());
-    	   users.save(user);
+    	   user = users.save(user);
     	   po = payout.save(po);
     	   nots.add(user.getId(),"Ou fèk sot fe on retrè "+pay.getSold()+"G.",1L);
+    	   users.sendMailforPayout(user, po);
     	   return new JwtResponse<PayoutRes>(false, new PayoutRes(user,po, com),"Siksè , ou retire "+pay.getSold()+"G sou kont ou.");   
        } else {
     	 return   new JwtResponse<String>(true,"","Ou pa gen ase kob pou fe retrè sa");

@@ -99,12 +99,11 @@ public class McCtrl  extends BaseCtrl {
 		private JwtUserDetailsService UserDetails;
 	    
 	    
-	    
+	  
 	    @Transactional
 	    @RequestMapping(value = "/addDepo/{token_order}", method = RequestMethod.GET)
-	    public ResponseEntity<?> add(@PathVariable("token_order") String tko, Authentication auth) throws Exception {
-	    	UserEntity user = this.getUser(auth);
-	    	DError ed = this.UserDetails.setDepoNow(tko, user);
+	    public ResponseEntity<?> add(@PathVariable("token_order") String tko) throws Exception {
+	    	DError ed = this.UserDetails.setDepoNow(tko);
 	    	return ResponseEntity.ok(ed); 
 	    }
 	    
@@ -143,8 +142,8 @@ public class McCtrl  extends BaseCtrl {
 	  			return ResponseEntity.ok(new JwtResponse<String>(true,null,"Ou pa ka fè retrè pou kounya."));
 	  		   }
 	    	  if(new  BCryptPasswordEncoder().matches(pay.getPass(), user.getPassword())) {
-	    	   JwtResponse pe =  payouts.setPay(user, pay);
-	    	   return ResponseEntity.ok(pe); 
+	    	    JwtResponse pe =  payouts.setPay(user, pay);
+	    	    return ResponseEntity.ok(pe); 
 	    	  }
 	    	  return ResponseEntity.ok(new JwtResponse<String>(true,null,"Kod sekre a pa bon.")); 
 	    }

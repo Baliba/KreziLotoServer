@@ -179,13 +179,7 @@ public class TirajCtrl extends BaseCtrl {
 	    }
 	    
 
-	    
-//	    @RequestMapping(value = "/addfakeBonus", method = RequestMethod.GET)
-//	    public ResponseEntity<?> addfakeBonus(Authentication auth) throws Exception {
-//	    	   UserEntity user = this.getUser(auth);
-//	    	   return ResponseEntity.ok(UserDetails.addBonus(1000, user.getId())); 
-//	    
-//	    }
+	   
 	    
 	   
 	  
