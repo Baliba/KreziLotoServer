@@ -264,7 +264,7 @@ public class JwtUserDetailsService implements UserDetailsService {
     
     public void sendMailforDepo(UserEntity ut, Depot d) {
     	  String msg = ut.getFirstName()+" "+ut.getLastName()+" fek depoze "+d.getMontant()+"G pa moncash sou system bolet ou an"+ 
-          ", Kod depo an se "+d.getId()+" "+d.getBonis()+"G";
+          ", Kod depo an se #"+d.getId()+", Li jwenn yon bonis de :  "+d.getBonis()+"G";
     	  sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo depo moncash");
     	
     }
@@ -275,7 +275,7 @@ public class JwtUserDetailsService implements UserDetailsService {
     
     public void sendMailforPayout(UserEntity ut, Payout p) {
   	  String msg = ut.getFirstName()+" "+ut.getLastName()+" fek fon demand retre de  "+p.getSold()+"G  sou system bolet ou an"+ 
-  	          ", Kod retre  an se "+p.getId()+", Komisyon an se "+p.getMoncashnumber()+"G";
+  	          ", Kod retre  an se "+p.getId()+", Komisyon an se "+p.getCom()+"G";
   	    	  sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo depo moncash");
     }
 	public void getAmount(double t, UserEntity  ut ) {
