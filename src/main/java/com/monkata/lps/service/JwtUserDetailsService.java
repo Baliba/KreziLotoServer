@@ -431,7 +431,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 	        map.add("data",mail);
 	        HttpEntity<MultiValueMap<String, Mail>> request = new HttpEntity<MultiValueMap<String, Mail>>(map, headers);
 	        Object result = restTemplate.postForObject(MCC.url_mail, request, Object.class);
-	        Log.d("***************SEND***************");
+	       
 	        return result;
 	       
 		    } catch(Exception e) {
