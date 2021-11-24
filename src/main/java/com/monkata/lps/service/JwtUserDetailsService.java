@@ -557,7 +557,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 public JwtResponse changeUserPass(UserEntity utt, Long id, Long pin, String pass) {
 	 Optional<UserEntity> user  = userInfoRepository.findById(id);
      if (user.isPresent()) {
-    	   if(utt.getPin().equals(pass)) {
+    	   if(utt.getPin().equals(pin)) {
 	    	  UserEntity u = user.get();
 	    	  String password = pass;
 		      String encodedPassword = new BCryptPasswordEncoder().encode(password);
