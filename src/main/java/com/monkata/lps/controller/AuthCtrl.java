@@ -174,7 +174,7 @@ public class AuthCtrl  extends BaseCtrl{
 	    		    UserEntity utt = outt.get();
 	    		   //Long pin = 123456L;
 	    		    Long pin = (long) getNewPin(100000, 999999);
-			        String msg = "Bonjou \n Ou fek fe on nouvo demand pou chanje kod sekre ou, men nouvo PIN ou an : "+pin+" pouw modifye kod sekrè a.";
+			        String msg = "Bonjou \n Ou fek fe on nouvo demand pou chanje kod sekre ou, men nouvo PIN ou an : "+pin+" pouw modifye kod sekre a.";
 			        jwtUserDetailsService.sendMail(email, utt.getFirstName()+" "+utt.getLastName(), msg, "Rekipere kont ou.");
 			        utt.setPin(pin);
 	    		    userInfoRepository.save(utt);
@@ -191,7 +191,7 @@ public class AuthCtrl  extends BaseCtrl{
 	    	   Optional<UserEntity> outt = userInfoRepository.findByEmail(np.getEmail());
 	    	   if (outt.isPresent()){
 	    		    UserEntity utt = outt.get();
-	    		    if(np.getPin() == utt.getPin()) {
+	    		    if(utt.getPin().equals(np.getPin())) {
 	    		      Long pin =(long) getNewPin(100000, 999999);
 			          String msg = "Bonjou \n Ou fek chanje kod sekre ou.";
 			          jwtUserDetailsService.sendMail(np.getEmail(), utt.getFirstName()+" "+utt.getLastName(), msg, "Rekipere kont ou.");

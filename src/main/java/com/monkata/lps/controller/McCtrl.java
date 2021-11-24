@@ -201,6 +201,14 @@ public class McCtrl  extends BaseCtrl {
 	    
 	    }
 	    
+	    @RequestMapping(value = "/currentTicketById/{day}/{id}", method = RequestMethod.GET)
+	    public ResponseEntity<?> currentTicket(@PathVariable("id") long id ,@PathVariable("day") int d, Authentication auth) throws Exception {
+	    	   UserEntity user =  userRepository.findById(id).get();
+	    	   List<TicketClient> dpt=  ticketc.getMyCurrentTickets(user.getId(), d);
+	    	   return ResponseEntity.ok(new JwtResponse<List<TicketClient>>(false,dpt,"Tikèt ki gen "+d+" jou o plis")); 
+	    
+	    }
+	    
 	    
 	    @RequestMapping(value = "/pastDepotById/{day}/{id}", method = RequestMethod.GET)
 	    public ResponseEntity<?> pastDepotById(@PathVariable("id") long id  , @PathVariable("day") int d, Authentication auth) throws Exception {

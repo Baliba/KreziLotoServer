@@ -74,5 +74,8 @@ public interface TicketClientRepository extends JpaRepository<TicketClient, Long
 	
 	@Query("SELECT new dto.NumberTracking(bc.game_name,bc.game_name,COUNT(bc.id_game), SUM(bc.total_price), SUM(bc.win_pay)) FROM TicketClient  bc WHERE bc.over=:live AND bc.date_ticket > CURRENT_DATE - :day GROUP BY bc.id_game, bc.game_name ORDER BY bc.game_name ASC ")	
 	List<NumberTracking> getGameTrackingByDayOnly(@Param("day") int day,@Param("live")  boolean live);
+	
+	@Query("SELECT t from TicketClient t WHERE t.id_user = :id   AND t.over=false  AND date_ticket > CURRENT_DATE - :d ")
+	List<TicketClient> getMyCurrentTickets(Long id, int d);
 
 }

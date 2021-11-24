@@ -214,5 +214,16 @@ public class AdminCtrl extends BaseCtrl {
 			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
 		        
 	    }
+	    
+	    @RequestMapping(value = "/api/changeUserPass/{id}/{pass}/{pin}", method = RequestMethod.GET)
+	    public ResponseEntity<?> changeUserPass (@PathVariable("id") Long id,@PathVariable("pass") String pass, @PathVariable("pin") Long pin, Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	      JwtResponse jr = UserDetails.changeUserPass(utt, id,pin,pass);
+		                  return ResponseEntity.ok(jr);
+			    }
+			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
 	
 }

@@ -554,5 +554,22 @@ public class JwtUserDetailsService implements UserDetailsService {
 	      return new JwtResponse<UserEntity>(true,null,"Nou pa jwenn numero sa");  
 	}
 
+public JwtResponse changeUserPass(UserEntity utt, Long id, Long pin, String pass) {
+	 Optional<UserEntity> user  = userInfoRepository.findById(id);
+     if (user.isPresent()) {
+    	   if(utt.getPin().equals(pass)) {
+	    	  UserEntity u = user.get();
+	    	  String password = pass;
+		      String encodedPassword = new BCryptPasswordEncoder().encode(password);
+		      u.setPassword(encodedPassword);
+		      userInfoRepository.save(u);
+		      return new JwtResponse<UserEntity>(false,user.get(),"Siksè");
+    	    } else {
+    		   return new JwtResponse<UserEntity>(true,null,"Pin nan pa bon");  
+    	   }
+     }
+     return new JwtResponse<UserEntity>(true,null,"Nou pa jwenn kliyan sa");  
+}
+
 
 }
