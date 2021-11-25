@@ -9,5 +9,6 @@ public class RegRequest {
 	public String password;
 	public String email;
 	public String  lastName,firstName;
+	public Long id_parent;
 
 }

@@ -152,6 +152,11 @@ public class JwtUserDetailsService implements UserDetailsService {
 	        user.setFirstName(reg.getFirstName());
 	        user.setLastName(reg.getLastName());
 	        user.setEmail(reg.getEmail());
+	        //********************
+	        if(reg.getId_parent()!=null && reg.getId_parent()!=0) {
+	           user.setId_parent(reg.getId_parent());
+	        }
+	        // *******************
 	        String password = reg.getPassword();
 	        String encodedPassword = new BCryptPasswordEncoder().encode(password);
 	        user.setPassword(encodedPassword);
@@ -234,6 +239,13 @@ public class JwtUserDetailsService implements UserDetailsService {
         	   d.setDate_created(LocalDateTime.now());
         	   d.setBonis(o.getBonis());
         	   Depot nd = dpDao.save(d);
+        	   if(ut.getId_parent()!=null && ut.getId_parent()!=0) {
+        	   try {
+        	   Long idp = ut.getId_parent();
+        	   this.setRecompense(idp);
+        	   ut.setId_parent(null);
+        	   }catch(Exception e) {}
+        	   }
         	   ut.makeDepo(o.amount);
         	   userInfoRepository.save(ut);
         	   ed.setMsg("succes");
@@ -262,11 +274,28 @@ public class JwtUserDetailsService implements UserDetailsService {
 	 }
 	}
     
-    public void sendMailforDepo(UserEntity ut, Depot d) {
+    private void setRecompense(Long idp) {
+    	try {
+		  Optional<UserEntity> u  = userInfoRepository.findById(idp);
+		  if(u.isPresent()) {
+			  UserEntity nu = u.get();
+			  nu.makeDepo(MCC.recomp);
+			  userInfoRepository.save(nu);
+			  sendMailforRecomp(nu);
+		  }
+    	}catch(Exception e) {}
+	}
+    
+    public void sendMailforRecomp(UserEntity ut) {
+  	  String msg = ut.getFirstName()+" "+ut.getLastName()+" ou fek sot resevwa "+MCC.recomp+"G sou system bolet nou an,"+ 
+        " paskew te fe yon zanmiw enskri epi depoze kob. Kontinye konsa pouw ka fè plus kob.";
+  	    sendMail(ut.getEmail(), "KreziLoto", msg, "Rekonpans");
+   }
+
+	public void sendMailforDepo(UserEntity ut, Depot d) {
     	  String msg = ut.getFirstName()+" "+ut.getLastName()+" fek depoze "+d.getMontant()+"G pa moncash sou system bolet ou an"+ 
           ", Kod depo an se #"+d.getId()+", Li jwenn yon bonis de :  "+d.getBonis()+"G";
     	  sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo depo moncash");
-    	
     }
     public void sendMailforNewUser(UserEntity ut) {
     	String msg = ut.getFirstName()+" "+ut.getLastName()+" fek enskri sou sistem bolet ou an sou nimero sa :"+ut.getUsername();
@@ -484,7 +513,6 @@ public class JwtUserDetailsService implements UserDetailsService {
 	    return  sendMail(utt.getEmail(), utt.getFirstName()+" "+utt.getLastName(), msg, "Nouvo pin");
 	}
 
-
 	public JwtResponse getPastDepotByAdmin(int day,  int index) {
 		List<Depot> dps = dpDao.getPastDepotByAdmin(day, index);
 		return new JwtResponse<List<Depot>>(false,dps,"Siksè");
@@ -546,7 +574,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 		return new JwtResponse<String>(true,"","Pin nan pa bon");
 	}
 
-   public  JwtResponse getUserByPhone(String phone) {
+    public  JwtResponse getUserByPhone(String phone) {
 	      Optional<UserEntity> user  = userInfoRepository.getUserByPhone(phone);
 	      if (user.isPresent()) {
 		    return new JwtResponse<UserEntity>(false,user.get(),"Siksè");  
@@ -554,7 +582,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 	      return new JwtResponse<UserEntity>(true,null,"Nou pa jwenn numero sa");  
 	}
 
-public JwtResponse changeUserPass(UserEntity utt, Long id, Long pin, String pass) {
+    public JwtResponse changeUserPass(UserEntity utt, Long id, Long pin, String pass) {
 	 Optional<UserEntity> user  = userInfoRepository.findById(id);
      if (user.isPresent()) {
     	   if(utt.getPin().equals(pin)) {

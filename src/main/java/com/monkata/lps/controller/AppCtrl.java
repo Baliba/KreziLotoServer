@@ -191,11 +191,16 @@ public class AppCtrl extends BaseCtrl {
 	@GetMapping("/verify/{id}")
 	public ResponseEntity<?> verify(@PathVariable("id") Long id, Authentication auth) {
 		UserEntity utt = getUser(auth);
-		Optional<ParamsGame> opg = pgame.findById(utt.getParamgame());
+		Bank bank = this.getBankConfig();
+		if(!bank.isBlock_verify()) {
+			Optional<ParamsGame> opg = pgame.findById(utt.getParamgame());
+			VResp tcs = sticket.verify(utt.getId(), id, opg.get());
+			return ResponseEntity.ok(new AppResponse<VResp>(false,"Tike",tcs));
+		   } else {
+			VResp vr = sticket.getVResp();
+			return ResponseEntity.ok(new AppResponse<VResp>(true,"",vr));
+		}
 		
-		VResp tcs = sticket.verify(utt.getId(), id, opg.get());
-		
-		return ResponseEntity.ok(new AppResponse<VResp>(false,"Tike",tcs));
 	}
 	
 

@@ -54,6 +54,10 @@ public class Bank  extends cObj implements Serializable {
 	    @Column(columnDefinition = "boolean default false")
 	    private boolean block_roulette;
 	    
+	    
+	    @Column(columnDefinition = "boolean default false")
+	    private boolean block_verify;
+	    
 	    //**************************//
 	    
 	    

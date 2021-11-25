@@ -342,6 +342,7 @@ public class TicketService {
 		List<FreeWinLots>  freelot;
 		private double sold;
 		String msg;
+	
 		public VResp(List<WinLots> lwl, TicketClient tc) {
 			super();
 			this.winlot = lwl;
@@ -364,6 +365,12 @@ public class TicketService {
 			code = c;
 			msg = m;
 			
+		}
+		public VResp(String msg, int i) {
+			this.msg = msg;
+			this.code = i;
+			crash = true;
+			// TODO Auto-generated constructor stub
 		}
 		TicketClient ticket;
 	}
@@ -504,6 +511,12 @@ public class TicketService {
 			
 		}
 		return new JwtResponse<List<NumberTracking>>(false,nt,"Siksè");
+	}
+
+
+	public VResp getVResp() {
+		// TODO Auto-generated method stub
+		return new VResp("Verifye tikè bloke nan moman an",207);
 	}
     
 	
