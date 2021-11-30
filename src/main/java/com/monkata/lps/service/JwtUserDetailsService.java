@@ -257,10 +257,10 @@ public class JwtUserDetailsService implements UserDetailsService {
                
                nots.add(ut.getId(), "Ou fèk sot fè on depo "+o.getAmount()+"G."+bmsg, 1L);
                sendMailforDepo(ut,nd);
-               
+            
         	   } else {
         		  ed.setCode_error(101);
-        		  ed.setMsg("Depo sa echwe ou byen li fèt deja");
+        		  ed.setMsg("Depo an te fèt avek siksè.");
         	  }
          } else {
         	 ed.setCode_error(401);

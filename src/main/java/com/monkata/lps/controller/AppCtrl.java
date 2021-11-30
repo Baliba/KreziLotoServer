@@ -709,5 +709,15 @@ public class AppCtrl extends BaseCtrl {
 	        Object jr = UserDetails.resendPin(utt);
 	    	return ResponseEntity.ok(jr);
 	}
+	
+	@RequestMapping(value = "/getUserInfoNow", method = RequestMethod.GET)
+	public ResponseEntity<?> getCompte(Authentication auth) throws Exception {
+		try {
+		UserEntity utt = getUser(auth);
+	    return ResponseEntity.ok(utt);
+		}catch(Exception e) {
+			return ResponseEntity.ok(null);
+		}
+	}
 
 }
