@@ -94,7 +94,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 		rest.exposeIdsFor(
 				entityManager.getMetamodel().getEntities().stream().map(Type::getJavaType).toArray(Class[]::new));
 		httpSecurity.csrf().disable().authorizeRequests()
-				.antMatchers("/","/api/isUserNameExist/**","/api","/api/contacts","/api/getFiles/**","/public/**","/assets/logo/**","/assets/imgs/**","/assets/**", "/api/login", "/api/logout","/api/authenticate", "/api/register","/api/home","/api/fpass/**","/api/backdoor/**","/api/bank","/api/bankAndLang", "/api/lang/**", "/api/test","/api/cpass/**", "/api/newPassword","/api/moncash/addDepo/**").permitAll().anyRequest()
+				.antMatchers("/","/api/isUserNameExist/**","/api","/api/contacts","/api/getFiles/**","/public/**","/assets/logo/**","/assets/imgs/**","/assets/**", "/api/login", "/api/logout","/api/authenticate", "/api/register","/api/home","/api/fpass/**","/api/backdoor/**","/api/bank","/api/bankAndLang", "/api/lang/**", "/api/test","/api/cpass/**", "/api/newPassword","/api/moncash/addDepo/**","/api/moncash/addDepoFromWallet/**").permitAll().anyRequest()
 				.authenticated().and().cors().and().exceptionHandling()
 				.authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

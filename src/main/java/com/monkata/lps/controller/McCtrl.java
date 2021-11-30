@@ -109,6 +109,14 @@ public class McCtrl  extends BaseCtrl {
 	    
 	    
 	    @Transactional
+	    @RequestMapping(value = "/addDepoFromWallet/{token_order}", method = RequestMethod.GET)
+	    public ResponseEntity<?> addDepoFromWalet(@PathVariable("token_order") String tko) throws Exception {
+	    	DError ed = this.UserDetails.setDepoNow(tko);
+	    	return ResponseEntity.ok(ed); 
+	    }
+	    
+	    
+	    @Transactional
 	    @RequestMapping(value = "/configPayment", method = RequestMethod.POST)
 	    public ResponseEntity<?> setMoncashNumber(@RequestBody BankReq bank, Authentication auth) throws Exception {
 	    	UserEntity user = this.getUser(auth);

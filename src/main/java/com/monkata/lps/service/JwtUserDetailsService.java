@@ -215,12 +215,11 @@ public class JwtUserDetailsService implements UserDetailsService {
          ApiResponse ap = restTemplate.getForObject(MCC.save_depo+tko, ApiResponse.class);
          if(ap!=null && !ap.error) {
         	  Order o = ap.getData();
-        	  
         	  if(o.getIs_over()==1 && o.getIs_fail()==0) {
         		ut = this.userId(o.getId_user()).get();  
         		String bmsg ="";  
-        		
-        	   if(o.getCoupon()!=null && !o.equals("")) {	  
+        		//***************************************
+        		if(o.getCoupon()!=null && !o.equals("")) {	  
         	      Coupon cp = cpRep.findByCode(o.getCoupon());
         	      if(cp!=null) {
 	        	    if(cp.isActive() && cp.getMin()<=o.getAmount()) {
@@ -235,43 +234,51 @@ public class JwtUserDetailsService implements UserDetailsService {
 	        	      }
         	      }
         	   }
+        	   //********************************************	
         	   Depot d = new Depot(o, ut.getId());	
-        	   d.setDate_created(LocalDateTime.now());
-        	   d.setBonis(o.getBonis());
+        	         d.setDate_created(LocalDateTime.now());
+        	         d.setBonis(o.getBonis());
         	   Depot nd = dpDao.save(d);
+        	   
         	   if(ut.getId_parent()!=null && ut.getId_parent()!=0) {
-        	   try {
-        	   Long idp = ut.getId_parent();
-        	   this.setRecompense(idp);
-        	   ut.setId_parent(null);
-        	   }catch(Exception e) {}
+		        	   try {
+		        	      Long idp = ut.getId_parent();
+		        	      this.setRecompense(idp);
+		        	      ut.setId_parent(null);
+		        	   }catch(Exception e) {}
         	   }
+        	   
         	   ut.makeDepo(o.amount);
         	   userInfoRepository.save(ut);
-        	   ed.setMsg("succes");
+        	   
+        	   ed.setMsg("succès");
         	   ed.setAmount(o.getAmount());
                ed.setError(false);
+               
                nots.add(ut.getId(), "Ou fèk sot fè on depo "+o.getAmount()+"G."+bmsg, 1L);
                sendMailforDepo(ut,nd);
-        	  } else {
+               
+        	   } else {
         		  ed.setCode_error(101);
-        		  ed.setMsg("Depo sa echwe ou byen li fet deja");
+        		  ed.setMsg("Depo sa echwe ou byen li fèt deja");
         	  }
          } else {
         	 ed.setCode_error(401);
         	 ed.setMsg("Erreur serveur midleware");
          }
           return ed;
-	   }else{
+	   } else{
 		  ed.setCode_error(100);
 		  ed.setMsg("Depo sa an fet deja ");
 	  }
+	  
 	  return ed;
 	 } catch(Exception e){
 		  ed.setCode_error(402);
 		  ed.setMsg(e.getMessage());
 		  return ed;
 	 }
+	 
 	}
     
     private void setRecompense(Long idp) {
@@ -309,14 +316,12 @@ public class JwtUserDetailsService implements UserDetailsService {
     }
     
 	public void getAmount(double t, UserEntity  ut, int pay) {
-		
          UserEntity utt = getUserInfo(ut.getUsername());
           if(pay==1) {
 	         utt.remain(t);
             } else {
 		    utt.remainBonus(t);
           }
-          
 		  userInfoRepository.save(utt);
    }
 	
@@ -379,14 +384,14 @@ public class JwtUserDetailsService implements UserDetailsService {
 	
 	@Data
 	@JsonIgnoreProperties(ignoreUnknown = true)
-	 class DepoRes implements Serializable {
+	class DepoRes implements Serializable {
 		public Order order;
 		public String  pay;
 		public DepoRes() {}
 	}
 	
-	 @Data
-	 class DepoReqToMK  {
+	@Data
+	class DepoReqToMK  {
 		public int method_payment;
 		public Long amount, id_user;
 		public String  type_order, coupon;
@@ -406,6 +411,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 	     }
 	 	return new AppResponse<String>(true,"Kod sekre yo pa menm",""  );
 	}
+	
     @Autowired
     LoginUserDao luDao;
     
@@ -604,7 +610,7 @@ public class JwtUserDetailsService implements UserDetailsService {
     	   }
      }
      return new JwtResponse<UserEntity>(true,null,"Nou pa jwenn kliyan sa");  
-}
+   }
 
 
 }

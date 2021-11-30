@@ -598,9 +598,7 @@ public class AppCtrl extends BaseCtrl {
 		UserEntity utt = getUser(auth);
 		Bank bank = this.getBankConfig();
 		if(bank!=null && bank.isBlock_depo()) {
-			
 			return ResponseEntity.ok(new AppResponse<String>(true,"Depo an bloke pou kounya an",""));
-			
 		}
 		return ResponseEntity.ok(UserDetails.prepareDepo(u, utt.getId()));
 	}
