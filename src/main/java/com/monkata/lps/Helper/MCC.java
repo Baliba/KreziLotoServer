@@ -11,6 +11,6 @@ public class MCC {
    public static String   url_mail  =    url+"BO/@App/mail"; 
    public static String   apikey    =    "MTY0_HpjkDxfmcD" + "." + "ThF1EboQxMZfVmKHNgVN";
    public static String   appkey    =    "a0gtfzuX99GqHrmBoCPK3EOil";
-   public static int recomp = 5;
+   public static int      recomp    = 5;
    public static double bonus_percent = 0.10;
 }

@@ -269,7 +269,7 @@ public class JwtUserDetailsService implements UserDetailsService {
           return ed;
 	   } else{
 		  ed.setCode_error(100);
-		  ed.setMsg("Depo sa an fet deja ");
+		  ed.setMsg("Depo sa komplete, ou ka komanse jwe.");
 	  }
 	  
 	  return ed;

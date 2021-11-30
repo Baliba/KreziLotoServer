@@ -20,10 +20,10 @@ public class DError {
   int hbonus;
   
   public void setCompte(UserEntity utt){
-	  this.compte = utt.getCompte();
-	  this.hcompte = utt.getHcompte();
-	  this.bonus = utt.getBonus();
-	  this.hbonus = utt.getHbonus();
+	  this.compte  =  utt.getCompte();
+	  this.hcompte =  utt.getHcompte();
+	  this.bonus   =  utt.getBonus();
+	  this.hbonus  =  utt.getHbonus();
   }
  
 public DError(boolean error, String msg) {
