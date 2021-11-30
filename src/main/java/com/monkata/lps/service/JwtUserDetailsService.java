@@ -269,9 +269,8 @@ public class JwtUserDetailsService implements UserDetailsService {
           return ed;
 	   } else{
 		  ed.setCode_error(100);
-		  ed.setMsg("Depo sa komplete, ou ka komanse jwe.");
+		  ed.setMsg("Depo sa konplete, ou ka komanse jwe.");
 	  }
-	  
 	  return ed;
 	 } catch(Exception e){
 		  ed.setCode_error(402);
