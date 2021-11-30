@@ -298,14 +298,14 @@ public class AppCtrl extends BaseCtrl {
 			if (CGAME != null) {
 				// Dont forget to add delai from game
 				Bank bk = this.getBankConfig();
-				TicketClient nt = new TicketClient(tk, utt.getId(), CGAME,bk.getDateTimeFormat(),CGAME.getGamemaster().getDelai());
+				TicketClient nt = new TicketClient(pay, tk, utt.getId(), CGAME,bk.getDateTimeFormat(),CGAME.getGamemaster().getDelai());
 				nt.setId_pg(pg.getId());
 				nt.setId_user(utt.getId());
 				List<BouleClient> lots = new ArrayList<>();
 				for (RBoule nb : tk.getLots()) {
 					ModeGame mg = UtilGame.getModeGame(CGAME, nb.getId_mg());
 					if (mg != null) {
-						BouleClient nbn = new BouleClient(nb, CGAME, mg);
+						BouleClient nbn = new BouleClient(pay, nb, CGAME, mg);
 						lots.add(nbn);
 					} else {
 						rst.setMessage(nb.getLot() + " mod jwet sa pa bon pa bon");
@@ -314,11 +314,11 @@ public class AppCtrl extends BaseCtrl {
 				}
 				boolean isSold = sticket.checkTotalSoldTicktets(tk.getLots(), utt.getUsername(), pay);
 
-				if (!isSold) {
+				 if (!isSold) {
 					rst.setMessage("Ou pa gen ase Kob pou jwe");
 					return ResponseEntity.ok(rst);
-				}
-				 UserDetails.getAmount(sticket.getTotalSoldTicktets(tk.getLots()), utt);
+				 }
+				 UserDetails.getAmount(sticket.getTotalSoldTicktets(tk.getLots()), utt, pay);
 				 nt.setId_user(utt.getId());
 				 nt.setTotalPrice(sticket.getTotalSoldTicktets(tk.getLots()));
 				 nt = ticketc.save(nt);

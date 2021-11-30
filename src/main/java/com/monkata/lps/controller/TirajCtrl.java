@@ -79,7 +79,7 @@ public class TirajCtrl extends BaseCtrl {
 	    @RequestMapping(value = "/add", method = RequestMethod.POST)
 	    public ResponseEntity<?> add(@RequestBody TirajReq tq) throws Exception {
 	    	      if(tq.getWin4().equals("") || tq.getWin4()==null || tq.getNum3().equals("") || tq.getNum3()==null ) {
-	  		        return ResponseEntity.ok(new JwtResponse<String>(true,null,"Boul yo pa bon"));
+	  		         return ResponseEntity.ok(new JwtResponse<String>(true,null,"Boul yo pa bon"));
 	  		      }
 	    	     Long idt = (long) tq.getGame().getId();
 	    	     Tiraj itj = tiraj.isGameDrawToday(tq.getDateg(), idt);
@@ -109,6 +109,12 @@ public class TirajCtrl extends BaseCtrl {
 		             tj.setLot_4(String.valueOf(tq.getWin4().charAt(1)));
 		             tj.setLot_5(String.valueOf(tq.getWin4().charAt(2)));
 		             tj.setLot_6(String.valueOf(tq.getWin4().charAt(3)));
+		             // ******* || ****** \\
+		             if(tq.getWin_price()!=0) {
+		                tj.setWin_price(tq.getWin_price());
+		             }else {
+		            	tj.setWin_price(100000);
+		             }
 		             tiraj.save(tj);
 			         return ResponseEntity.ok(new JwtResponse<Tiraj>(false,tj,"Success"));
 	    	     }

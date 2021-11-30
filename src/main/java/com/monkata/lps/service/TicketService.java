@@ -32,6 +32,7 @@ import com.monkata.lps.Game.TicketClient;
 import com.monkata.lps.Game.UtilGame;
 import com.monkata.lps.Game.WinName;
 import com.monkata.lps.Helper.Log;
+import com.monkata.lps.Helper.MCC;
 import com.monkata.lps.Request.RBoule;
 import com.monkata.lps.Tiraj.NumberFormater;
 import com.monkata.lps.Tiraj.NumberFormater.FreeWinLots;
@@ -244,10 +245,6 @@ public class TicketService {
 		Game game  = getGame(tk.getId_game(), pg.getGames());
 		List<WinLots> lwl = new ArrayList<>();
 		for(BouleClient bc : tk.getLots()) {
-		   // WinLots wl =	nf.checkNumberIsWin(bc, getMG(bc.getCode_mg(),game));
-           //if(wl!=null) {
-           //lwl.add(wl);
-           //}
 		  List<WinLots>	wls = nf.checkNumberIsWinArray(bc, getMG(bc.getCode_mg(),game));
 		  for(WinLots wl : wls) {
 			  lwl.add(wl);
@@ -267,7 +264,11 @@ public class TicketService {
 				  }
 			}
 		}
-		
+		String bmsg ="nan yon fich";
+		if (tk.is_bonus() && sold>0) {
+			sold = sold * MCC.bonus_percent;
+		    bmsg= "Ou te jwe ak lajan bonus;";
+		}
 		tk.setWin_pay(sold);
 		tk.setOver(true);
 		tk.setPay(true);
@@ -279,7 +280,7 @@ public class TicketService {
 		vr.setCode(200);
 		if(sold>0) {
 		  vr.setMsg("Bravo !!! ou fè "+sold+" G");
-		  nots.add(idu,"Ou fèk sot genyen "+sold+" G nan yon fich.",1L);
+		  nots.add(idu,"Ou fèk sot genyen "+sold+" G."+bmsg,1L);
 		} else {
 			vr.setMsg("Pa gen youn nan boul ki nan fich ou a ki soti, Ou fè  "+sold+" G");
 		}

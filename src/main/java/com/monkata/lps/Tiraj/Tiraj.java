@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -33,6 +34,11 @@ public class Tiraj  implements  Serializable {
   String lot_4;
   String lot_5;
   String lot_6;
+  
+  // **********|**********  //
+  @Column(columnDefinition = "int default 100000")
+  public  int win_price;
+  
   public Tiraj(int delai) {
 	  LocalDate localDate = LocalDate.now();
 	  date_limit_pay =  localDate.plusDays(delai);

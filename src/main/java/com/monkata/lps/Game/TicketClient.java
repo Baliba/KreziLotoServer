@@ -77,10 +77,11 @@ private static final long serialVersionUID = 1L;
   @JsonIgnoreProperties({"ticketclient"})
   private List<BouleClient> lots;
   
-
+  @Column(columnDefinition = "boolean default false")
+  private boolean is_bonus;
   
   public TicketClient() {}
-  public TicketClient(TicketRequestClient tk, Long id, Game g,String f,int delai) {
+  public TicketClient(int pay, TicketRequestClient tk, Long id, Game g,String f,int delai) {
         id_gamemaster = g.getGamemaster().getId();
         id_game =  g.getId();
 	    game_name= g.getGamemaster().getCode();
@@ -88,13 +89,18 @@ private static final long serialVersionUID = 1L;
 	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 	    String text = LocalDateTime.now().format(formatter);
 	    date_ticket = LocalDateTime.now();
-	    pay=false;
+	    this.pay=false;
 	    over = false;
 	    setLDate(f);
 	    if( delai==0 ) {
 	    	delai = 90;
 	    }
 	    this.date_exp   = LocalDateTime.parse(text,formatter).plusDays(delai);
+	    this.is_bonus = false;
+	    
+	    if(pay==0) {
+	    	this.is_bonus = true;
+	    }
 	    
   }
   

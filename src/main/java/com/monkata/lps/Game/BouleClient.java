@@ -12,6 +12,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.monkata.lps.Helper.MCC;
 import com.monkata.lps.Request.RBoule;
 import com.monkata.lps.entity.cObj;
 
@@ -63,6 +64,29 @@ import lombok.Data;
     	}
     }
  }
+ 
+ public BouleClient(int pay, RBoule rb, Game g, ModeGame mg) {
+	    id_game = g.getId();
+	    id_gamemaster = g.getGamemaster().getId();
+	    id_mg=rb.getId_mg();
+	    code_mg = rb.getCode_mg();
+	    lot = rb.getLot();
+	    montant = rb.getMontant();
+	    pwin = 0;
+	    if(mg.getPart()==1) {
+	      String s = mg.getWin().split("=")[1];
+	          pwin = (montant/mg.getPoint_per_price())*Double.parseDouble(s);
+	        } else {
+	    	String[] wins = mg.getWin().split("/");
+	    	if(wins.length>0) {
+	    	   String s = wins[0].split("=")[1];
+	    	   pwin = (montant/mg.getPoint_per_price())*Double.parseDouble(s);
+	    	}
+	    }
+	    if(pay==0) {
+	    	pwin = (pwin * MCC.bonus_percent);
+	    }
+	 }
  public void setWin_priceInc(double win2) {
 	this.win_price +=win2;
  }

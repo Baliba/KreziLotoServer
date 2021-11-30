@@ -164,4 +164,9 @@ public class UserEntity extends cObj implements Serializable, UserDetails{
 			this.setHBonusNow();
 			this.bonus +=t;
 		}
+		public void remainBonus(double t) {
+			// TODO Auto-generated method stub
+			this.setHBonusNow();
+			this.bonus-=t;
+		}
 }

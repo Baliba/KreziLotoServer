@@ -307,11 +307,18 @@ public class JwtUserDetailsService implements UserDetailsService {
   	          ", Kod retre  an se "+p.getId()+", Komisyon an se "+p.getCom()+"G";
   	    	  sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo depo moncash");
     }
-	public void getAmount(double t, UserEntity  ut ) {
-      UserEntity utt = getUserInfo(ut.getUsername());
-	  utt.remain(t);
-	  userInfoRepository.save(utt);
-	}
+    
+	public void getAmount(double t, UserEntity  ut, int pay) {
+		
+         UserEntity utt = getUserInfo(ut.getUsername());
+          if(pay==1) {
+	         utt.remain(t);
+            } else {
+		    utt.remainBonus(t);
+          }
+          
+		  userInfoRepository.save(utt);
+   }
 	
 	public void setAmount(double t, UserEntity  ut) {
 		  UserEntity utt = getUserInfo(ut.getUsername());

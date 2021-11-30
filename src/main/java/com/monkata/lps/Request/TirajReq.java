@@ -9,4 +9,5 @@ public class TirajReq {
  GameMaster  game;
  String dateg, timeg;
  String num3, win4;
+ public int win_price;
 }
