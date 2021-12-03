@@ -54,16 +54,16 @@ public interface TicketClientRepository extends JpaRepository<TicketClient, Long
 	Optional<Sold> getTotalLostSoldTicketGlobal(@Param("id")  Long id);
 	
     // get ticket by date
-	@Query("SELECT t from TicketClient t WHERE   date_ticket=CURRENT_DATE  AND id_gamemaster = :id ")
+	@Query("SELECT t from TicketClient t WHERE date_ticket > CURRENT_DATE - 1 AND id_gamemaster = :id ")
 	List<TicketClient> getTicketOfTodayByGame(@Param("id")  Long id);
 	
 	@Query("SELECT t from TicketClient t WHERE date_ticket > CURRENT_DATE - :day  AND id_gamemaster = :id ")
 	List<TicketClient> getTicketByGame(@Param("id") Long id, @Param("day") int day);
 	// Over
-	@Query("SELECT t from TicketClient t WHERE   date_ticket=CURRENT_DATE  AND id_gamemaster = :id  AND over = true AND  win_pay>0 ")
+	@Query("SELECT t from TicketClient t WHERE  date_ticket > CURRENT_DATE - 1  AND id_gamemaster = :id  AND over = true AND  win_pay>0 ")
 	List<TicketClient> getTicketOfTodayByGameWin(@Param("id") Long game);
 	
-	@Query("SELECT t from TicketClient t WHERE   date_ticket=CURRENT_DATE  AND id_gamemaster = :id AND over = true AND win_pay=0  ")
+	@Query("SELECT t from TicketClient t WHERE date_ticket > CURRENT_DATE - 1  AND id_gamemaster = :id AND over = true AND win_pay=0  ")
 	List<TicketClient> getTicketOfTodayByGameLost(@Param("id") Long game);
 	
 	@Query("SELECT t from TicketClient t WHERE date_ticket > CURRENT_DATE - :day  AND id_gamemaster = :id AND over = true AND win_pay>0 ")

@@ -334,7 +334,6 @@ public class JwtUserDetailsService implements UserDetailsService {
 		  UserEntity utt = userId(id).get();
 		  utt.add(t);
 		  userInfoRepository.save(utt);
-		
 	}
 	
 	public UserEntity addAmountV2(double t, Long id) {

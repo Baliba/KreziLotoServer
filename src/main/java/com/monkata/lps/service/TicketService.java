@@ -219,7 +219,6 @@ public class TicketService {
 		if(!tk.isOver()) {
 	    LocalDateTime ld = tk.getDate_exp();
 	    LocalDate now = LocalDate.now();
-	    
 	    // check if game is draw
 	    Tiraj tj = tiraj.isGameDrawToday(tk.getSdatet(), tk.getId_game());
 		if(tj==null) {
@@ -237,10 +236,7 @@ public class TicketService {
 		    VResp vr = new VResp(tk," Jodya "+now.toString()+", fich sa expire depi : "+ld.toLocalDate().toString(),202);
 			return vr;
 	    }
-	    
 		List<WinName> w  = this.wnRep.findAll(); 
-
-
 		NumberFormater nf = new NumberFormater(tj, w);
 		Game game  = getGame(tk.getId_game(), pg.getGames());
 		List<WinLots> lwl = new ArrayList<>();
@@ -515,9 +511,9 @@ public class TicketService {
 	}
 
 
-	public VResp getVResp() {
+	public VResp getVResp(String msg) {
 		// TODO Auto-generated method stub
-		return new VResp("Verifye tikè bloke nan moman an",207);
+		return new VResp(msg,207);
 	}
     
 	

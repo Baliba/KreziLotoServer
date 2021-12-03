@@ -197,7 +197,60 @@ public class AppCtrl extends BaseCtrl {
 			VResp tcs = sticket.verify(utt.getId(), id, opg.get());
 			return ResponseEntity.ok(new AppResponse<VResp>(false,"Tike",tcs));
 		   } else {
-			VResp vr = sticket.getVResp();
+			VResp vr = sticket.getVResp("Verifye tikè bloke nan moman an");
+			return ResponseEntity.ok(new AppResponse<VResp>(true,"",vr));
+		}
+		
+	}
+	
+	@GetMapping("/verifyForUser/{id}/{idu}")
+	public ResponseEntity<?> verifyForUser(@PathVariable("id") Long id, @PathVariable("idu") Long idu, Authentication auth) {
+		UserEntity utt = getUser(auth);
+		
+		if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		Bank bank = this.getBankConfig();
+		if(!bank.isBlock_verify()) {
+		       //
+			   UserEntity user = userRepository.getOne(idu);
+			   // 
+			   Optional<ParamsGame> opg = pgame.findById(user.getParamgame());
+			   //
+			   VResp tcs = sticket.verify(idu, id, opg.get());
+			   return ResponseEntity.ok(new AppResponse<VResp>(false,"Tike",tcs));
+			   
+		      } else {
+			  VResp vr = sticket.getVResp("Verifye tikè bloke nan moman an");
+			  return ResponseEntity.ok(new AppResponse<VResp>(true,"",vr));
+		   }
+		  } else {
+			VResp vr = sticket.getVResp("Ou pa gen dwa pou verifye fich pou moun");
+			return ResponseEntity.ok(new AppResponse<VResp>(true,"",vr));
+		}
+	}
+	
+	@GetMapping("/verifyTicket/{id}")
+	public ResponseEntity<?> verifyTicket(@PathVariable("id") Long id, Authentication auth) {
+		UserEntity utt = getUser(auth);
+		
+		if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		Bank bank = this.getBankConfig();
+		if(!bank.isBlock_verify()) {
+		       //
+			   TicketClient tk =  ticketc.findById(id).get();
+			   
+			   UserEntity user = userRepository.getOne(tk.getId_user());
+			   // 
+			   Optional<ParamsGame> opg = pgame.findById(user.getParamgame());
+			   //
+			   VResp tcs = sticket.verify(tk.getId_user(), id, opg.get());
+			   return ResponseEntity.ok(new AppResponse<VResp>(false,"Tike",tcs));
+			   
+		      } else {
+			  VResp vr = sticket.getVResp("Verifye tikè bloke nan moman an");
+			  return ResponseEntity.ok(new AppResponse<VResp>(true,"",vr));
+		   }
+		  } else {
+			VResp vr = sticket.getVResp("Ou pa gen dwa pou verifye fich pou moun");
 			return ResponseEntity.ok(new AppResponse<VResp>(true,"",vr));
 		}
 		
