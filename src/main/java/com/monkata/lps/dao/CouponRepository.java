@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import com.monkata.lps.Game.ModeGameMaster;
 import com.monkata.lps.entity.Bank;
 import com.monkata.lps.entity.Coupon;
+import com.monkata.lps.entity.UseCoupon;
 
 
 

@@ -9,6 +9,7 @@ import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -91,6 +92,13 @@ public class BaseCtrl {
 		  String str = d+" "+h;
 		  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 		  return  LocalDateTime.parse(str, formatter);
+	  }
+	  
+      public static LocalDate formatDateOnly(String d) {
+		  
+		  String str = d+" ";
+		  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		  return  LocalDate.parse(str, formatter);
 	  }
 	  
 	  public static int getNewPin(int min, int max) {

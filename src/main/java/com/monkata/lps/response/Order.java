@@ -25,7 +25,6 @@ public class Order {
     public String phone;
     public String coupon;
     public  int bonis;
-    
 	public void addBonisToAmount(int price) {
 	   this.amount += price;
 	}

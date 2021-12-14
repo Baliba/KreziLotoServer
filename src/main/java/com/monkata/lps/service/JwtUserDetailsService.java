@@ -60,12 +60,14 @@ import com.monkata.lps.dao.DepoDao;
 import com.monkata.lps.dao.LoginUserDao;
 import com.monkata.lps.dao.ParamsGameRepository;
 import com.monkata.lps.dao.RoleRepository;
+import com.monkata.lps.dao.UserCouponRepository;
 import com.monkata.lps.dao.UserRepository;
 import com.monkata.lps.entity.Coupon;
 import com.monkata.lps.entity.Depot;
 import com.monkata.lps.entity.LoginUser;
 import com.monkata.lps.entity.Payout;
 import com.monkata.lps.entity.Role;
+import com.monkata.lps.entity.UseCoupon;
 import com.monkata.lps.entity.UserEntity;
 import com.monkata.lps.entity.UserEntityReq;
 import com.monkata.lps.response.ApiResponse;
@@ -223,15 +225,20 @@ public class JwtUserDetailsService implements UserDetailsService {
         	      Coupon cp = cpRep.findByCode(o.getCoupon());
         	      if(cp!=null) {
 	        	    if(cp.isActive() && cp.getMin()<=o.getAmount()) {
-	        	    	o.setBonis(cp.getPrice());
+	        	    	      o.setBonis(cp.getPrice());
 		        	    	  if(cp.type_coupon) {
-		        	    	     o.addBonisToAmount(cp.getPrice());
-		        	    	     bmsg = " Pou Kod-koupon an nou mete "+cp.getPrice()+"G pou ou sou kont ou.";
-		        	    	  } else {
+		        	    	      o.addBonisToAmount(cp.getPrice());
+		        	    	      bmsg = " Pou Kod-koupon an nou mete "+cp.getPrice()+"G pou ou sou kont ou.";
+		        	    	   } else {
 		        	    		  ut.addBonus(o.getBonis());
 		        	    		  bmsg = "Pou Kod-koupon an nou mete "+cp.getPrice()+"G pou ou sou kont bonis ou pou ou.";
 		        	    	  } 
 	        	      }
+	        	     try {
+	        	        this.addUseConpon(cp.isType_coupon(), o.getId_user(), o.getAmount(), cp.getPrice(), cp.getCode());
+	        	      } catch(Exception e) {
+	        	    	
+	        	    }
         	      }
         	   }
         	   //********************************************	
@@ -279,6 +286,15 @@ public class JwtUserDetailsService implements UserDetailsService {
 	 }
 	 
 	}
+    
+    @Autowired
+    UserCouponRepository ucDao;
+    
+    public void  addUseConpon(boolean ib, Long id_user, float sold , float win_sold, String code_coupon ){
+    	
+    	 ucDao.save(new UseCoupon(ib, id_user, sold,win_sold, code_coupon));
+    	 
+    }
     
     private void setRecompense(Long idp) {
     	try {
