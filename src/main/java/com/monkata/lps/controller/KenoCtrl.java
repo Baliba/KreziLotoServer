@@ -233,24 +233,24 @@ public class KenoCtrl extends BaseCtrl {
 		
 		BankSold bs = new BankSold();
 		Optional<dto.Sold> sold =   keno.getMyGlobalLost(id);
-		if(sold.isPresent()) {
+		if(sold.isPresent() &&  sold.get().getSold()>0 ) {
 			mgLost = sold.get().getSold();
 			bs.setMgLost(mgLost);
 		}
 		sold =   keno.getMyGlobalWin(id);
-		if(sold.isPresent()) {
+		if(sold.isPresent() &&  sold.get().getSold()>0) {
 			mgWin = sold.get().getSold();
 			bs.setMgWin(mgWin);
 		}
 		
 		sold =   keno.getGlobalLost();
-		if(sold.isPresent()) {
+		if(sold.isPresent() &&  sold.get().getSold()>0 ) {
 			gLost = sold.get().getSold();
 			bs.setGLost(gLost);
 		}
 		
 		sold =   keno.getGlobalWin();
-		if(sold.isPresent()) {
+		if(sold.isPresent() &&  sold.get().getSold()>0 ) {
 			gWin = sold.get().getSold();
 			bs.setGWin(gWin);
 		}
