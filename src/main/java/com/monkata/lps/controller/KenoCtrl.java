@@ -41,6 +41,7 @@ import com.monkata.lps.dao.TicketClientRepository;
 import com.monkata.lps.dao.TicketRepository;
 import com.monkata.lps.dao.TirajRepository;
 import com.monkata.lps.dao.UserRepository;
+import com.monkata.lps.entity.Bank;
 import com.monkata.lps.entity.Coupon;
 import com.monkata.lps.entity.Keno;
 import com.monkata.lps.entity.KenoConfig;
@@ -157,15 +158,20 @@ public class KenoCtrl extends BaseCtrl {
 	public ResponseEntity<?> initKenoPart(Authentication auth, @RequestBody KenoReq kr) throws Exception {
 
 		    UserEntity utt = getUser(auth);
+		    
+		    Bank bank = this.getBankConfig();
+		    
+	  		if(bank!=null && bank.isBlock_keno()) {
+	  			return ResponseEntity.ok(new JwtResponse<Double>(true,utt.getCompte(), "Keno pa disponib pou kounya."));   
+	  		}
+	  		
 		    if(utt.getCompte()>=kr.getBet()) {
 		    	
 		      if(kr.getTotal_num()>10 || kr.getTotal_num()!=kr.getLots().size()) {
-		    	  
 		    	  return ResponseEntity.ok(new JwtResponse<Double>(true,utt.getCompte(), "Numerow chwazi yo pa bon."));
 		      } 	
 		      
 		      if(kr.getBet()<10 || kr.getBet()>100) {
-		    	  
 		    	  return ResponseEntity.ok(new JwtResponse<Double>(true,utt.getCompte(), "Ou ka parye ant 10 a 100g."));
 		      }
 		      utt.remain(kr.getBet());
