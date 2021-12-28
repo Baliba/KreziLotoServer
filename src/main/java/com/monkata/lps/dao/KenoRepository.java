@@ -23,10 +23,10 @@ public interface KenoRepository extends JpaRepository<Keno, Long> {
 	@Query("SELECT new dto.Sold(SUM(k.win_sold)) from Keno k WHERE k.id_user = :idu AND k.over = true AND  is_win=false  GROUP BY k.id_user")
 	Optional<dto.Sold> getMyGlobalWin(@Param("idu") Long idu);
 	
-	@Query("SELECT new dto.Sold(SUM(k.win_sold)) from Keno k WHERE  k.over = true AND  is_win = true ")
+	@Query("SELECT new dto.Sold(SUM(k.win_sold)) from Keno k WHERE  k.over = true AND  is_win = true  GROUP BY k.over ")
 	Optional<dto.Sold> getGlobalLost();
 	
-	@Query("SELECT new dto.Sold(SUM(k.bet)) from Keno k WHERE k.over = true")
+	@Query("SELECT new dto.Sold(SUM(k.bet)) from Keno k WHERE k.over = true  GROUP BY k.over")
 	Optional<dto.Sold> getGlobalWin();
 	
 	@Query("SELECT k from Keno k WHERE  created_at > CURRENT_DATE - :day  ")
