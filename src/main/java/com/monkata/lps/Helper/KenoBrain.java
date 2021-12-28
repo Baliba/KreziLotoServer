@@ -19,7 +19,7 @@ public class KenoBrain {
 	        for (int  i = 0; i < PAYOUTS.get(_iTotalNum-1).getPays().size(); i++) {
 	        	int pay = PAYOUTS.get(_iTotalNum-1).getPays().get(i);
 	            double iTotalWin = pay * _iCurBet;
-	            Log.d("|===========NORMAL==============>"+ iTotalWin+" = "+pay+"*"+_iCurBet+"\n" );
+	           //  Log.d("|===========NORMAL==============>"+ iTotalWin+" = "+pay+"*"+_iCurBet+"\n" );
 	            if (iTotalWin <= _iBank) {
 	                iWinIndex = i;
 	                break;
@@ -33,7 +33,7 @@ public class KenoBrain {
 	        	    chans_2 = random(0, 100);
 		        	int pay = PAYOUTS.get(_iTotalNum-1).getPays().get(i);
 		            double iTotalWin = pay * _iCurBet;
-		            Log.d("|============ CHANCE 2 =============>"+ iTotalWin+" = "+pay+"*"+_iCurBet+"\n" );
+		          //  Log.d("|============ CHANCE 2 =============>"+ iTotalWin+" = "+pay+"*"+_iCurBet+"\n" );
 		            if (chans_2 < go &&  iTotalWin <= _iBank * 1.5) {
 		                iWinIndex = i;
 		                break;
@@ -42,10 +42,10 @@ public class KenoBrain {
 	     
 	        }
 	        
-	       Log.d("|==========================> BANK_"+ _iBank +"G | INDEX-> "+iWinIndex+"\n");
+	       // Log.d("|==========================> BANK_"+ _iBank +"G | INDEX-> "+iWinIndex+"\n");
 
 	        int  iRandWin = random(0, 100);
-	        Log.d("|==========================> BANK_"+iRandWin);
+	        //  Log.d("|==========================> BANK_"+iRandWin);
 	        if (iRandWin < WIN_OCCURRENCE.get(_iTotalNum-1) && iWinIndex>-1) {
 	            return new WData(true, iWinIndex);
 	          } else {
