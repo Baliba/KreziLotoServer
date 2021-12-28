@@ -232,6 +232,10 @@ public class KenoCtrl extends BaseCtrl {
 	private BankSold setBank(Long id) {
 		
 		BankSold bs = new BankSold();
+		mgLost = 0;
+		mgWin = 0;
+		gLost = 0;
+		gWin = 0 ;
 		Optional<dto.Sold> sold =   keno.getMyGlobalLost(id);
 		if(sold.isPresent() &&  sold.get().getSold()>0 ) {
 			mgLost = sold.get().getSold();
@@ -242,18 +246,29 @@ public class KenoCtrl extends BaseCtrl {
 			mgWin = sold.get().getSold();
 			bs.setMgWin(mgWin);
 		}
-		
-		sold =   keno.getGlobalLost();
-		if(sold.isPresent() &&  sold.get().getSold()>0 ) {
-			gLost = sold.get().getSold();
+		try {
+			sold =   keno.getGlobalLost();
+			if(sold.isPresent() &&  sold.get().getSold()>0 ) {
+				gLost = sold.get().getSold();
+				bs.setGLost(gLost);
+			}
+		} catch(Exception e) {
+			gLost = 0;
 			bs.setGLost(gLost);
 		}
 		
-		sold =   keno.getGlobalWin();
-		if(sold.isPresent() &&  sold.get().getSold()>0 ) {
-			gWin = sold.get().getSold();
+		
+		try {
+			sold =   keno.getGlobalWin();
+			if(sold.isPresent() &&  sold.get().getSold()>0 ) {
+				gWin = sold.get().getSold();
+				bs.setGWin(gWin);
+			}
+		 } catch(Exception e) {
+			gWin = 0;
 			bs.setGWin(gWin);
 		}
+		
 		
 		return bs;
 	}

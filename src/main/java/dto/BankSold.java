@@ -6,7 +6,8 @@ import lombok.Data;
 public class BankSold {
 	
 	double mgWin=0, mgLost=0, gWin=0, gLost= 0;
-	public  double bank_sold;
+	
+	public  double bank_sold = 0;
 	double mgwl, wl;
 	public String msg;
 	public BankSold() {
