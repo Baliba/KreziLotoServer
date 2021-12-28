@@ -768,9 +768,11 @@ public class AppCtrl extends BaseCtrl {
 		try {
 		    UserEntity utt = getUser(auth);
 	        return ResponseEntity.ok(utt);
-		}catch(Exception e) {
+		 }catch(Exception e) {
 			 return ResponseEntity.ok(null);
 		}
 	}
+	
+	
 
 }

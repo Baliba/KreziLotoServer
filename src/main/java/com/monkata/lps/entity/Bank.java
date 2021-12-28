@@ -28,9 +28,7 @@ public class Bank  extends cObj implements Serializable {
 	    private String dateTimeFormat="dd-MM-yyyy HH:mm:ss";
 	    private String fuseau_horaire="";
 	    private String slogan;
-	    
-
-	    
+	   
 	    @Column(columnDefinition = "int default 1")
 	    public  int lang;
 	    
@@ -57,6 +55,9 @@ public class Bank  extends cObj implements Serializable {
 	    
 	    @Column(columnDefinition = "boolean default false")
 	    private boolean block_verify;
+	    
+	    @Column(columnDefinition = "boolean default false")
+	    private boolean block_keno;
 	    
 	    //**************************//
 	    

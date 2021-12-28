@@ -6,6 +6,7 @@
 package com.monkata.lps.service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,10 +18,14 @@ import com.monkata.lps.Request.PayoutReq;
 import com.monkata.lps.Tiraj.NumberFormater.FreeWinLots;
 import com.monkata.lps.Tiraj.NumberFormater.WinLots;
 import com.monkata.lps.dao.ComRepository;
+import com.monkata.lps.dao.KenoConfigRepository;
+import com.monkata.lps.dao.KenoRepository;
 import com.monkata.lps.dao.NotDao;
 import com.monkata.lps.dao.PayoutRepository;
 import com.monkata.lps.dao.TicketClientRepository;
 import com.monkata.lps.entity.Commission;
+import com.monkata.lps.entity.Keno;
+import com.monkata.lps.entity.KenoConfig;
 import com.monkata.lps.entity.Notification;
 import com.monkata.lps.entity.Payout;
 import com.monkata.lps.entity.UserEntity;
@@ -39,6 +44,12 @@ public class KenoService {
     @Autowired 
     TicketClientRepository tcRep;
     float gp = 5;
+    
+    @Autowired
+    KenoConfigRepository kcr ;
+    
+    @Autowired
+    KenoRepository kr ; 
 	public JwtResponse  play(UserEntity user) {
 	    user =  users.userId(user.getId()).get();
 	    if(user.getBonus()>=gp) {
@@ -120,9 +131,39 @@ public class KenoService {
 	public int chance(int min, int max){
 	      return  (int)Math.floor(Math.random()*(max-min+1)+min);
 	}
+     
+	public KenoConfig getKC() {
+		KenoConfig kc = null;
+		List<KenoConfig> kcs = kcr.findAll();
+		if(kcs.size()==0) {
+			kc = new KenoConfig();
+			List<Integer> wo = Arrays.asList(0,20,18,15,12,10,8,6,5,2);
+			List<Integer> bet = Arrays.asList(10,15,25,50,75,100);
+			kc.setWin_occurrence(wo);
+			kc.setBet(bet);
+			kc.setPayoutsNow();
+			kc = kcr.save(kc);
+		 } else {
+			kc = kcs.get(0);
+		}
+		return kc;
+	}
 
+
+
+	public List<Keno> getListGame(int day) {
+		// TODO Auto-generated method stub
+		return kr.getKenoGameByDay(day);
+	}
+
+	public List<Keno> getListGame(int day, Long id) {
+		// TODO Auto-generated method stub
+				return kr.getKenoGameByDay(day, id);
+	}
     
 }
+
+
 @Data
 class GameDraw {
 	 int winHole;
