@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.monkata.lps.Helper.KenoBrain;
+import com.monkata.lps.Helper.Log;
 import com.monkata.lps.dao.KenoRepository;
 import com.monkata.lps.entity.Keno;
 import com.monkata.lps.entity.KenoPayouts;
@@ -62,13 +63,16 @@ public double setIWinIndexNow(WData index, List<KenoPayouts> PAYOUTS, int _iTota
 	this.game = index;
 	if(index.isWin()) {
 		iwinindex = index.getIndex();
+		Log.d("|=========== iwinindex ==============> "+ iwinindex );
 		this.bWin = true;
 		awinoccurrencelist = KenoBrain.win(PAYOUTS, _iTotalNum, iwinindex);
+		Log.d("|=========== awinoccurrencelist size ==============> "+ awinoccurrencelist.size() );
 		irandwinindex = KenoBrain.getRandomOcc(awinoccurrencelist);
 	    awintemplist = KenoBrain.getAWinTempList(_aListSelected);
 	    Collections.shuffle(awintemplist);
 	    alosetemplist = KenoBrain.getALoseTempList(_aNumSelected);
 	    Collections.shuffle(alosetemplist);
+	    Log.d("|=========== RANDOM ==============> "+irandwinindex );
 	    ihitsnumber =  awinoccurrencelist.get(irandwinindex);
 	    acombination = KenoBrain.getCombination(awinoccurrencelist, irandwinindex, awintemplist, alosetemplist);
 	    Collections.shuffle(acombination);

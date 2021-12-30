@@ -70,7 +70,6 @@ public class KenoBrain {
 	  
 	  public static int  getRandomOcc(List<Integer> aWinOccurrenceList ) {
 		  return (int) Math.floor(Math.random() * aWinOccurrenceList.size()); 
-		 
 	  }
 	  
 	  public static  List<Integer>  getAWinTempList(List<Integer> _aListSelected ) {
