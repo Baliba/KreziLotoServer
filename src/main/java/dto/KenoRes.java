@@ -61,22 +61,32 @@ public KenoRes(Keno k, UserEntity u) {
 
 public double setIWinIndexNow(WData index, List<KenoPayouts> PAYOUTS, int _iTotalNum, List<Integer> _aListSelected, List<Boolean> _aNumSelected) {
 	this.game = index;
-	if(index.isWin()) {
+	if(index.isWin() && index.getIndex()>-1) {
 		iwinindex = index.getIndex();
 		Log.d("|=========== iwinindex ==============> "+ iwinindex );
-		this.bWin = true;
+		
 		awinoccurrencelist = KenoBrain.win(PAYOUTS, _iTotalNum, iwinindex);
 		Log.d("|=========== awinoccurrencelist size ==============> "+ awinoccurrencelist.size() );
-		irandwinindex = KenoBrain.getRandomOcc(awinoccurrencelist);
-	    awintemplist = KenoBrain.getAWinTempList(_aListSelected);
-	    Collections.shuffle(awintemplist);
-	    alosetemplist = KenoBrain.getALoseTempList(_aNumSelected);
-	    Collections.shuffle(alosetemplist);
-	    Log.d("|=========== RANDOM ==============> "+irandwinindex );
-	    ihitsnumber =  awinoccurrencelist.get(irandwinindex);
-	    acombination = KenoBrain.getCombination(awinoccurrencelist, irandwinindex, awintemplist, alosetemplist);
-	    Collections.shuffle(acombination);
-	    win_sold = KenoBrain.getWinSold(ihitsnumber,PAYOUTS, keno.getBet(),_iTotalNum );
+		
+		if(awinoccurrencelist.size()>0) {
+			this.bWin = true;
+			irandwinindex = KenoBrain.getRandomOcc(awinoccurrencelist);
+			Log.d("|=========== RANDOM ==============> "+irandwinindex );
+			
+		    awintemplist = KenoBrain.getAWinTempList(_aListSelected);
+		    
+		    Collections.shuffle(awintemplist);
+		    
+		    alosetemplist = KenoBrain.getALoseTempList(_aNumSelected);
+		    Collections.shuffle(alosetemplist);
+		    
+		    ihitsnumber =  awinoccurrencelist.get(irandwinindex);
+		    acombination = KenoBrain.getCombination(awinoccurrencelist, irandwinindex, awintemplist, alosetemplist);
+		    Collections.shuffle(acombination);
+		    win_sold = KenoBrain.getWinSold(ihitsnumber,PAYOUTS, keno.getBet(),_iTotalNum );
+		 } else {
+			win_sold = 0;
+		}
 	 } else {
 		win_sold = 0;
 	 }
