@@ -12,15 +12,15 @@ public class KenoBrain {
 
 	
 	
-	public static WData getWinIndex(List<KenoPayouts> PAYOUTS ,int _iTotalNum, double _iCurBet, double _iBank, List<Integer> WIN_OCCURRENCE, int go ){
+	public static WData getWinIndex(List<KenoPayouts> PAYOUTS ,int _iTotalNum, double _iCurBet, double _iBank, List<Integer> WIN_OCCURRENCE, int go, int bs ){
 		
-		int iWinIndex = -1;
+		    int iWinIndex = -1;
 		   
 	        for (int  i = 0; i < PAYOUTS.get(_iTotalNum-1).getPays().size(); i++) {
 	        	int pay = PAYOUTS.get(_iTotalNum-1).getPays().get(i);
 	            double iTotalWin = pay * _iCurBet;
 	           //  Log.d("|===========NORMAL==============>"+ iTotalWin+" = "+pay+"*"+_iCurBet+"\n" );
-	            if (iTotalWin <= _iBank) {
+	            if (iTotalWin <= (_iBank+bs) ) {
 	                iWinIndex = i;
 	                break;
 	            } 
