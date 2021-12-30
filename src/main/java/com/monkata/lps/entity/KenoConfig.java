@@ -36,7 +36,7 @@ public class KenoConfig  extends cObj implements Serializable {
 	    
 	    // 
 	    @Column(nullable=true, columnDefinition = "int default 500")
-	    private  int bank_sold = 500;
+	    private  double bank_sold = 500;
 	    
 	    @Column(nullable=true, columnDefinition = "int default 10")
 	    private  int global_occurrence  = 10;

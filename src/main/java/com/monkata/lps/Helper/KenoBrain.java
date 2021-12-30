@@ -12,7 +12,7 @@ public class KenoBrain {
 
 	
 	
-	public static WData getWinIndex(List<KenoPayouts> PAYOUTS ,int _iTotalNum, double _iCurBet, double _iBank, List<Integer> WIN_OCCURRENCE, int go, int bs ){
+	public static WData getWinIndex(List<KenoPayouts> PAYOUTS ,int _iTotalNum, double _iCurBet, double _iBank, List<Integer> WIN_OCCURRENCE, int go, double bs ){
 		
 		    int iWinIndex = -1;
 		   
@@ -26,9 +26,8 @@ public class KenoBrain {
 	            } 
 	        }
 	        
-	        if(iWinIndex ==-1) {
+	        if(iWinIndex == -1) {
 	           int  chans_2 = -1;
-	             
 	           for (int  i = 0; i < PAYOUTS.get(_iTotalNum-1).getPays().size(); i++) {
 	        	    chans_2 = random(0, 100);
 		        	int pay = PAYOUTS.get(_iTotalNum-1).getPays().get(i);
@@ -39,7 +38,6 @@ public class KenoBrain {
 		                break;
 		            } 
 		        }
-	     
 	        }
 	        
 	       // Log.d("|==========================> BANK_"+ _iBank +"G | INDEX-> "+iWinIndex+"\n");
