@@ -3,6 +3,7 @@ package com.monkata.lps.entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,6 +69,7 @@ public class KenoConfig  extends cObj implements Serializable {
 			// TODO Auto-generated method stub
 			bet = bet.stream().sorted().collect(Collectors.toList()); 
 			win_occurrence = win_occurrence.stream().sorted().collect(Collectors.toList()); 
+			Collections.reverse(win_occurrence);
 			payouts = payouts.stream()
 					  .sorted(Comparator.comparing(KenoPayouts::getIndex))
 					  .collect(Collectors.toList());
