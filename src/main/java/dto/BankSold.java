@@ -14,7 +14,7 @@ public class BankSold {
 		
 	}
 	
-	public void init(){
+	public void init(double bs){
 		   mgwl = mgWin - mgLost;
 		   wl = gWin - gLost;
 		   if(mgwl==0 && wl==0) {
@@ -42,5 +42,7 @@ public class BankSold {
 			   this.bank_sold = (wl*0.1>0)? wl*0.1 : 500 ;
 		   }
 	}
+
+
 
 }

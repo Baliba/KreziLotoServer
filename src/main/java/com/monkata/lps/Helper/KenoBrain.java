@@ -12,7 +12,7 @@ public class KenoBrain {
 
 	
 	
-	public static WData getWinIndex(List<KenoPayouts> PAYOUTS ,int _iTotalNum, double _iCurBet, double _iBank, List<Integer> WIN_OCCURRENCE, int go, double bs ){
+	public static WData getWinIndex(List<KenoPayouts> PAYOUTS ,int _iTotalNum, double _iCurBet, double _iBank, List<Integer> WIN_OCCURRENCE, int go ){
 		
 		    int iWinIndex = -1;
 		   
@@ -20,7 +20,7 @@ public class KenoBrain {
 	        	int pay = PAYOUTS.get(_iTotalNum-1).getPays().get(i);
 	            double iTotalWin = pay * _iCurBet;
 	           //  Log.d("|===========NORMAL==============>"+ iTotalWin+" = "+pay+"*"+_iCurBet+"\n" );
-	            if (iTotalWin <= (_iBank+bs) ) {
+	            if (iTotalWin <= _iBank ) {
 	                iWinIndex = i;
 	                break;
 	            } 
@@ -59,11 +59,11 @@ public class KenoBrain {
 	  
 	  public static List<Integer>  win(List<KenoPayouts> PAYOUTS, int _iTotalNum, int iMaxWinIndex ) {
 		  List<Integer> aWinOccurrenceList = new ArrayList<Integer>();
+		  
 		   for (int  i = PAYOUTS.get(_iTotalNum - 1).getPays().size() - 1; i >= iMaxWinIndex; i--) {
 	            for (int j = 0; j < PAYOUTS.get(_iTotalNum - 1).getOccurrence().get(i); j++) {
 	                aWinOccurrenceList.add(PAYOUTS.get(_iTotalNum - 1).getHits().get(i));
 	            }
-	            
 	        }
 	      return aWinOccurrenceList ;
 	  }
