@@ -3,7 +3,9 @@ package com.monkata.lps.entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -61,6 +63,16 @@ public class KenoConfig  extends cObj implements Serializable {
 	    
 	    @ElementCollection
 	    private List<KenoPayouts> payouts = new ArrayList<KenoPayouts>();
+	    
+	    public void ordered() {
+			// TODO Auto-generated method stub
+			bet = bet.stream().sorted().collect(Collectors.toList()); 
+			win_occurrence = win_occurrence.stream().sorted().collect(Collectors.toList()); 
+			payouts = payouts.stream()
+					  .sorted(Comparator.comparing(KenoPayouts::getIndex))
+					  .collect(Collectors.toList());
+			
+		}
 	    
 	    
 		public void setPayoutsNow() {
@@ -137,6 +149,9 @@ public class KenoConfig  extends cObj implements Serializable {
            
 						
 		}
+
+
+		
 		
 	    
 		

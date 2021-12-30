@@ -182,6 +182,7 @@ public class KenoCtrl extends BaseCtrl {
 		      k = keno.save(k);
 		      
 		      KenoConfig kc = kenos.getKC();
+		      kc.ordered();
 		      // 
 		      BankSold bs=  this.setBank(utt.getId());
 		      bs.init(kc.getBank_sold());
@@ -279,7 +280,9 @@ public class KenoCtrl extends BaseCtrl {
 	
 	@RequestMapping(value = "/config", method = RequestMethod.GET)
 	public ResponseEntity<?> config() throws Exception {
-	    	return ResponseEntity.ok(kenos.getKC());
+		    KenoConfig kc = kenos.getKC();
+		    kc.ordered();
+	    	return ResponseEntity.ok(kc);
 	}
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
