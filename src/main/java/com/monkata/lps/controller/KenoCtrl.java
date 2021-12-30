@@ -180,7 +180,7 @@ public class KenoCtrl extends BaseCtrl {
 		      k.setOver(false);
 		      k.setDate();
 		      k = keno.save(k);
-		      
+		      // 
 		      KenoConfig kc = kenos.getKC();
 		      kc.ordered();
 		      // 

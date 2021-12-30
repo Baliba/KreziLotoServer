@@ -14,6 +14,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -54,9 +58,11 @@ public class Keno  extends cObj implements Serializable {
 	    
 	    @Column(nullable=true)
 	    @ElementCollection
+	    @Cascade(value={CascadeType.ALL})
 	    private List<Integer> draw = new ArrayList<Integer>();
 	    
 	    @ElementCollection
+	    @Cascade(value={CascadeType.ALL})
 	    private List<Integer> lot = new ArrayList<Integer>();
 	    
 	    @Column(nullable=true, columnDefinition = "boolean default false")
