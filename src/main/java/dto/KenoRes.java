@@ -69,13 +69,13 @@ public double setIWinIndexNow(WData index, List<KenoPayouts> PAYOUTS, int _iTota
 	    Collections.shuffle(awintemplist);
 	    alosetemplist = KenoBrain.getALoseTempList(_aNumSelected);
 	    Collections.shuffle(alosetemplist);
-	    ihitsnumber = awinoccurrencelist.get(irandwinindex);
+	    ihitsnumber =  awinoccurrencelist.get(irandwinindex);
 	    acombination = KenoBrain.getCombination(awinoccurrencelist, irandwinindex, awintemplist, alosetemplist);
 	    Collections.shuffle(acombination);
 	    win_sold = KenoBrain.getWinSold(ihitsnumber,PAYOUTS, keno.getBet(),_iTotalNum );
-	} else {
+	 } else {
 		win_sold = 0;
-	}
+	 }
 	return win_sold ;
 }
 
