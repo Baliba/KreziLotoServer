@@ -188,7 +188,7 @@ public class KenoCtrl extends BaseCtrl {
 		      bs.init(kc.getBank_sold());
 		      KenoRes krs= new KenoRes(k, utt);
 		      krs.setBank_sold(bs.getBank_sold());
-		      Log.d("|===========BANK SOLD ==============> "+bs.getBank_sold() );
+		   
 		      krs.setBs(bs);
 		  
 		      WData index = KenoBrain.getWinIndex(kc.getPayouts(), kr.getTotal_num(), kr.getBet(), bs.getBank_sold(), kc.getWin_occurrence(), kc.getGlobal_occurrence());

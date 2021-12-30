@@ -65,10 +65,9 @@ public double setIWinIndexNow(WData index, List<KenoPayouts> PAYOUTS, int _iTota
 		iwinindex = index.getIndex();
 		Log.d("|=========== iwinindex ==============> "+ iwinindex );
 		
-		awinoccurrencelist = KenoBrain.win(PAYOUTS, _iTotalNum, iwinindex);
-		Log.d("|=========== awinoccurrencelist size ==============> "+ awinoccurrencelist.size() );
+		   awinoccurrencelist = KenoBrain.win(PAYOUTS, _iTotalNum, iwinindex);
+		   Log.d("|=========== awinoccurrencelist size ==============> "+ awinoccurrencelist.size() );
 		
-		if(awinoccurrencelist.size()>0) {
 			this.bWin = true;
 			irandwinindex = KenoBrain.getRandomOcc(awinoccurrencelist);
 			Log.d("|=========== RANDOM ==============> "+irandwinindex );
@@ -84,10 +83,9 @@ public double setIWinIndexNow(WData index, List<KenoPayouts> PAYOUTS, int _iTota
 		    acombination = KenoBrain.getCombination(awinoccurrencelist, irandwinindex, awintemplist, alosetemplist);
 		    Collections.shuffle(acombination);
 		    win_sold = KenoBrain.getWinSold(ihitsnumber,PAYOUTS, keno.getBet(),_iTotalNum );
-		 } else {
-			win_sold = 0;
-		}
-	 } else {
+	
+	   } else {
+		 
 		win_sold = 0;
 	 }
 	return win_sold ;
