@@ -311,23 +311,26 @@ public class JwtUserDetailsService implements UserDetailsService {
     public void sendMailforRecomp(UserEntity ut) {
   	  String msg = ut.getFirstName()+" "+ut.getLastName()+" ou fek sot resevwa "+MCC.recomp+"G sou system bolet nou an,"+ 
         " paskew te fe yon zanmiw enskri epi depoze kob. Kontinye konsa pouw ka fè plus kob.";
-  	    sendMail(ut.getEmail(), "KreziLoto", msg, "Rekonpans");
+  	     sendMail(ut.getEmail(), "KreziLoto", msg, "Rekonpans");
    }
 
 	public void sendMailforDepo(UserEntity ut, Depot d) {
     	  String msg = ut.getFirstName()+" "+ut.getLastName()+" fek depoze "+d.getMontant()+"G pa moncash sou system bolet ou an"+ 
           ", Kod depo an se #"+d.getId()+", Li jwenn yon bonis de :  "+d.getBonis()+"G";
     	  sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo depo moncash");
+    	  sendMail("monkata.ht@gmail.com", "KreziLoto", msg, "Nouvo depo moncash");
     }
     public void sendMailforNewUser(UserEntity ut) {
     	String msg = ut.getFirstName()+" "+ut.getLastName()+" fek enskri sou sistem bolet ou an sou nimero sa :"+ut.getUsername();
-    	    	  sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo itilizate");
+    	 sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo itilizate");
+    	 sendMail("monkata.ht@gmail.com", "KreziLoto", msg, "Nouvo itilizate");
     }
     
     public void sendMailforPayout(UserEntity ut, Payout p) {
   	  String msg = ut.getFirstName()+" "+ut.getLastName()+" fek fon demand retre de  "+p.getSold()+"G  sou system bolet ou an"+ 
   	          ", Kod retre  an se "+p.getId()+", Komisyon an se "+p.getCom()+"G";
-  	    	  sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo depo moncash");
+  	    sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo Retrè moncash");
+  	    sendMail("monkata,ht@gmail.com", "KreziLoto", msg, "Nouvo Retrè moncash");
     }
     
 	public void getAmount(double t, UserEntity  ut, int pay) {
