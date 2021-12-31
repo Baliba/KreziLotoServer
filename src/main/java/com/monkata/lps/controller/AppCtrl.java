@@ -708,6 +708,7 @@ public class AppCtrl extends BaseCtrl {
 		UserEntity utt = getUser(auth);
 	    if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
 	    	JwtResponse jr = pays.setPaymentByAdmin(id,utt);
+	    	return ResponseEntity.ok(new JwtResponse<String>(false,"","siksè."));
 	    }
 		return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa."));
 		
