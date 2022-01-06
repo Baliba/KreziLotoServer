@@ -145,7 +145,26 @@ public class KenoService {
 			kc = kcr.save(kc);
 		 } else {
 			kc = kcs.get(0);
+		 }
+		
+		return checkKC(kc);
+	}
+	
+	
+	public KenoConfig checkKC(KenoConfig kc) {
+		
+		if(kc.getPayouts().size()!=10 || kc.getWin_occurrence().size()!=10) {
+			kcr.deleteById(kc.getId());
+			kc = null;
+			kc = new KenoConfig();
+			List<Integer> wo = Arrays.asList(0,20,18,15,12,10,8,6,5,2);
+			List<Integer> bet = Arrays.asList(10,15,25,50,75,100);
+			kc.setWin_occurrence(wo);
+			kc.setBet(bet);
+			kc.setPayoutsNow();
+			kc = kcr.save(kc);
 		}
+		
 		return kc;
 	}
 

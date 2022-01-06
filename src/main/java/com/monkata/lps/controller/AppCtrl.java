@@ -371,6 +371,7 @@ public class AppCtrl extends BaseCtrl {
 					rst.setMessage("Ou pa gen ase Kob pou jwe");
 					return ResponseEntity.ok(rst);
 				 }
+				 
 				 UserDetails.getAmount(sticket.getTotalSoldTicktets(tk.getLots()), utt, pay);
 				 nt.setId_user(utt.getId());
 				 nt.setTotalPrice(sticket.getTotalSoldTicktets(tk.getLots()));
@@ -391,6 +392,12 @@ public class AppCtrl extends BaseCtrl {
 				rst.setCrash(false);
 				rst.setMessage("Fich la kreye avec siksè...");
 				nots.add(utt.getId(),"Ou fèk sot fè yon fich pou "+nt.getTotal_price()+" G.",1L);
+				//
+				try {
+					UserDetails.addTicketForPlay(1, utt.getId(), nt.getTotal_price());
+				}catch(Exception e) {
+					
+				}
 				return ResponseEntity.ok(rst);
 			   } else {
 				rst.setMessage("Jwet sa  pa disponible");

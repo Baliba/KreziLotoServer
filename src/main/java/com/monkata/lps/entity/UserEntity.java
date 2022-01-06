@@ -91,9 +91,16 @@ public class UserEntity extends cObj implements Serializable, UserDetails{
 	    
 	    @Column(nullable=true)
 	    double hcompte;
-	   
 	    
 	    
+	    @Column(nullable=false, columnDefinition = "int default 1")
+	    double tickets;
+	    
+	    @Column(nullable=false, columnDefinition = "int default 0")
+	    double htickets;
+	    
+	
+	
 	    @Column(nullable=true, columnDefinition = "int default 0")
 	    int bonus;
 	    
@@ -168,5 +175,18 @@ public class UserEntity extends cObj implements Serializable, UserDetails{
 			// TODO Auto-generated method stub
 			this.setHBonusNow();
 			this.bonus-=t;
+		}
+		
+		public void addTicket_win(double t){
+			this.addHticket_win();
+			tickets +=t;
+		}
+		
+		public void addHticket_win(){
+			
+			 if(this.tickets>0) { 
+				 this.htickets = this.tickets;
+			  }
+			 
 		}
 }

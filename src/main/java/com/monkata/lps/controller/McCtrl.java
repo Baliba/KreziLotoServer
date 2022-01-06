@@ -146,18 +146,13 @@ public class McCtrl  extends BaseCtrl {
 	    public ResponseEntity<?> add(@RequestBody PayoutReq pay, Authentication auth) throws Exception {
 	    	   UserEntity user = this.getUser(auth);
 	    	   Bank bank = this.getBankConfig();
-	  		   if(bank!=null && bank.isBlock_payout()) {
-	  			   
+	  		   if(bank!=null && bank.isBlock_payout()) { 
 	  			return ResponseEntity.ok(new JwtResponse<String>(true,null,"Ou pa ka fè retrè pou kounya."));
-	  			
 	  		   }
 	  		   // 
 	  		   if(pay.getSold()<=50) {
-	  			   
 	  				return ResponseEntity.ok(new JwtResponse<String>(true,null,"Montan an dwe plis ke 50g ."));
-	  				
 	  		   }
-	  		   // 
 	    	  if(new  BCryptPasswordEncoder().matches(pay.getPass(), user.getPassword())) {
 	    	    JwtResponse pe =  payouts.setPay(user, pay);
 	    	    return ResponseEntity.ok(pe); 

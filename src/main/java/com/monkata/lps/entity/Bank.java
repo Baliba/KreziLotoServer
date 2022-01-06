@@ -62,7 +62,15 @@ public class Bank  extends cObj implements Serializable {
 	    //**************************//
 	    
 	    
+	    @Column(columnDefinition = "int default 100")
+	    public  int depo_ticket_price;
+	    
+	    @Column(columnDefinition = "int default 25")
+	    public  int play_ticket_price;
+	    
+	    
 	    public Bank() {}
+	    
 		public Bank(Long id, String nom, String adress, String phone, String phone_b, String email) {
 			super();
 			this.id = id;

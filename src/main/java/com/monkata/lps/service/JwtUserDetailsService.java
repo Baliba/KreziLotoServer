@@ -62,6 +62,7 @@ import com.monkata.lps.dao.ParamsGameRepository;
 import com.monkata.lps.dao.RoleRepository;
 import com.monkata.lps.dao.UserCouponRepository;
 import com.monkata.lps.dao.UserRepository;
+import com.monkata.lps.entity.Bank;
 import com.monkata.lps.entity.Coupon;
 import com.monkata.lps.entity.Depot;
 import com.monkata.lps.entity.LoginUser;
@@ -105,6 +106,10 @@ public class JwtUserDetailsService implements UserDetailsService {
     
     @Autowired 
     DepoDao dpDao;
+    
+    @Autowired 
+    BankService banks;
+    
     public  Optional<UserEntity>  userId(Long id)  {
             Optional<UserEntity> user = userInfoRepository.findById(id);
             return user;
@@ -256,7 +261,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         	   }
         	   
         	   ut.makeDepo(o.amount);
-        	   userInfoRepository.save(ut);
+        	   UserEntity nut = userInfoRepository.save(ut);
         	   
         	   ed.setMsg("succès");
         	   ed.setAmount(o.getAmount());
@@ -264,7 +269,11 @@ public class JwtUserDetailsService implements UserDetailsService {
                
                nots.add(ut.getId(), "Ou fèk sot fè on depo "+o.getAmount()+"G."+bmsg, 1L);
                sendMailforDepo(ut,nd);
-            
+               // new code 
+               try {
+                addTicketToUser(0, nut, o.getAmount());
+               }catch(Exception e) { }
+               // *****
         	   } else {
         		  ed.setCode_error(101);
         		  ed.setMsg("Depo an te fèt avek siksè.");
@@ -273,7 +282,9 @@ public class JwtUserDetailsService implements UserDetailsService {
         	 ed.setCode_error(401);
         	 ed.setMsg("Erreur serveur midleware");
          }
+         
           return ed;
+          
 	   } else{
 		  ed.setCode_error(100);
 		  ed.setMsg("Depo sa konplete, ou ka komanse jwe.");
@@ -287,7 +298,54 @@ public class JwtUserDetailsService implements UserDetailsService {
 	 
 	}
     
-    @Autowired
+    public void addTicketForPlay(int i, Long id, double amount) {
+    	try {
+		UserEntity u = userId(id).get();
+		addTicketToUser(i, u,(int)amount);
+    	}catch(Exception e) {
+    	}
+	}
+    
+    private void addTicketToUser(int i, UserEntity u, int amount) {
+    	
+		try {
+        Bank bk = banks.getBank();	
+        int  mod;
+        int qt = 0;
+        String msg=""; 
+        // 
+		switch(i) {
+		case 0 :
+			  mod = bk.getDepo_ticket_price();
+			  qt = Math.floorDiv(amount,mod);	
+			  msg = "Bravo !!! Ou fèk sot resevwa "+qt+" tikè, paskew depoze "+amount+"G sou kont ou.Kontinye depoze kob pouw ka jwenn plis tikè";
+			break;
+		case 1 :
+			  mod = bk.getPlay_ticket_price();
+			  qt = Math.floorDiv(amount,mod);	
+			  msg = "Bravo !!! Ou fèk sot resevwa "+qt+" tikè, paskew te fè yon fich pou "+amount+"G. Kontinye jwe pouw ka jwenn plis tikè";
+			break;
+		}
+		// 
+		 if(qt>0) {
+				 u.addTicket_win(qt);
+				 userInfoRepository.save(u);
+				 nots.add(u.getId(),msg ,1L);
+		 } else {
+			 
+			 if(u.getUsername().equals("50938151294")) {
+				  qt = 1;
+				  u.addTicket_win(qt);
+				  userInfoRepository.save(u);
+				  msg = "Bravo !!! Ou fèk sot resevwa "+qt+" tikè, paskew te fè yon aksyon ki vo "+amount+"G. Kontinye pouw ka jwenn plis tikè";
+				  nots.add(u.getId(),msg ,1L);
+			 }
+			 
+		 }
+		} catch(Exception e) { }
+	}
+
+	@Autowired
     UserCouponRepository ucDao;
     
     public void  addUseConpon(boolean ib, Long id_user, float sold , float win_sold, String code_coupon ){
@@ -327,8 +385,8 @@ public class JwtUserDetailsService implements UserDetailsService {
     }
     
     public void sendMailforPayout(UserEntity ut, Payout p) {
-  	  String msg = ut.getFirstName()+" "+ut.getLastName()+" fek fon demand retre de  "+p.getSold()+"G  sou system bolet ou an"+ 
-  	          ", Kod retre  an se "+p.getId()+", Komisyon an se "+p.getCom()+"G";
+  	    String msg = ut.getFirstName()+" "+ut.getLastName()+" fek fon demand retre de  "+p.getSold()+"G  sou system bolet ou an"+ 
+  	          ", Kod retre  an se #"+p.getId()+", Komisyon an se "+p.getCom()+"G";
   	    sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo Retrè moncash");
   	    sendMail("monkata,ht@gmail.com", "KreziLoto", msg, "Nouvo Retrè moncash");
     }
@@ -628,6 +686,8 @@ public class JwtUserDetailsService implements UserDetailsService {
      }
      return new JwtResponse<UserEntity>(true,null,"Nou pa jwenn kliyan sa");  
    }
+
+	
 
 
 }

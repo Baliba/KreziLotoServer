@@ -184,10 +184,7 @@ public class TicketService {
 	  return cb;
 	}
 	
-	
-	
-	
-	  public String   getDate(){
+	public String   getDate(){
 		  LocalDateTime  localDateTime = LocalDateTime.now();
 		  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 		  String   sd = localDateTime.format(formatter);
