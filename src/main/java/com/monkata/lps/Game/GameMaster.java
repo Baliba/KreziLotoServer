@@ -37,9 +37,17 @@ public class GameMaster  extends cObj  {
 	    @Column(columnDefinition = "int default 50000")
 	    private double   max_price_sell;
 	    // ----------------------
+	    
+	    @Column(nullable=true, columnDefinition = "varchar default 'ALL' ")
+	    private String   cat_game;
+	    
+	    @Column(nullable=true, columnDefinition = "varchar default 'default.png' ")
+	    private String   logo_game;
+	    
 	    private int      index;
 	    @Column(columnDefinition = "int default 90")
 	    private int  delai;
+	    
 		@OneToMany(mappedBy = "gamemaster") 
 		@JsonIgnoreProperties({"gamemaster","paramsgame","modegames"})
 		private List<Game> games = new ArrayList<>();

@@ -36,6 +36,10 @@ public class BaseCtrl {
 	            "REMOTE_ADDR"
 	        };
 	 
+	 public static LocalDateTime getLDT(String str) {
+		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		 return  LocalDateTime.parse(str, formatter);
+	 }
 	 public static String getClientIp(HttpServletRequest request) {
 
 	      for (String header: IP_HEADER_CANDIDATES) {

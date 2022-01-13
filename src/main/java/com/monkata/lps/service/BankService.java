@@ -14,11 +14,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import com.monkata.lps.Game.Game;
+import com.monkata.lps.Game.GameMaster;
+import com.monkata.lps.Game.ParamsGame;
 import com.monkata.lps.Game.Ticket;
 import com.monkata.lps.Helper.Lang;
 import com.monkata.lps.dao.BankRepository;
+import com.monkata.lps.dao.GameMasterRepository;
+import com.monkata.lps.dao.GameRepository;
+import com.monkata.lps.dao.ModeGameMasterRepository;
+import com.monkata.lps.dao.ModeGameRepository;
+import com.monkata.lps.dao.ParamsGameRepository;
 import com.monkata.lps.dao.TicketRepository;
 import com.monkata.lps.entity.Bank;
+import com.monkata.lps.response.JwtResponse;
 
 import dto.BankAndLang;
 
@@ -27,6 +36,21 @@ public class BankService {
 
     @Autowired
     private BankRepository bank;
+    
+    @Autowired
+    GameMasterRepository gmaster;
+    
+    @Autowired
+    private GameRepository game;
+    
+    @Autowired
+    private ModeGameRepository mgame;
+    
+    @Autowired
+    private ModeGameMasterRepository mgamem;
+    
+    @Autowired
+    private ParamsGameRepository pgame;
 
 
     public Bank getBank() {
@@ -58,6 +82,19 @@ public class BankService {
 	   bl.setBank(b);
 	   return bl;
     }
+
+public JwtResponse initNewGame(Long id) {
+	// TODO Auto-generated method stub
+	GameMaster gms = gmaster.findById(id).get();
+	ParamsGame pg = pgame.findAll().get(0);
+	
+	Game g = new Game();	
+     g.setGamemaster(gms);
+	 g.setParamsgame(pg);
+     g = game.save(g);
+	Game ng =  game.save(g);
+	return null;
+}
 	
 
 }

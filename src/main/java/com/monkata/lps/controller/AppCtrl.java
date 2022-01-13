@@ -68,6 +68,7 @@ import com.monkata.lps.entity.Depot;
 import com.monkata.lps.entity.Notification;
 import com.monkata.lps.entity.PVBank;
 import com.monkata.lps.entity.Payout;
+import com.monkata.lps.entity.UseCoupon;
 import com.monkata.lps.entity.UserEntity;
 import com.monkata.lps.entity.UserEntityReq;
 import com.monkata.lps.response.AppResponse;
@@ -75,6 +76,7 @@ import com.monkata.lps.response.JwtResponse;
 import com.monkata.lps.response.RSTicket;
 import com.monkata.lps.response.RSTicketClient;
 import com.monkata.lps.response.TicketToPay;
+import com.monkata.lps.service.AppService;
 import com.monkata.lps.service.BankService;
 import com.monkata.lps.service.JwtUserDetailsService;
 import com.monkata.lps.service.NotService;
@@ -148,6 +150,9 @@ public class AppCtrl extends BaseCtrl {
 	
 	@Autowired
 	PayoutRepository payDao;
+	
+	@Autowired
+	AppService apps;
 
 	public UserEntity getUser(Authentication authentication) {
 		UserDetails me = (UserDetails) authentication.getPrincipal();
@@ -396,6 +401,11 @@ public class AppCtrl extends BaseCtrl {
 				try {
 					UserDetails.addTicketForPlay(1, utt.getId(), nt.getTotal_price());
 				}catch(Exception e) {
+					
+				}
+				try {
+					UserDetails.addUseCouponForPlay(nt, tk.getCoupon());
+				  }catch(Exception e) {
 					
 				}
 				return ResponseEntity.ok(rst);
@@ -780,6 +790,29 @@ public class AppCtrl extends BaseCtrl {
 			 return ResponseEntity.ok(null);
 		}
 	}
+	
+	
+	@GetMapping("/sponsors")
+	public ResponseEntity<?> sponsor(Authentication auth) {
+		UserEntity utt = getUser(auth);
+		List<UseCoupon> ucs  = apps.getUseCouponByUser(utt.getId()); 
+		return ResponseEntity.ok(new JwtResponse<List<UseCoupon>>(false,ucs,"Siksè."));
+	}
+	
+	@GetMapping("/sponsors/{debut}/{fin}")
+	public ResponseEntity<?> sponsor(Authentication auth, @PathVariable("debut") String debut, @PathVariable("fin") String fin) {
+		UserEntity utt = getUser(auth);
+		List<UseCoupon> ucs  = apps.getUseCouponByUser(utt.getId(), debut, fin); 
+		return ResponseEntity.ok(new JwtResponse<List<UseCoupon>>(false,ucs,"Siksè."));
+	}
+	
+	@Transactional
+	@GetMapping("/payAgentNow/{id}")
+	public ResponseEntity<?> payAgentNow(Authentication auth, @PathVariable("id") Long idc) {
+		UserEntity utt = getUser(auth);
+		return ResponseEntity.ok(apps.payAgentNow(utt.getId(),idc));
+	}
+	
 	
 	
 

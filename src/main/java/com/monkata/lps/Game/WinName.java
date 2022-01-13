@@ -21,9 +21,9 @@ public class WinName {
 	this.code_mg = code_mg;
   }
 
-public WinName() {
-	super();
-}
+   public WinName() {
+		super();
+   }
   
  
 }

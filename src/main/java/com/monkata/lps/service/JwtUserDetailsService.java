@@ -47,6 +47,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.monkata.lps.Game.TicketClient;
 import com.monkata.lps.Helper.DError;
 import com.monkata.lps.Helper.Log;
 import com.monkata.lps.Helper.MCC;
@@ -60,7 +61,7 @@ import com.monkata.lps.dao.DepoDao;
 import com.monkata.lps.dao.LoginUserDao;
 import com.monkata.lps.dao.ParamsGameRepository;
 import com.monkata.lps.dao.RoleRepository;
-import com.monkata.lps.dao.UserCouponRepository;
+import com.monkata.lps.dao.UseCouponRepository;
 import com.monkata.lps.dao.UserRepository;
 import com.monkata.lps.entity.Bank;
 import com.monkata.lps.entity.Coupon;
@@ -228,21 +229,29 @@ public class JwtUserDetailsService implements UserDetailsService {
         		//***************************************
         		if(o.getCoupon()!=null && !o.equals("")) {	  
         	      Coupon cp = cpRep.findByCode(o.getCoupon());
-        	      if(cp!=null) {
+        	      if(cp!=null && cp.getType_game()==0) {
+        	    	  
 	        	    if(cp.isActive() && cp.getMin()<=o.getAmount()) {
-	        	    	      o.setBonis(cp.getPrice());
-		        	    	  if(cp.type_coupon) {
-		        	    	      o.addBonisToAmount(cp.getPrice());
-		        	    	      bmsg = " Pou Kod-koupon an nou mete "+cp.getPrice()+"G pou ou sou kont ou.";
+	        	    	      int price  = 0;
+	        	    	      if(cp.getMode_pay()==0) {
+	        	    	    	  price = cp.getPrice();
+	        	    	         } else {
+	        	    	         if(cp.getPrice()>0) {	 
+	        	    	    	   price =  (cp.getPrice() * o.getAmount()) / 100;
+	        	    	         }
+	        	    	      }
+	        	    	      o.setBonis(price);
+		        	    	  if(cp.isType_coupon()) {
+		        	    	      o.addBonisToAmount(price);
+		        	    	      bmsg = " Pou Kod-koupon an nou mete "+price+"G pou ou sou kont ou.";
 		        	    	   } else {
 		        	    		  ut.addBonus(o.getBonis());
-		        	    		  bmsg = "Pou Kod-koupon an nou mete "+cp.getPrice()+"G pou ou sou kont bonis ou pou ou.";
+		        	    		  bmsg = "Pou Kod-koupon an nou mete "+price+"G pou ou sou kont bonis ou pou ou.";
 		        	    	  } 
+		        	    	  try {
+		  	        	        this.addUseConpon(cp, cp.isType_coupon(), o.getId_user(), o.getAmount(), cp.getPrice(), cp.getCode());
+		  	        	      } catch(Exception e) {
 	        	      }
-	        	     try {
-	        	        this.addUseConpon(cp.isType_coupon(), o.getId_user(), o.getAmount(), cp.getPrice(), cp.getCode());
-	        	      } catch(Exception e) {
-	        	    	
 	        	    }
         	      }
         	   }
@@ -346,12 +355,11 @@ public class JwtUserDetailsService implements UserDetailsService {
 	}
 
 	@Autowired
-    UserCouponRepository ucDao;
+    UseCouponRepository ucDao;
     
-    public void  addUseConpon(boolean ib, Long id_user, float sold , float win_sold, String code_coupon ){
-    	
-    	 ucDao.save(new UseCoupon(ib, id_user, sold,win_sold, code_coupon));
-    	 
+    public void  addUseConpon(Coupon cp, boolean ib, Long id_user, float sold , float win_sold, String code_coupon ){
+    	UseCoupon uc = new UseCoupon(cp, ib, id_user, sold,win_sold, code_coupon);
+    	ucDao.save(uc);
     }
     
     private void setRecompense(Long idp) {
@@ -686,6 +694,48 @@ public class JwtUserDetailsService implements UserDetailsService {
      }
      return new JwtResponse<UserEntity>(true,null,"Nou pa jwenn kliyan sa");  
    }
+
+	public void addUseCouponForPlay(TicketClient nt, String coupon) {
+		
+		if(!nt.is_bonus()) {
+			
+			//***************************************
+    		if(coupon !=null && !coupon.equals("")) {	
+    			
+    	      Coupon cp = cpRep.findByCode(coupon);
+    	      
+    	      if(cp!=null && cp.getType_game()==1) {
+    	    	  
+        	    if(cp.isActive() && cp.getMin()<=nt.getTotal_price()) {
+        	    	      int price  = 0;
+        	    	      if(cp.getMode_pay()==0) {
+        	    	    	   price = cp.getPrice();
+        	    	         } else {
+        	    	         if(cp.getPrice()>0) {	 
+        	    	    	   price =  (int) ((cp.getPrice() * nt.getTotal_price() ) / 100);
+        	    	         }
+        	    	      }
+        	    	      String  msg ="";
+        	    	      UserEntity utt = this.userId(nt.getId_user()).get();
+	        	    	  if(cp.isType_coupon()) {
+	        	    	      msg =  "Pou Kod-koupon an nou mete "+price+"G pou ou sou kont ou.";
+	        	    	      utt.add(price);
+	        	    	   } else {
+	        	    	      msg =  "Pou Kod-koupon an nou mete "+price+"G pou ou sou kont bonis ou pou ou.";
+	        	    	      utt.addBonus(price);
+	        	    	  } 
+	        	    	  nots.add(nt.getId_user(), msg, 1L);
+	        	    	  userInfoRepository.save(utt);
+	        	    	  try {
+	  	        	        this.addUseConpon(cp, cp.isType_coupon(),nt.getId_user(),(float)nt.getTotal_price(), cp.getPrice(), cp.getCode());
+	  	        	      } catch(Exception e) {
+        	      }
+        	    }
+    	      }
+    	   }
+			
+		}
+	}
 
 	
 

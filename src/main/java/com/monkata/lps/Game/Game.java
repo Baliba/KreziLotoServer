@@ -20,8 +20,8 @@ import lombok.Data;
 @Entity
 public class Game  extends cObj  {
 	
-	    private static final long serialVersionUID = 1L;
-	    @Id
+	     private static final long serialVersionUID = 1L;
+	     @Id
 	     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	     private Long id;
 	    
@@ -29,6 +29,9 @@ public class Game  extends cObj  {
 	     @ManyToOne
 		 @JsonIgnoreProperties("games")	
 		 private GameMaster gamemaster;
+	     
+	     @Column(nullable=true, columnDefinition = "varchar default 'default' ")
+		 private String   name;
 	    
 		 @ManyToOne
 		 @JsonIgnoreProperties("games")	

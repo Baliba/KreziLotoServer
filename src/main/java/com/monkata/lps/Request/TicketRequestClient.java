@@ -15,6 +15,8 @@ public class TicketRequestClient  {
 	    private  Long   id_game;
 	   
 	    private boolean is_bonus;
+	    
+	    private  String coupon;
 	  //  private  Long   id_master;
 	  //  private  String game_name;
 }

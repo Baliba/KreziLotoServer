@@ -35,6 +35,8 @@ import com.monkata.lps.dao.UserRepository;
 import com.monkata.lps.entity.Coupon;
 import com.monkata.lps.entity.UserEntity;
 import com.monkata.lps.response.JwtResponse;
+import com.monkata.lps.service.AppService;
+import com.monkata.lps.service.BankService;
 import com.monkata.lps.service.JwtUserDetailsService;
 import com.monkata.lps.service.NotService;
 import com.monkata.lps.service.TicketService;
@@ -101,6 +103,12 @@ public class AdminCtrl extends BaseCtrl {
 	
 	@Autowired
 	DepoDao depoDoa;
+	
+	@Autowired 
+	BankService banks;
+	
+	@Autowired
+	AppService apps;
 
 	public UserEntity getUser(Authentication authentication) {
 		UserDetails me = (UserDetails) authentication.getPrincipal();
@@ -220,6 +228,28 @@ public class AdminCtrl extends BaseCtrl {
 		        UserEntity utt = getUser(auth);
 		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
 		        	      JwtResponse jr = UserDetails.changeUserPass(utt, id,pin,pass);
+		                  return ResponseEntity.ok(jr);
+			    }
+			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
+	
+	    @RequestMapping(value = "/api/initNewGame/{id}", method = RequestMethod.GET)
+	    public ResponseEntity<?> initNewGame (@PathVariable("id") Long id, Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	      JwtResponse jr = banks.initNewGame(id);
+		                  return ResponseEntity.ok(jr);
+			    }
+			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
+	    
+	    @RequestMapping(value = "/api/getUsecoupon/{debut}/{fin}/{mg}", method = RequestMethod.GET)
+	    public ResponseEntity<?> initNewGame (@PathVariable("mg") int mg,@PathVariable("debut") String debut, @PathVariable("fin") String fin, Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	      JwtResponse jr = apps.getUseCoupon(debut,fin, mg);
 		                  return ResponseEntity.ok(jr);
 			    }
 			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));

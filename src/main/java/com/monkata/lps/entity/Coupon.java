@@ -40,6 +40,18 @@ public class  Coupon  extends cObj implements Serializable {
 	    @JsonFormat(pattern = "dd-MM-yyyy")
 	    private LocalDate date_exp;
 	    
+	    @Column(nullable=true)
+	    Long id_user;
+	    
+	    @Column(nullable=true, columnDefinition = "int default 0")
+	    int mode_pay;
+	    
+	    @Column(nullable=true, columnDefinition = "int default 0")
+	    int type_game;
+	    
+	    @Column(nullable=true)
+	    double win_agent;
+	    
 		public Coupon(String code, int price, boolean type_coupon, boolean active, LocalDate date_exp) {
 			super();
 			this.code = code;
