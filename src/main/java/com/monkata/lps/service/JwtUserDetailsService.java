@@ -114,7 +114,6 @@ public class JwtUserDetailsService implements UserDetailsService {
     public  Optional<UserEntity>  userId(Long id)  {
             Optional<UserEntity> user = userInfoRepository.findById(id);
             return user;
-   
     }
     
     public void  changePass(String hpass2, String hpass,String pass){
@@ -587,8 +586,9 @@ public class JwtUserDetailsService implements UserDetailsService {
 	}
     
 	public JwtResponse addCouponNow(CouponDto cp, LocalDate day) {
-		Log.d(cp.getCode()+"/"+cp.getPrice()+"/"+cp.isActive()+"/"+cp.isType_coupon());
+	
 	    Coupon ncp = new Coupon(cp.getCode(),cp.getPrice(),cp.isType_coupon(),cp.isActive(),day.plusDays(cp.getDate_exp()));
+	           ncp.setData(cp);
 	    Coupon cpo =  cpRep.save(ncp);
 		return new JwtResponse<Coupon>(false,cpo,"Siksè");
 	}

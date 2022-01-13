@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import dto.CouponDto;
 import lombok.Data;
 
 @Data
@@ -63,6 +64,14 @@ public class  Coupon  extends cObj implements Serializable {
 
 		public Coupon() {
 			super();
+		}
+
+		public void setData(CouponDto cp) {
+			min = cp.getMin();
+		    id_user = cp.getId_user();
+		    win_agent = cp.getWin_agent();
+		    type_game = cp.getType_game();
+		    mode_pay  = cp.getMode_pay();
 		}
 		
 		
