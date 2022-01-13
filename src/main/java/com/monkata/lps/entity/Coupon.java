@@ -49,7 +49,7 @@ public class  Coupon  extends cObj implements Serializable {
 	    @Column(nullable=true, columnDefinition = "int default 0")
 	    int type_game;
 	    
-	    @Column(nullable=true)
+	    @Column(nullable=true, columnDefinition = "int default 0")
 	    double win_agent;
 	    
 		public Coupon(String code, int price, boolean type_coupon, boolean active, LocalDate date_exp) {
