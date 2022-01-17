@@ -16,8 +16,8 @@ import lombok.Data;
 @Entity
 public class ModeGame extends cObj {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
+	    @Id
+	    @GeneratedValue(strategy = GenerationType.AUTO)	
 	    Long id;
         
         String no;
@@ -35,6 +35,7 @@ public class ModeGame extends cObj {
 	    private int index;
 	    private String win;
 	    private int part;
+	    
 	    @Column(nullable=true)
 	    private double point_per_price;
 	    
@@ -43,6 +44,7 @@ public class ModeGame extends cObj {
 	    
 	    @Column(nullable=true)
 	    private double sales_commission;
+	    
 	    @Column(nullable=true)
 	    private double savings;
 	    
@@ -78,9 +80,42 @@ public class ModeGame extends cObj {
 	        this.part = part;
 	        this.index = i;
 	    }
+	    
+	    
+	    public ModeGame(ModeGame g) {
+	        this.no = g.getNo();
+	        this.name = g.getName();
+	        this.code = g.getCode();
+	        this.max_sell = g.getMax_sell();
+	        this.min_sell = g.getMin_sell();
+	        this.mask = g.getMask();
+	        this.max_num = g.getMax_num();
+	        this.pas = g.getPas();
+	        this.seg = g.isSeg();
+	        this.win = g.getWin();
+	        this.part = g.getPart();
+	        this.index = g.getIndex();
+	    }
+
 
 		public ModeGame() {
 	
+		}
+
+		public ModeGame(ModeGameMaster g) {
+			// TODO Auto-generated constructor stub
+			    this.no = g.getNo();
+		        this.name = g.getName();
+		        this.code = g.getCode();
+		        this.max_sell = g.getMax_sell();
+		        this.min_sell = g.getMin_sell();
+		        this.mask = g.getMask();
+		        this.max_num = g.getMax_num();
+		        this.pas = g.getPas();
+		        this.seg = g.isSeg();
+		        this.win = g.getWin();
+		        this.part = g.getPart();
+		        this.index = g.getIndex();
 		}
 		
 

@@ -41,6 +41,9 @@ public class GameMaster  extends cObj  {
 	    @Column(nullable=true, columnDefinition = "varchar default 'ALL' ")
 	    private String   cat_game;
 	    
+	    @Column(nullable=true, columnDefinition = "varchar default 'ALL' ")
+	    private String   type_game;
+	    
 	    @Column(nullable=true, columnDefinition = "varchar default 'default.png' ")
 	    private String   logo_game;
 	    

@@ -214,12 +214,16 @@ public class TicketService {
 	public VResp verify(Long idu, Long id, ParamsGame pg ) {
 		TicketClient tk = this.getTicketClientById(idu, id);
 		if(!tk.isOver()) {
+			
 	    LocalDateTime ld = tk.getDate_exp();
 	    LocalDate now = LocalDate.now();
 	    // check if game is draw
-	    Tiraj tj = tiraj.isGameDrawToday(tk.getSdatet(), tk.getId_game());
+	   // Tiraj tj = tiraj.isGameDrawToday(tk.getSdatet(), tk.getId_game());
+	    
+	    Tiraj tj = tiraj.isGameDrawToday(tk.getSdatet(), tk.getId_gamemaster());
+	    
 		if(tj==null) {
-		   VResp vr = new VResp(tk,"Tiraj la poko fèt",203);
+		   VResp vr = new VResp(tk,"Tiraj la poko fèt pou dat sa a "+tk.getSdatet(),203);
 		   return vr;	
 		}
 	    // CHeck if date 
@@ -233,9 +237,12 @@ public class TicketService {
 		    VResp vr = new VResp(tk," Jodya "+now.toString()+", fich sa expire depi : "+ld.toLocalDate().toString(),202);
 			return vr;
 	    }
+	    
 		List<WinName> w  = this.wnRep.findAll(); 
 		NumberFormater nf = new NumberFormater(tj, w);
+		
 		Game game  = getGame(tk.getId_game(), pg.getGames());
+		
 		List<WinLots> lwl = new ArrayList<>();
 		for(BouleClient bc : tk.getLots()) {
 		  List<WinLots>	wls = nf.checkNumberIsWinArray(bc, getMG(bc.getCode_mg(),game));
@@ -312,7 +319,7 @@ public class TicketService {
    
 	public Game getGame(Long cm,List<Game> lmg){
 		for(Game  g : lmg) {
-				if(g.getId() == cm) {
+				if((long)g.getId() == (long) cm) {
 					return g;
 				}
 		}

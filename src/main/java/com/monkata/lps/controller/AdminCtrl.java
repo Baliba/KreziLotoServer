@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -234,6 +236,7 @@ public class AdminCtrl extends BaseCtrl {
 		        
 	    }
 	
+	    @Transactional
 	    @RequestMapping(value = "/api/initNewGame/{id}", method = RequestMethod.GET)
 	    public ResponseEntity<?> initNewGame (@PathVariable("id") Long id, Authentication auth) throws Exception {
 		        UserEntity utt = getUser(auth);
@@ -244,6 +247,30 @@ public class AdminCtrl extends BaseCtrl {
 			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
 		        
 	    }
+	    
+	    
+	    @RequestMapping(value = "/api/getModeGameMaster", method = RequestMethod.GET)
+	    public ResponseEntity<?> getModeGameMaster (Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	      JwtResponse jr = apps.getModeGameMaster();
+		                  return ResponseEntity.ok(jr);
+			    }
+			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
+	    
+	    @RequestMapping(value = "/api/addModeGameToGame/{id}/{no_mgm}", method = RequestMethod.GET)
+	    public ResponseEntity<?> addModeGameToGame (@PathVariable("no_mgm") String no_mgm, @PathVariable("id") Long id, Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	      JwtResponse jr =banks.addModeGameToGame(id, no_mgm);
+		                  return ResponseEntity.ok(jr);
+			    }
+			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
+	    
 	    
 	    @RequestMapping(value = "/api/getUsecoupon/{debut}/{fin}/{mg}", method = RequestMethod.GET)
 	    public ResponseEntity<?> initNewGame (@PathVariable("mg") int mg,@PathVariable("debut") String debut, @PathVariable("fin") String fin, Authentication auth) throws Exception {

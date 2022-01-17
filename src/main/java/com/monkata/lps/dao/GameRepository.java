@@ -11,5 +11,5 @@ import com.monkata.lps.Game.Game;
 @CrossOrigin("*")
 @RepositoryRestResource
 public interface GameRepository extends JpaRepository<Game, Long> {
-	
+
 }

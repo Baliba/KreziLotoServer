@@ -48,6 +48,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.monkata.lps.Game.ModeGameMaster;
 import com.monkata.lps.Game.TicketClient;
 import com.monkata.lps.Helper.DError;
 import com.monkata.lps.Helper.Log;
@@ -60,6 +61,7 @@ import com.monkata.lps.controller.BaseCtrl;
 import com.monkata.lps.dao.CouponRepository;
 import com.monkata.lps.dao.DepoDao;
 import com.monkata.lps.dao.LoginUserDao;
+import com.monkata.lps.dao.ModeGameMasterRepository;
 import com.monkata.lps.dao.ParamsGameRepository;
 import com.monkata.lps.dao.RoleRepository;
 import com.monkata.lps.dao.UseCouponRepository;
@@ -112,6 +114,9 @@ public class AppService  {
     @Autowired 
     BankService banks;
     
+    @Autowired
+    private ModeGameMasterRepository mgamem;
+
     
     @Autowired
     private UseCouponRepository usecoupon; 
@@ -178,6 +183,11 @@ public class AppService  {
 		ucs = usecoupon.getPastUC(id, 1, deb, fn); 
 		}
 		return ucs;
+	}
+
+	public JwtResponse getModeGameMaster() {
+	  List<ModeGameMaster> mgm = mgamem.findAll();
+	  return  new JwtResponse<List<ModeGameMaster>>(false,mgm,"Siksè");
 	}
 
 }

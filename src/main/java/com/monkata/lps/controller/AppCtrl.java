@@ -353,6 +353,7 @@ public class AppCtrl extends BaseCtrl {
 				rst.setMessage(" Jwèt " + CGAME.getGamemaster().getCode() + " an pa disponib pou kounya ");
 				return ResponseEntity.ok(rst);
 			}
+			
 			if (CGAME != null) {
 				// Dont forget to add delai from game
 				Bank bk = this.getBankConfig();
@@ -366,10 +367,11 @@ public class AppCtrl extends BaseCtrl {
 						BouleClient nbn = new BouleClient(pay, nb, CGAME, mg);
 						lots.add(nbn);
 					} else {
-						rst.setMessage(nb.getLot() + " mod jwet sa pa bon pa bon");
+						rst.setMessage(nb.getId_mg() + " mod jwet sa pa bon pou boul sa :"+nb.getLot()+" nan "+CGAME.getName());
 						return ResponseEntity.ok(rst);
 					}
 				}
+				
 				boolean isSold = sticket.checkTotalSoldTicktets(tk.getLots(), utt.getUsername(), pay);
 
 				 if (!isSold) {
@@ -400,14 +402,10 @@ public class AppCtrl extends BaseCtrl {
 				//
 				try {
 					UserDetails.addTicketForPlay(1, utt.getId(), nt.getTotal_price());
-				}catch(Exception e) {
-					
-				}
+				}catch(Exception e) {}
 				try {
 					UserDetails.addUseCouponForPlay(nt, tk.getCoupon());
-				  }catch(Exception e) {
-					
-				}
+				  }catch(Exception e) {}
 				return ResponseEntity.ok(rst);
 			   } else {
 				rst.setMessage("Jwet sa  pa disponible");

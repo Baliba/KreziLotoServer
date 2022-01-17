@@ -101,7 +101,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
         List<ModeGame> mgs = new ArrayList<>();
         
         for(GameMaster g: StaticData.gamemaster) {
-          gmst.add(sgame.save(g));
+             gmst.add(sgame.save(g));
         }
     	 for(GameMaster gms : gmst) {
     	      Game g = new Game();	

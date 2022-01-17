@@ -1,10 +1,12 @@
 package com.monkata.lps.Game;
 
+import com.monkata.lps.Helper.Log;
+
 public class UtilGame {
 
 	public static Game getGame(ParamsGame pg, Long id_game) {
 	   for(Game g : pg.getGames()) {
-		       if(g.getId()==id_game) {
+		       if((long) g.getId()== (long)id_game) {
 		    	 return g;
 		       }
 	   }
@@ -12,10 +14,11 @@ public class UtilGame {
 	}
 
 	public static ModeGame getModeGame(Game cGAME, Long id_mg) {
+		ModeGame ng = null;	
 	 for(ModeGame g : cGAME.getModegames()) {
-		       if(g.getId()==id_mg) {
-		    	 return g;
-		       }
+		       if((long) g.getId()== (long) id_mg) {
+		    	  return g;
+		       } 
 	   }
 	   return null;
 	}

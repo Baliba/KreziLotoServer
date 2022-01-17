@@ -26,7 +26,7 @@ public class NumberFormater {
     	List<FreeWinLots>  fwl = new ArrayList<FreeWinLots>();
     	for(WinName wn : winNames) {
     		String name = wn.getCode_mg()+"_"+wn.getName();
-    		Log.d(name);
+    	    // Log.d(name);
     		 fwl.add(new FreeWinLots(wn.getName(),wn.getCode_mg(), formatLot(wn.getSyntax())));
     	}
     	return fwl;
