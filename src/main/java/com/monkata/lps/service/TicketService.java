@@ -383,16 +383,20 @@ public class TicketService {
 		List<GameWin> gw = new ArrayList<>();
 		LocalDate d = LocalDate.now();
 		LocalDate f = LocalDate.now();
-		LocalDateTime dt = BaseCtrl.getLDT(d.toString()+" 00:00:00");
+		LocalDateTime dt =  BaseCtrl.getLDT(d.toString()+" 00:00:00");
         LocalDateTime ft =  BaseCtrl.getLDT(f.toString()+" 23:59:59");
 		for(GameMaster mg : mgs) {
-			Optional<Sold> s  = ticketc.getTotalSoldTicketToDay(mg.getId(), dt,ft);
-			if(s.isPresent() && s.get().getSold()>0) {
-			double ts = s.get().getSold();
-			Long qtf =  ticketc.countSoldTicketToDay(mg.getId(), dt,ft);
-			gw.add(new GameWin(mg.getCode(), ts, mg.getId(),qtf));
-			} else {
-		      gw.add(new GameWin(mg.getCode(), 0, mg.getId()));
+			try {
+				Optional<Sold> s  = ticketc.getTotalSoldTicketToDay(mg.getId(), dt,ft);
+				if(s.isPresent() && s.get().getSold()>0) {
+				double ts = s.get().getSold();
+				Long qtf =  ticketc.countSoldTicketToDay(mg.getId(), dt,ft);
+				   gw.add(new GameWin(mg.getCode(), ts, mg.getId(),qtf));
+				 } else {
+			      gw.add(new GameWin(mg.getCode(), 0, mg.getId()));
+				}
+			}catch(Exception e) {
+				
 			}
 		}
 		
@@ -404,16 +408,18 @@ public class TicketService {
 		List<GameWin> gw = new ArrayList<>();
 		LocalDate d = LocalDate.now();
 		LocalDate f = LocalDate.now();
-		 LocalDateTime dt = BaseCtrl.getLDT(d.toString()+" 00:00:00");
-         LocalDateTime ft =  BaseCtrl.getLDT(f.toString()+" 23:59:59");
+		LocalDateTime dt = BaseCtrl.getLDT(d.toString()+" 00:00:00");
+        LocalDateTime ft =  BaseCtrl.getLDT(f.toString()+" 23:59:59");
 		for(GameMaster mg : mgs) {
-			Optional<Sold> s  = ticketc.getTotalLostSoldTicketToDay(mg.getId(), dt, ft);
-			if(s.isPresent() && s.get().getSold()>0) {
-			double ts = s.get().getSold();
-			 gw.add(new GameWin(mg.getCode(), ts, mg.getId()));
-			} else {
-				gw.add(new GameWin(mg.getCode(), 0, mg.getId()));
-			}
+			try {
+				Optional<Sold> s  = ticketc.getTotalLostSoldTicketToDay(mg.getId(), dt, ft);
+				if(s.isPresent() && s.get().getSold()>0) {
+				double ts = s.get().getSold();
+				 gw.add(new GameWin(mg.getCode(), ts, mg.getId()));
+				} else {
+					gw.add(new GameWin(mg.getCode(), 0, mg.getId()));
+				}
+			}catch(Exception e) {}
 		}
 		return new JwtResponse<List<GameWin>>(false,gw,"Siksè");
 	}
