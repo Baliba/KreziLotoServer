@@ -39,5 +39,5 @@ public class Role extends cObj implements Serializable {
     public Role(String name) {
         this.name = name;
     }
-
+   
 }

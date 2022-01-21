@@ -56,7 +56,7 @@ public class Game  extends cObj  {
 		public boolean isNotExistModeGame(ModeGame nmg) {
 			
 			for(ModeGame mg : modegames) {   
-				Log.d("++++++++++++ "+mg.getNo()+" ==="+nmg.getNo());
+				// Log.d("++++++++++++ "+mg.getNo()+" ==="+nmg.getNo());
 			    if(mg.getNo().equals(nmg.getNo())) {
 			    	return true;
 			    }

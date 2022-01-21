@@ -74,8 +74,8 @@ import lombok.Data;
 	    montant = rb.getMontant();
 	    pwin = 0;
 	    if(mg.getPart()==1) {
-	      String s = mg.getWin().split("=")[1];
-	          pwin = (montant/mg.getPoint_per_price())*Double.parseDouble(s);
+	          String s = mg.getWin().split("=")[1];
+	          pwin = (montant / mg.getPoint_per_price() ) * Double.parseDouble(s);
 	        } else {
 	    	String[] wins = mg.getWin().split("/");
 	    	if(wins.length>0) {

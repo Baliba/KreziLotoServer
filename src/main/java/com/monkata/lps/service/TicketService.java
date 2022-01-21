@@ -381,16 +381,40 @@ public class TicketService {
 		// TODO Auto-generated method stub
 		List<GameMaster> mgs = mstgame.getActiveGames();
 		List<GameWin> gw = new ArrayList<>();
+		LocalDate d = LocalDate.now();
+		LocalDate f = LocalDate.now();
+		LocalDateTime dt = BaseCtrl.getLDT(d.toString()+" 00:00:00");
+        LocalDateTime ft =  BaseCtrl.getLDT(f.toString()+" 23:59:59");
 		for(GameMaster mg : mgs) {
-			Optional<Sold> s  = ticketc.getTotalSoldTicketToDay(mg.getId());
+			Optional<Sold> s  = ticketc.getTotalSoldTicketToDay(mg.getId(), dt,ft);
 			if(s.isPresent() && s.get().getSold()>0) {
 			double ts = s.get().getSold();
-			gw.add(new GameWin(mg.getCode(), ts,mg.getId()));
+			Long qtf =  ticketc.countSoldTicketToDay(mg.getId(), dt,ft);
+			gw.add(new GameWin(mg.getCode(), ts, mg.getId(),qtf));
 			} else {
-		    gw.add(new GameWin(mg.getCode(), 0, mg.getId()));
+		      gw.add(new GameWin(mg.getCode(), 0, mg.getId()));
 			}
 		}
 		
+		return new JwtResponse<List<GameWin>>(false,gw,"Siksè");
+	}
+	
+	public JwtResponse getLostToDay() {
+		List<GameMaster> mgs = mstgame.getActiveGames();
+		List<GameWin> gw = new ArrayList<>();
+		LocalDate d = LocalDate.now();
+		LocalDate f = LocalDate.now();
+		 LocalDateTime dt = BaseCtrl.getLDT(d.toString()+" 00:00:00");
+         LocalDateTime ft =  BaseCtrl.getLDT(f.toString()+" 23:59:59");
+		for(GameMaster mg : mgs) {
+			Optional<Sold> s  = ticketc.getTotalLostSoldTicketToDay(mg.getId(), dt, ft);
+			if(s.isPresent() && s.get().getSold()>0) {
+			double ts = s.get().getSold();
+			 gw.add(new GameWin(mg.getCode(), ts, mg.getId()));
+			} else {
+				gw.add(new GameWin(mg.getCode(), 0, mg.getId()));
+			}
+		}
 		return new JwtResponse<List<GameWin>>(false,gw,"Siksè");
 	}
 	
@@ -403,7 +427,10 @@ public class TicketService {
 					Optional<Sold> s = ticketc.getTotalSoldTicketGlobal(mg.getId());
 					if(s.isPresent() && s.get().getSold()>0) {
 					  double ts = s.get().getSold();
-					  gw.add(new GameWin(mg.getCode(), ts, mg.getId()));
+					  long qtg = ticketc.countTotalSoldTicketGlobal(mg.getId());
+					  GameWin gwo = new GameWin(mg.getCode(), ts, mg.getId());
+					  gwo.setQtfg(qtg);
+					  gw.add(gwo);
 					} else {
 						gw.add(new GameWin(mg.getCode(),0,mg.getId()));	
 					}
@@ -419,31 +446,29 @@ public class TicketService {
 		String game;
 		double  sold;
 		Long id_game;
+		Object qtf;
+		Object qtfg;
 		public GameWin(String game, double sold, Long id) {
 			super();
 			this.game = game;
 			this.sold = sold;
 			this.id_game = id;
+		    qtf = 0L; 
+		    qtfg= 0L;
+		}
+		public GameWin(String code, double ts, Long id, Long var) {
+			// TODO Auto-generated constructor stub
+			this.game = code;
+			this.sold = ts;
+			this.id_game = id;
+			qtf = var;
+			qtfg= 0L;
 		}
 		
 	}
 
 
-	public JwtResponse getLostToDay() {
-		List<GameMaster> mgs = mstgame.getActiveGames();
-		List<GameWin> gw = new ArrayList<>();
-		for(GameMaster mg : mgs) {
-			Optional<Sold> s  = ticketc.getTotalLostSoldTicketToDay(mg.getId());
-			if(s.isPresent() && s.get().getSold()>0) {
-			double ts = s.get().getSold();
-			 gw.add(new GameWin(mg.getCode(), ts, mg.getId()));
-			} else {
-				gw.add(new GameWin(mg.getCode(), 0, mg.getId()));
-			}
-		}
-		
-		return new JwtResponse<List<GameWin>>(false,gw,"Siksè");
-	}
+
 
 
 	public JwtResponse getLostGlobal() {

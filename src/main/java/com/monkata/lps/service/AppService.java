@@ -162,10 +162,12 @@ public class AppService  {
 	       if(ucc.getIs_agent_pay()==0) {
 	    	   ucc.setIs_agent_pay(1);
 	    	   ucc.setDate_agent_pay(LocalDateTime.now());
-	    	   UserEntity ut = userId(idu).get();
-	    	   ut.add(ucc.getAgent_amount());
-	    	   ucc = usecoupon.save(ucc);	
-	    	   ut = userInfoRepository.save(ut);
+	    	   if(ucc.getAgent_amount()>0) {
+	    		 UserEntity ut = userId(idu).get();  
+	    	     ut.add(ucc.getAgent_amount());
+	    	     ucc = usecoupon.save(ucc);	
+	    	     ut = userInfoRepository.save(ut);
+	    	   }
 	    	   return  new JwtResponse<UseCoupon>(false,ucc,"Siksè");
 	       } else {
 	    	   return  new JwtResponse<String>(true,null,"Ou touche kob sa deja");

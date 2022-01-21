@@ -181,21 +181,24 @@ public class KenoCtrl extends BaseCtrl {
 		      k.setDate();
 		      k = keno.save(k);
 		      // 
-		      KenoConfig kc = kenos.getKC();
+		      KenoConfig kc = kenos.getKCForNow();
+		      
 		      kc.ordered();
 		      // 
 		      BankSold bs=  this.setBank(utt.getId());
 		      bs.init(kc.getBank_sold());
 		      KenoRes krs= new KenoRes(k, utt);
 		      krs.setBank_sold(bs.getBank_sold());
-		   
+		      
 		      krs.setBs(bs);
 		  
 		      WData index = KenoBrain.getWinIndex(kc.getPayouts(), kr.getTotal_num(), kr.getBet(), bs.getBank_sold(), kc.getWin_occurrence(), kc.getGlobal_occurrence());
 		      double sold = krs.setIWinIndexNow(index, kc.getPayouts(), kr.getTotal_num(), kr.getLots(), kr.get_aNumSelected());
 		      // New Keno ==
 		      Keno ko = k;  
+		      // 
 		      ko.setDraw(krs.getAcombination());
+		      
 		      if(!index.isWin()) {
 		    	  ko.setOver(true);
 		    	  ko.set_win(false);

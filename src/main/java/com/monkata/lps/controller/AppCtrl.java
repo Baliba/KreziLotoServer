@@ -266,9 +266,15 @@ public class AppCtrl extends BaseCtrl {
 	public ResponseEntity<?> getGameSetting(Authentication auth) {
 		UserEntity utt = getUser(auth);
 		Optional<ParamsGame> opg = pgame.findById(utt.getParamgame());
-		ParamsGame pg = opg.get();
-		ParamsGame npg = getAllValidGame(pg);
-		return ResponseEntity.ok(npg);
+		if(opg.isPresent()) {
+			ParamsGame pg = opg.get();
+			ParamsGame npg = getAllValidGame(pg);
+			return ResponseEntity.ok(npg);
+		} else {
+			ParamsGame pg =pgame.findAll().get(0);
+			ParamsGame npg = getAllValidGame(pg);
+			return ResponseEntity.ok(npg);
+		}
 	}
 	
 	@GetMapping("/countNotification")
@@ -324,6 +330,7 @@ public class AppCtrl extends BaseCtrl {
 		
 		RSTicketClient rst = new RSTicketClient<MaxSellError>();
 		Bank bank = this.getBankConfig();
+		
 		if(bank!=null && bank.isBlock_make_ticket()) {
 			rst.setMessage("Systèm nan pa disponib pou kounya");
 			return ResponseEntity.ok(rst);	
@@ -334,8 +341,24 @@ public class AppCtrl extends BaseCtrl {
 			rst.setMessage("Ou pa ka jwe ak kont sa ");
 			return ResponseEntity.ok(rst);
 		}
-
 		LocalTime now = LocalTime.now();
+		 
+		try {
+		int dnow = LocalDate.now().getDayOfWeek().getValue();
+		// Log.d("#########################----------->"+dnow);
+		if(dnow == CGAME.getGamemaster().getDay_block()) {
+			rst.setMessage("Jwèt sa bloke pou jodia");
+			return ResponseEntity.ok(rst);	
+		}
+		}catch(Exception e) { }
+		
+		try {
+			if(!CGAME.getGamemaster().isEnabled()) {
+				rst.setMessage("Jwèt sa pa disponib");
+				return ResponseEntity.ok(rst);	
+			}
+		}catch(Exception e) {}
+		
 		if (utt.isEnabled()) {
 		
 			MaxSellError mse = sticket.checkLotsOfTickets(tk.getLots(), CGAME);

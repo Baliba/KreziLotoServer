@@ -143,10 +143,22 @@ public class KenoService {
 			kc.setBet(bet);
 			kc.setPayoutsNow();
 			kc = kcr.save(kc);
-		 } else {
+		  } else {
 			kc = kcs.get(0);
+			if(kc.getBet().size()!=10) {
+				List<Integer> bet = Arrays.asList(10,15,25,50,75,100);
+				kc.setBet(bet);
+				kc = kcr.save(kc);
+			}
 		 }
 		
+		return checkKC(kc);
+	}
+	
+	public KenoConfig getKCForNow() {
+		KenoConfig kc = null;
+		List<KenoConfig> kcs = kcr.findAll();
+		kc = kcs.get(0);
 		return checkKC(kc);
 	}
 	

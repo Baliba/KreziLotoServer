@@ -34,6 +34,15 @@ public class GameMaster  extends cObj  {
 	    @Column(columnDefinition = "int default 100000")
 	    private int      max_ticket;
 	    
+	    @Column(nullable=true, columnDefinition = "int default 0")
+	    private int  day_block;
+	    
+	    @Column(nullable=true, columnDefinition = "varchar default 'ALL' ")
+	    private String   alert_msg;
+	    
+	    @Column(nullable=true, columnDefinition = "varchar default 'ALL' ")
+	    private String   api;
+	    
 	    @Column(columnDefinition = "int default 50000")
 	    private double   max_price_sell;
 	    // ----------------------

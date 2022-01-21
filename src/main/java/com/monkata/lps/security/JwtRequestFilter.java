@@ -33,8 +33,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	        this.jwtTokenUtil = jwtTokenUtil;
 	    }
 	    
-	    
-
 	    @Override
 	    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)  throws ServletException, IOException {
 
@@ -74,21 +72,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 	                        userDetails, null, userDetails.getAuthorities());
 
-	                 usernamePasswordAuthenticationToken
-
-	                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
+	                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
 	                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 	            }
 	        }
-	        
 	        String   ipAddress = request.getHeader("X-Forward-For");
 	        if(ipAddress== null){
 	            ipAddress = request.getRemoteAddr();
 	        }
 	        System.out.print("\n ____________("+ipAddress+")___________|\n");
-	 
 	        chain.doFilter(request, response);
 	    }
 	 

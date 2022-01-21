@@ -32,12 +32,22 @@ import lombok.Data;
 @Data
 public class Sold {
 private double  sold;
+private long var;
 public Sold(double sold ) {
 	if(sold>0) {
 	   this.sold = sold;
 	} else {
 		this.sold = 0;
 	}
+}
+
+public Sold(double sold, long var ) {
+	if(sold>0) {
+	   this.sold = sold;
+	} else {
+		this.sold = 0;
+	}
+	var = var;
 }
 
  public Sold() {

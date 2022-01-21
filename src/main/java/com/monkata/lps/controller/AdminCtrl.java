@@ -44,6 +44,7 @@ import com.monkata.lps.service.NotService;
 import com.monkata.lps.service.TicketService;
 
 import dto.CouponDto;
+import dto.SearchTicketRes;
 
 @RestController
 public class AdminCtrl extends BaseCtrl {
@@ -282,5 +283,28 @@ public class AdminCtrl extends BaseCtrl {
 			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
 		        
 	    }
+	    
+	    @RequestMapping(value = "/api/getAllTicketsNow", method = RequestMethod.POST)
+	    public ResponseEntity<?> getAllTicketsNow (@RequestBody SearchTicketRes stRes, Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	JwtResponse jr = banks.getAllTicketsNow(stRes);
+		            return ResponseEntity.ok(jr);
+			    }
+				return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
+	    
+	    @RequestMapping(value = "/api/delTicket/{id}", method = RequestMethod.GET)
+	    public ResponseEntity<?> delTicket (@PathVariable("id") Long id, Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	JwtResponse jr = banks.delTicket(id);
+		            return ResponseEntity.ok(jr);
+			    }
+				return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
+	    
 	
 }
