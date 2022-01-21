@@ -385,8 +385,9 @@ public class TicketService {
 		LocalDate f = LocalDate.now();
 		LocalDateTime dt =  BaseCtrl.getLDT(d.toString()+" 00:00:00");
         LocalDateTime ft =  BaseCtrl.getLDT(f.toString()+" 23:59:59");
+        Log.d(dt.toString()+" | &&&&&&&&&&&&&&&&& | "+ ft.toString());
 		for(GameMaster mg : mgs) {
-			try {
+	
 				Optional<Sold> s  = ticketc.getTotalSoldTicketToDay(mg.getId(), dt,ft);
 				if(s.isPresent() && s.get().getSold()>0) {
 				double ts = s.get().getSold();
@@ -395,11 +396,7 @@ public class TicketService {
 				 } else {
 			      gw.add(new GameWin(mg.getCode(), 0, mg.getId()));
 				}
-			}catch(Exception e) {
-				
-				Log.d(e.getMessage());
-				
-			}
+	
 		}
 		
 		return new JwtResponse<List<GameWin>>(false,gw,"Siksè");
@@ -413,17 +410,15 @@ public class TicketService {
 		LocalDateTime dt =  BaseCtrl.getLDT(d.toString()+" 00:00:00");
         LocalDateTime ft =  BaseCtrl.getLDT(f.toString()+" 23:59:59");
 		for(GameMaster mg : mgs) {
-			try {
+			
 				Optional<Sold> s  = ticketc.getTotalLostSoldTicketToDay(mg.getId(), dt, ft);
 				if(s.isPresent() && s.get().getSold()>0) {
 				double ts = s.get().getSold();
-				 gw.add(new GameWin(mg.getCode(), ts, mg.getId()));
+				gw.add(new GameWin(mg.getCode(), ts, mg.getId()));
 				} else {
 					gw.add(new GameWin(mg.getCode(), 0, mg.getId()));
 				}
-			}catch(Exception e) {
-				Log.d(e.getMessage());
-			}
+	
 		}
 		return new JwtResponse<List<GameWin>>(false,gw,"Siksè");
 	}

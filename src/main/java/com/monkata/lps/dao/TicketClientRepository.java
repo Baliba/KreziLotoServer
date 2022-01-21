@@ -78,7 +78,7 @@ public interface TicketClientRepository extends JpaRepository<TicketClient, Long
 	@Query("SELECT t from TicketClient t WHERE t.id_user = :id   AND t.over=false  AND date_ticket > CURRENT_DATE - :d ")
 	List<TicketClient> getMyCurrentTickets(Long id, int d);
 	
-	@Query("SELECT new dto.Sold(SUM(t.total_price)) from TicketClient t WHERE  date_ticket BETWEEN :d AND :f   AND id_gamemaster = :id   GROUP BY id, id_gamemaster  ")
+	@Query("SELECT new dto.Sold(SUM(t.total_price)) from TicketClient t WHERE  date_ticket BETWEEN :d AND :f   AND id_gamemaster = :id   GROUP BY id_gamemaster  ")
 	Optional<Sold> getTotalSoldTicketToDay(Long id,@Param("d") LocalDateTime d, @Param("f") LocalDateTime f);
 	
 	@Query("SELECT COUNT(*) FROM TicketClient t WHERE  date_ticket BETWEEN :d AND :f   AND id_gamemaster = :id  ")
