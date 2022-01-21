@@ -145,7 +145,7 @@ public class KenoService {
 			kc = kcr.save(kc);
 		  } else {
 			kc = kcs.get(0);
-			if(kc.getBet().size()!=10) {
+			if(kc.getBet().size()>6 || kc.getBet().size()==0 ) {
 				List<Integer> bet = Arrays.asList(10,15,25,50,75,100);
 				kc.setBet(bet);
 				kc = kcr.save(kc);

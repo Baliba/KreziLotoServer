@@ -174,6 +174,7 @@ public class KenoCtrl extends BaseCtrl {
 		      if(kr.getBet()<10 || kr.getBet()>100) {
 		    	  return ResponseEntity.ok(new JwtResponse<Double>(true,utt.getCompte(), "Ou ka parye ant 10 a 100g."));
 		      }
+		      
 		      utt.remain(kr.getBet());
 		      utt = user.save(utt);
 		      Keno k = new Keno(kr, utt.getId());
@@ -181,7 +182,7 @@ public class KenoCtrl extends BaseCtrl {
 		      k.setDate();
 		      k = keno.save(k);
 		      // 
-		      KenoConfig kc = kenos.getKCForNow();
+		      KenoConfig kc = kenos.getKC();
 		      
 		      kc.ordered();
 		      // 
