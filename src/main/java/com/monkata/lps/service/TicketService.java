@@ -397,6 +397,8 @@ public class TicketService {
 				}
 			}catch(Exception e) {
 				
+				Log.d(e.getMessage());
+				
 			}
 		}
 		
@@ -408,7 +410,7 @@ public class TicketService {
 		List<GameWin> gw = new ArrayList<>();
 		LocalDate d = LocalDate.now();
 		LocalDate f = LocalDate.now();
-		LocalDateTime dt = BaseCtrl.getLDT(d.toString()+" 00:00:00");
+		LocalDateTime dt =  BaseCtrl.getLDT(d.toString()+" 00:00:00");
         LocalDateTime ft =  BaseCtrl.getLDT(f.toString()+" 23:59:59");
 		for(GameMaster mg : mgs) {
 			try {
@@ -419,7 +421,9 @@ public class TicketService {
 				} else {
 					gw.add(new GameWin(mg.getCode(), 0, mg.getId()));
 				}
-			}catch(Exception e) {}
+			}catch(Exception e) {
+				Log.d(e.getMessage());
+			}
 		}
 		return new JwtResponse<List<GameWin>>(false,gw,"Siksè");
 	}
