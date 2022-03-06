@@ -44,6 +44,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 		List<UserEntity> getBlockUser();
 	    
 	    @Query("Select T from UserEntity AS T WHERE id IN (SELECT tc.id_user FROM TicketClient tc) ")
-		List<UserEntity> getPlayUser();
+		List<UserEntity> getPlayUser(int size);
 	    
 }

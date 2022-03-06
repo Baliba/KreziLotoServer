@@ -345,7 +345,7 @@ public class AppService  {
 	public JwtResponse getUserStat(Long id) {
 		List<UserRapport> urs = new ArrayList<UserRapport>();
 		if ((long) id==0) {
-			List<UserEntity> users = userInfoRepository.getPlayUser();
+			List<UserEntity> users = userInfoRepository.getPlayUser(10);
 			// Log.d("+++______________(Nombre user : "+users.size()+")___________+++");
 			if(users.size()>0) {
 				for(UserEntity user : users) {

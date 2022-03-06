@@ -131,7 +131,8 @@ public class SystemCtrl extends BaseCtrl {
 		return formattedDate.trim();
 	}
 	
-	 @GetMapping("/api/getUserStat/{id}")
+	    @Transactional
+	    @GetMapping("/api/getUserStat/{id}/{page}")
 		public ResponseEntity<?> getBlockUser( @PathVariable("id") Long id, Authentication auth) {
 	    	    UserEntity utt = getUser(auth);
 		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
