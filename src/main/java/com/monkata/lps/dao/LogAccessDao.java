@@ -22,16 +22,16 @@ import com.monkata.lps.entity.Notification;
 @CrossOrigin("*")
 @Repository
 public interface LogAccessDao extends JpaRepository<LogAccess, Long>{
-	@Query("SELECT uc FROM LogAccess uc WHERE id_user=:id  AND state= :state AND  date_emis BETWEEN :debut  AND :fin ")
+	@Query("SELECT uc FROM LogAccess uc WHERE id_user=:id  AND state= :state AND  date_emis BETWEEN :debut  AND :fin ORDER BY date_emis DESC ")
 	List<LogAccess> getFullLogAccess(Long id, boolean state, LocalDateTime debut, LocalDateTime fin);
 	
-	@Query("SELECT uc FROM LogAccess uc WHERE id_user=:id  AND  date_emis BETWEEN :debut  AND :fin  ")
+	@Query("SELECT uc FROM LogAccess uc WHERE id_user=:id  AND  date_emis BETWEEN :debut  AND :fin  ORDER BY date_emis DESC ")
 	List<LogAccess> getUserLogAccess(Long id, LocalDateTime debut, LocalDateTime fin);
 	
-	@Query("SELECT uc FROM LogAccess uc WHERE state=:state AND  date_emis BETWEEN :debut  AND :fin  ")
+	@Query("SELECT uc FROM LogAccess uc WHERE state=:state AND  date_emis BETWEEN :debut  AND :fin ORDER BY date_emis DESC ")
 	List<LogAccess> getStateLogAccess( boolean state, LocalDateTime debut, LocalDateTime fin);
 	
-	@Query("SELECT uc FROM LogAccess uc WHERE date_emis BETWEEN :debut AND :fin  ")
+	@Query("SELECT uc FROM LogAccess uc WHERE date_emis BETWEEN :debut AND :fin  ORDER BY date_emis DESC  ")
 	List<LogAccess> getLogAccess(LocalDateTime debut, LocalDateTime fin);
 	
 	
