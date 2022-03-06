@@ -382,10 +382,13 @@ public class AppService  {
 		if(s>users.size()-1) {
 			s = users.size() - size;
 		}
+		
 		int end = s+size;
-		if(end>users.size()-1) {
-			end = users.size()-1;
+		if(end>users.size()) {
+			end = users.size();
 		}
+		
+		Log.d("+++____________( Start : ("+s+") | END ("+end+") ___________+++");
 		return users.subList(s,end);
 	}
 
