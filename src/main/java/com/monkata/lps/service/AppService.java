@@ -345,23 +345,24 @@ public class AppService  {
 	public JwtResponse getUserStat(Long id, int page, int size) {
 		List<UserRapport> urs = new ArrayList<UserRapport>();
 		List<UserEntity> users = new ArrayList<UserEntity>();
-		if ((long) id==0) {
-		   users = userInfoRepository.getPlayUser(10);
-			// Log.d("+++______________(Nombre user : "+users.size()+")___________+++");
+		Optional<UserEntity> ouser = userInfoRepository.findById(id);
+		if (!ouser.isPresent()) {
+		    users = userInfoRepository.getPlayUser();
 			if(users.size()>0) {
-				List<UserEntity> lusers = getPage(users, page, size);		
+				
+				List<UserEntity> lusers = getPage(users, page, size);	
+				Log.d("+++______________(Nombre user : "+lusers.size()+")___________+++");
 				for(UserEntity user : lusers) {
 					urs.add(getAllInfo(user));
 				}
+				
 			}
 			
 		 } else {
 			//  Log.d("+++______________(ID User : "+id+")___________+++");
-			 Optional<UserEntity> ouser = userInfoRepository.findById(id);
-			 if(ouser.isPresent()) {
 			    UserEntity user = ouser.get(); 
 				urs.add(getAllInfo(user));
-			 }
+			
 		}
 		
 		ResRap r = new ResRap();
