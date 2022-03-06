@@ -25,6 +25,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.monkata.lps.Helper.Log;
 import com.monkata.lps.Request.TicketRequest;
 
 import lombok.Data;
@@ -33,7 +34,19 @@ import lombok.Data;
 public class Sold {
 private double  sold;
 private long var;
+
+
 public Sold(double sold ) {
+	
+	if(sold>0) {
+	   this.sold = sold;
+	} else {
+		this.sold = 0;
+	}
+}
+
+public Sold(double sold, String w ) {
+	Log.d("<<<>>>>"+w+" ---> "+sold);
 	if(sold>0) {
 	   this.sold = sold;
 	} else {

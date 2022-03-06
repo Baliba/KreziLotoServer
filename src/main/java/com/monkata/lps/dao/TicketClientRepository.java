@@ -95,10 +95,10 @@ public interface TicketClientRepository extends JpaRepository<TicketClient, Long
 	List<NumberTracking> getGameTrackingByDayOnly(LocalDateTime debut, LocalDateTime fin,@Param("live") boolean live);
 
 	
-	@Query("SELECT new dto.Sold(SUM(t.total_price)) from TicketClient t WHERE id_user = id ")
-	Optional<Sold> getTotalUser(Long id);
+	@Query("SELECT new dto.Sold(SUM(t.total_price)) FROM TicketClient t WHERE id_user =:id GROUP BY id_user")
+	Optional<Sold> getTotalUser(@Param("id") Long id);
 	
-	@Query("SELECT new dto.Sold(SUM(t.win_pay)) from TicketClient t  WHERE id_user = id ")
-	Optional<Sold> getTotalWinUser(Long id);
+	@Query("SELECT new dto.Sold(SUM(t.win_pay)) FROM TicketClient t  WHERE id_user =:id GROUP BY id_user ")
+	Optional<Sold> getTotalWinUser(@Param("id") Long id);
 
 }

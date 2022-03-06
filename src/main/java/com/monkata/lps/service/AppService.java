@@ -391,14 +391,18 @@ public class AppService  {
 		if(play.isPresent()) {
 			ur.setPlay(play.get().getSold());
 		} 
-		}catch(Exception e) {}
+		}catch(Exception e) {
+			Log.d("<<<>>>>"+e.getMessage()+" ---> ");
+		}
 		
 		 try {
 			Optional<Sold> win = tcDao.getTotalWinUser(user.getId());
 			if(win.isPresent()) {
 				ur.setWin(win.get().getSold());
 			}
-		 }catch(Exception e) {}
+		 }catch(Exception e) {
+				Log.d("<<<>>>>"+e.getMessage()+" ---> ");
+		 }
 		
 		return ur;
 	}
