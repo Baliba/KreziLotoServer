@@ -133,7 +133,7 @@ public class SystemCtrl extends BaseCtrl {
 	
 	    @Transactional
 	    @GetMapping("/api/getUserStat/{id}/{page}/{size}")
-		public ResponseEntity<?> getBlockUser(@PathVariable("page") int size, @PathVariable("page") int page,  @PathVariable("id") Long id, Authentication auth) {
+		public ResponseEntity<?> getBlockUser(@PathVariable("size") int size, @PathVariable("page") int page,  @PathVariable("id") Long id, Authentication auth) {
 	    	    UserEntity utt = getUser(auth);
 		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
 		        	    JwtResponse jr = apps.getUserStat(id, page, size);
