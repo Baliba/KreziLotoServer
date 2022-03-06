@@ -39,7 +39,7 @@ public class Bonus  extends cObj implements Serializable  {
 	    @Column(nullable=true, columnDefinition = "int default 0")
 	    Long id_deposant;
 	    
-	    @Column(nullable=true, columnDefinition = "varchar default 'Depo Automaik Sistem' ")
+	    @Column(nullable=true, columnDefinition = "varchar default 'Depo Automatik Sistem' ")
 	    String details; 
 	    
 	    @CreationTimestamp

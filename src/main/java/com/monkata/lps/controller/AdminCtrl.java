@@ -221,7 +221,7 @@ public class AdminCtrl extends BaseCtrl {
 	    }
 	    
 	    @RequestMapping(value = "/api/bonusByAdmin/{id}/{sold}/{pin}/{details}", method = RequestMethod.GET)
-	    public ResponseEntity<?> bonusByAdminV2 (@PathVariable("details") String details, @PathVariable("id") Long id,@PathVariable("sold") int sold, @PathVariable("pin") Long pin, Authentication auth) throws Exception {
+	    public ResponseEntity<?> bonusByAdmin (@PathVariable("details") String details, @PathVariable("id") Long id,@PathVariable("sold") int sold, @PathVariable("pin") Long pin, Authentication auth) throws Exception {
 		        UserEntity utt = getUser(auth);
 		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
 		        	      JwtResponse jr = UserDetails.bonusByAdmin(utt, id,pin,sold,details);
