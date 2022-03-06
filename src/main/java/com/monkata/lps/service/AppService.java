@@ -350,8 +350,8 @@ public class AppService  {
 		if (!ouser.isPresent()) {
 		    users = userInfoRepository.getPlayUser();
 			r.setTotal(users.size());
-			double x = users.size() / size;
-			double p =Math.ceil(x);
+			float x = users.size() / size;
+			double p = Math.ceil(x);
 			Log.d("+++_____PAGE ("+x+")___|____( AFTER CEIL : ("+p+") ");
 			r.setPage(p);
 			if(users.size()>0) {
