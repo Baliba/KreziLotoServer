@@ -809,13 +809,13 @@ public class JwtUserDetailsService implements UserDetailsService {
 	
 	public void addBonusForUser(UserEntity utt, UserEntity rec, int sold,Long id, int type, String details) {
 		try {
-		Bonus dp = new Bonus(sold,rec.getId(), utt.getId());
+		Bonus dp = new Bonus(sold, rec.getId(), utt.getId());
 		dp.setDetails(details);
 		bDao.save(dp);
-		
 		this.sendMailforBonusBySeller(utt, rec, dp);
-		}catch(Exception e) {}
-				
+		}catch(Exception e) {
+		  System.out.print("________________"+e.getMessage());
+		}	
 	}
 	
 
