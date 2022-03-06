@@ -342,7 +342,7 @@ public class AppService  {
 		userInfoRepository.save(user);
 	}
 
-	public JwtResponse getUserStat(Long id) {
+	public JwtResponse getUserStat(Long id, int page) {
 		List<UserRapport> urs = new ArrayList<UserRapport>();
 		if ((long) id==0) {
 			List<UserEntity> users = userInfoRepository.getPlayUser(10);
