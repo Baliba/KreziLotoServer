@@ -132,11 +132,11 @@ public class SystemCtrl extends BaseCtrl {
 	}
 	
 	    @Transactional
-	    @GetMapping("/api/getUserStat/{id}/{page}")
-		public ResponseEntity<?> getBlockUser(@PathVariable("page") int page,  @PathVariable("id") Long id, Authentication auth) {
+	    @GetMapping("/api/getUserStat/{id}/{page}/{size}")
+		public ResponseEntity<?> getBlockUser(@PathVariable("page") int size, @PathVariable("page") int page,  @PathVariable("id") Long id, Authentication auth) {
 	    	    UserEntity utt = getUser(auth);
 		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
-		        	    JwtResponse jr = apps.getUserStat(id, page);
+		        	    JwtResponse jr = apps.getUserStat(id, page, size);
 						return ResponseEntity.ok(jr);
 				 }
 		    	return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));

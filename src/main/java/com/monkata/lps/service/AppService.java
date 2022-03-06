@@ -342,13 +342,15 @@ public class AppService  {
 		userInfoRepository.save(user);
 	}
 
-	public JwtResponse getUserStat(Long id, int page) {
+	public JwtResponse getUserStat(Long id, int page, int size) {
 		List<UserRapport> urs = new ArrayList<UserRapport>();
+		List<UserEntity> users = new ArrayList<UserEntity>();
 		if ((long) id==0) {
-			List<UserEntity> users = userInfoRepository.getPlayUser(10);
+		   users = userInfoRepository.getPlayUser(10);
 			// Log.d("+++______________(Nombre user : "+users.size()+")___________+++");
 			if(users.size()>0) {
-				for(UserEntity user : users) {
+				List<UserEntity> lusers = getPage(users, page, size);		
+				for(UserEntity user : lusers) {
 					urs.add(getAllInfo(user));
 				}
 			}
@@ -362,7 +364,31 @@ public class AppService  {
 			 }
 		}
 		
-		return new JwtResponse<List<UserRapport>>(false,urs,"");
+		ResRap r = new ResRap();
+		r.setRap(urs);
+		r.setTotal(users.size());
+		return new JwtResponse<ResRap>(false,r,"");
+	}
+	
+	@Data
+	class ResRap implements Serializable {
+		List<UserRapport> rap;
+		int total;
+		public ResRap(){}
+	}
+
+	private List<UserEntity> getPage(List<UserEntity> users, int page, int size) {
+		// TODO Auto-generated method stub
+		int s = page*size;
+		
+		if(s>users.size()-1) {
+			s = users.size() - size;
+		}
+		int end = s+size;
+		if(end>users.size()-1) {
+			end = users.size()-1;
+		}
+		return users.subList(s,end);
 	}
 
 	private UserRapport getAllInfo(UserEntity user) {
