@@ -32,7 +32,7 @@ public class Bonus  extends cObj implements Serializable  {
 	    public float montant;
 	    
 	 
-	    @Column(nullable=false, columnDefinition = "int default 0")
+	    @Column(nullable=true, columnDefinition = "int default 0")
 	    public Long see_by_admin;
 	    
 	    
