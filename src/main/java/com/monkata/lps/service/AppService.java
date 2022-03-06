@@ -365,6 +365,7 @@ public class AppService  {
 		ResRap r = new ResRap();
 		r.setRap(urs);
 		r.setTotal(users.size());
+		r.setPage((int) Math.ceil(users.size()/size));
 		return new JwtResponse<ResRap>(false,r,"");
 	}
 	
@@ -372,23 +373,27 @@ public class AppService  {
 	class ResRap implements Serializable {
 		List<UserRapport> rap;
 		int total;
+		int page; 
 		public ResRap(){}
 	}
 
 	private List<UserEntity> getPage(List<UserEntity> users, int page, int size) {
+		page = page-1;
 		// TODO Auto-generated method stub
+		int total = users.size();
+		
 		int s = page*size;
 		
-		if(s>users.size()-1) {
-			s = users.size() - size;
+		if(s > total ) {
+			s = total - size;
+		 }
+		int end = s + size;
+		
+		if(end > total) {
+			end = total;
 		}
 		
-		int end = s+size;
-		if(end>users.size()) {
-			end = users.size();
-		}
-		
-		Log.d("+++____________( Start : ("+s+") | END ("+end+") ___________+++");
+		Log.d("+++_____SIZE ("+size+")___|____( Start : ("+s+") | END ("+end+") ___|  __PAGE("+page+")______+++");
 		return users.subList(s,end);
 	}
 
