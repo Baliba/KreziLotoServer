@@ -349,15 +349,12 @@ public class AppService  {
 		if (!ouser.isPresent()) {
 		    users = userInfoRepository.getPlayUser();
 			if(users.size()>0) {
-				
 				List<UserEntity> lusers = getPage(users, page, size);	
-				Log.d("+++______________(Nombre user : "+lusers.size()+")___________+++");
+				Log.d("+++____________(Nombre user : "+lusers.size()+")___________+++");
 				for(UserEntity user : lusers) {
 					urs.add(getAllInfo(user));
 				}
-				
 			}
-			
 		 } else {
 			//  Log.d("+++______________(ID User : "+id+")___________+++");
 			    UserEntity user = ouser.get(); 
