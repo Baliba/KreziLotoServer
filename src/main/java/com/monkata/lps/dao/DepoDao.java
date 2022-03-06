@@ -33,4 +33,7 @@ public interface DepoDao extends JpaRepository<Depot, Long> {
   @Query("SELECT new dto.Sold(SUM(d.montant)) from Depot d WHERE type_depot=:index ")
   Optional<Sold> getTotalDepoOther(int index);
   
+  @Query("SELECT new dto.Sold(SUM(d.montant)) from Depot d WHERE id_user=:id GROUP BY id_user  ")
+  Optional<Sold> getTotalUserDepot(Long id);
+  
 }

@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 
@@ -24,7 +25,7 @@ import dto.TcDto;
 
 
 @CrossOrigin("*")
-@RepositoryRestResource
+@Repository
 public interface TicketClientRepository extends JpaRepository<TicketClient, Long>, JpaSpecificationExecutor<TicketClient>  {
 	@Query("SELECT t from TicketClient t WHERE t.id_user = :id AND t.over=false ORDER BY date_ticket DESC")
 	List<TicketClient> getMytickets(@Param("id") Long id );
@@ -92,5 +93,12 @@ public interface TicketClientRepository extends JpaRepository<TicketClient, Long
 	
 	@Query("SELECT new dto.NumberTracking(bc.game_name,bc.game_name,COUNT(bc.id_game), SUM(bc.total_price), SUM(bc.win_pay)) FROM TicketClient  bc WHERE bc.over=:live AND bc.date_ticket BETWEEN :debut AND :fin  GROUP BY bc.id_game, bc.game_name ORDER BY bc.game_name,  SUM(bc.win_pay) ASC ")	
 	List<NumberTracking> getGameTrackingByDayOnly(LocalDateTime debut, LocalDateTime fin,@Param("live") boolean live);
+
+	
+	@Query("SELECT new dto.Sold(SUM(t.total_price)) from TicketClient t WHERE id_user = id ")
+	Optional<Sold> getTotalUser(Long id);
+	
+	@Query("SELECT new dto.Sold(SUM(t.win_pay)) from TicketClient t  WHERE id_user = id ")
+	Optional<Sold> getTotalWinUser(Long id);
 
 }

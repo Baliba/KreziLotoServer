@@ -65,7 +65,9 @@ import com.monkata.lps.dao.LogAccessDao;
 import com.monkata.lps.dao.LoginUserDao;
 import com.monkata.lps.dao.ModeGameMasterRepository;
 import com.monkata.lps.dao.ParamsGameRepository;
+import com.monkata.lps.dao.PayoutRepository;
 import com.monkata.lps.dao.RoleRepository;
+import com.monkata.lps.dao.TicketClientRepository;
 import com.monkata.lps.dao.UseCouponRepository;
 import com.monkata.lps.dao.UserRepository;
 import com.monkata.lps.entity.Bank;
@@ -88,6 +90,7 @@ import dto.CouponDto;
 import dto.DepoStat;
 import dto.NParamsGame;
 import dto.Sold;
+import dto.UserRapport;
 import lombok.Data;
 import net.minidev.json.JSONObject;
 
@@ -130,6 +133,12 @@ public class AppService  {
     
     @Autowired
     private LogAccessDao laDao;
+    
+    @Autowired
+    PayoutRepository  pDao;
+    
+    @Autowired
+    TicketClientRepository tcDao;
     
     public  Optional<UserEntity>  userId(Long id)  {
             Optional<UserEntity> user = userInfoRepository.findById(id);
@@ -331,6 +340,67 @@ public class AppService  {
 	public void saveUser(UserEntity user , UserEntity utt){
 		user.setSee_by_admin(utt.getId());
 		userInfoRepository.save(user);
+	}
+
+	public JwtResponse getUserStat(Long id) {
+		List<UserRapport> urs = new ArrayList<UserRapport>();
+		if ((long) id==0) {
+			List<UserEntity> users = userInfoRepository.getPlayUser();
+			// Log.d("+++______________(Nombre user : "+users.size()+")___________+++");
+			if(users.size()>0) {
+				for(UserEntity user : users) {
+					urs.add(getAllInfo(user));
+				}
+			}
+			
+		 } else {
+			//  Log.d("+++______________(ID User : "+id+")___________+++");
+			 Optional<UserEntity> ouser = userInfoRepository.findById(id);
+			 if(ouser.isPresent()) {
+			    UserEntity user = ouser.get(); 
+				urs.add(getAllInfo(user));
+			 }
+		}
+		
+		return new JwtResponse<List<UserRapport>>(false,urs,"");
+	}
+
+	private UserRapport getAllInfo(UserEntity user) {
+		
+		UserRapport ur = new UserRapport();
+		ur.setId(user.getId());
+		ur.setUsername(user.getUsername());
+		ur.setFullName(user.getFirstName() + " " +user.getLastName());
+		//  
+		try {
+		Optional<Sold> depot = dpDao.getTotalUserDepot(user.getId());
+		if(depot.isPresent()) {
+			ur.setDepot(depot.get().getSold());
+		}
+		}catch(Exception e) {}
+		//
+		try {
+		Optional<Sold> retrait = pDao.getTotalUserRetrait(user.getId());
+		if(retrait.isPresent()) {
+			ur.setRetrait(retrait.get().getSold());
+		}
+		}catch(Exception e) {}
+		
+		try {
+		Optional<Sold> play = tcDao.getTotalUser(user.getId());
+		if(play.isPresent()) {
+			ur.setPlay(play.get().getSold());
+		} 
+		}catch(Exception e) {}
+		
+		 try {
+			Optional<Sold> win = tcDao.getTotalWinUser(user.getId());
+			if(win.isPresent()) {
+				ur.setWin(win.get().getSold());
+			}
+		 }catch(Exception e) {}
+		
+		return ur;
 	}
 
 }

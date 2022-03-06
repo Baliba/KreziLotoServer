@@ -137,6 +137,7 @@ private static final long serialVersionUID = 1L;
   public void setTotalPrice(double tp) {
 	  this.total_price = tp;
   }
+  
 public void setMGain() {
 	for (BouleClient b : lots) {
 		max_win += b.getPwin();
