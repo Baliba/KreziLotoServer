@@ -365,7 +365,8 @@ public class AppService  {
 		ResRap r = new ResRap();
 		r.setRap(urs);
 		r.setTotal(users.size());
-		r.setPage((int) Math.ceil(users.size()/size));
+		double x = users.size()/size;
+		r.setPage(Math.ceil(x) );
 		return new JwtResponse<ResRap>(false,r,"");
 	}
 	
@@ -373,7 +374,7 @@ public class AppService  {
 	class ResRap implements Serializable {
 		List<UserRapport> rap;
 		int total;
-		int page; 
+		double page; 
 		public ResRap(){}
 	}
 
