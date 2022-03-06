@@ -346,8 +346,14 @@ public class AppService  {
 		List<UserRapport> urs = new ArrayList<UserRapport>();
 		List<UserEntity> users = new ArrayList<UserEntity>();
 		Optional<UserEntity> ouser = userInfoRepository.findById(id);
+		ResRap r = new ResRap();
 		if (!ouser.isPresent()) {
 		    users = userInfoRepository.getPlayUser();
+			r.setTotal(users.size());
+			double x = users.size() / size;
+			double p =Math.ceil(x);
+			Log.d("+++_____PAGE ("+x+")___|____( AFTER CEIL : ("+p+") ");
+			r.setPage(p);
 			if(users.size()>0) {
 				List<UserEntity> lusers = getPage(users, page, size);	
 				Log.d("+++____________(Nombre user : "+lusers.size()+")___________+++");
@@ -362,11 +368,8 @@ public class AppService  {
 			
 		}
 		
-		ResRap r = new ResRap();
+	
 		r.setRap(urs);
-		r.setTotal(users.size());
-		double x = users.size()/size;
-		r.setPage(Math.ceil(x) );
 		return new JwtResponse<ResRap>(false,r,"");
 	}
 	
