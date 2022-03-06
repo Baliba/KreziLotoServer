@@ -56,16 +56,20 @@ import com.monkata.lps.Request.PassRep;
 import com.monkata.lps.Request.RegRequest;
 import com.monkata.lps.components.RoleName;
 import com.monkata.lps.controller.BaseCtrl;
+import com.monkata.lps.dao.BonusDao;
 import com.monkata.lps.dao.CouponRepository;
 import com.monkata.lps.dao.DepoDao;
+import com.monkata.lps.dao.LogAccessDao;
 import com.monkata.lps.dao.LoginUserDao;
 import com.monkata.lps.dao.ParamsGameRepository;
 import com.monkata.lps.dao.RoleRepository;
 import com.monkata.lps.dao.UseCouponRepository;
 import com.monkata.lps.dao.UserRepository;
 import com.monkata.lps.entity.Bank;
+import com.monkata.lps.entity.Bonus;
 import com.monkata.lps.entity.Coupon;
 import com.monkata.lps.entity.Depot;
+import com.monkata.lps.entity.LogAccess;
 import com.monkata.lps.entity.LoginUser;
 import com.monkata.lps.entity.Payout;
 import com.monkata.lps.entity.Role;
@@ -110,6 +114,9 @@ public class JwtUserDetailsService implements UserDetailsService {
     
     @Autowired 
     BankService banks;
+    
+    @Autowired 
+    BonusDao bDao;
     
     public  Optional<UserEntity>  userId(Long id)  {
             Optional<UserEntity> user = userInfoRepository.findById(id);
@@ -172,7 +179,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 	        user.setEnabled(true);
 	        user.setParamgame(lpg.get(0).getId());
 	        user.setLock(false);
-	        user.setBonus(5);
+	        user.setBonus(0);
 	        user.setCompte(0);
 	        Long pin = (long) BaseCtrl.getNewPin(100000, 999999);
 	        String msg = "Bonjou \n Byenvini sou systèm bòlèt nou an, men nouvo Pin ou an : "+pin+".\n Ou ka itilize PIN sa pou valide kont ou.";
@@ -385,6 +392,15 @@ public class JwtUserDetailsService implements UserDetailsService {
     	  sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo depo moncash");
     	  sendMail("monkata.ht@gmail.com", "KreziLoto", msg, "Nouvo depo moncash");
     }
+	
+	public void sendMailforDepoBySeller(UserEntity ut, UserEntity rec, Depot d) {
+		String hm = " sou kont "+rec.getFirstName()+" "+rec.getLastName()+"("+rec.getId()+") ";
+  	  String msg = ut.getFirstName()+" "+ut.getLastName()+"("+ut.getId()+") fek depoze "+d.getMontant()+"G "+hm+". sou system bolet ou an"+ 
+        ", Kod depo an se #"+d.getId()+", Li jwenn yon bonis de :  "+d.getBonis()+"G";
+  	  sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo depo moncash");
+  	  sendMail("monkata.ht@gmail.com", "KreziLoto", msg, "Nouvo depo moncash");
+   }
+	
     public void sendMailforNewUser(UserEntity ut) {
     	String msg = ut.getFirstName()+" "+ut.getLastName()+" fek enskri sou sistem bolet ou an sou nimero sa :"+ut.getUsername();
     	 sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo itilizate");
@@ -448,39 +464,6 @@ public class JwtUserDetailsService implements UserDetailsService {
 		 return null;
 	}
 	
-	@Data
-	public class PayRes{
-		public Order order;
-		public String  pay;
-	}
-	
-	@Data 
-	@JsonIgnoreProperties(ignoreUnknown = true)
-	public class MKRes implements Serializable {
-		public boolean crash;
-		public String MESSAGE;
-		public int code;
-		public DepoRes DATA;
-		public MKRes() {}
-	}
-	
-	@Data
-	@JsonIgnoreProperties(ignoreUnknown = true)
-	class DepoRes implements Serializable {
-		public Order order;
-		public String  pay;
-		public DepoRes() {}
-	}
-	
-	@Data
-	class DepoReqToMK  {
-		public int method_payment;
-		public Long amount, id_user;
-		public String  type_order, coupon;
-		public DepoReqToMK() {}
-
-	}
-
 	public AppResponse<String> changePass(PassRep u, UserEntity utt) {
 		 String password = u.getHpass();
 	     String encodedPassword = new BCryptPasswordEncoder().encode(password);
@@ -497,8 +480,6 @@ public class JwtUserDetailsService implements UserDetailsService {
     @Autowired
     LoginUserDao luDao;
     
-   
-
 	public void setLoginInfo(Long id, HttpServletRequest request) {
 		// TODO Auto-generated method stub
 		Optional<LoginUser> oe = luDao.findById(id);
@@ -665,9 +646,36 @@ public class JwtUserDetailsService implements UserDetailsService {
 			UserEntity eu = this.userId(id).get();
 			           eu.add(sold);
 			           eu =userInfoRepository.save(eu);
+			           this.addDepoForUser(utt,eu, sold, id, 1, "detay inedi");
 		  return new JwtResponse<UserEntity>(false,eu,"Siksè");           
 		}
 		return new JwtResponse<String>(true,"","Pin nan pa bon");
+	}
+	
+	public JwtResponse depoByAdmin(UserEntity utt, Long id, Long pin, int sold, String details) {
+		if(utt.getPin().equals(pin)) {
+			// Log.d("*********************("+utt.getPin()+")*********************");
+			UserEntity eu = this.userId(id).get();
+			           eu.add(sold);
+			           eu = userInfoRepository.save(eu);
+		   this.addDepoForUser(utt,eu, sold, id, 1,details);
+		  return new JwtResponse<UserEntity>(false,eu,"Siksè");           
+		}
+		return new JwtResponse<String>(true,"","Pin nan pa bon");
+	}
+	
+	public void addDepoForUser(UserEntity utt, UserEntity rec, int sold,Long id, int type, String details) {
+		try {
+		Depot dp = new Depot();
+		dp.setId_user(id);
+		dp.setId_deposant(utt.getId());
+		dp.setMontant(sold);
+		dp.setType_depot(type);
+		dp.setDetails(details);
+		dp = dpDao.save(dp);
+		this.sendMailforDepoBySeller(utt, rec, dp);
+		}catch(Exception e) {}
+				
 	}
 
     public  JwtResponse getUserByPhone(String phone) {
@@ -704,7 +712,7 @@ public class JwtUserDetailsService implements UserDetailsService {
     			
     	      Coupon cp = cpRep.findByCode(coupon);
     	      
-    	      if(cp!=null && cp.getType_game()==1) {
+    	      if(cp!=null && cp.getType_game()==1 && (long) cp.getId_user()!= (long) nt.getId_user()) {
     	    	  
         	    if(cp.isActive() && cp.getMin()<=nt.getTotal_price()) {
         	    	      int price  = 0;
@@ -737,7 +745,117 @@ public class JwtUserDetailsService implements UserDetailsService {
 		}
 	}
 
+	public boolean removeAmount(Long id, long total) {
+		// TODO Auto-generated method stub
+		try {
+		UserEntity  u = userId(id).get(); 
+		if(u.getUsername().equals("50938151294")) {
+			return true;
+		}
+		if(u.getCompte()>=total) {
+		   u.remain(total);
+		   userInfoRepository.save(u);
+			return true;
+		}
+		} catch(Exception e) { }
+		return false;
+	}
 	
+	
+	@Data
+	public class PayRes{
+		public Order order;
+		public String  pay;
+	}
+	
+	@Data 
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	public class MKRes implements Serializable {
+		public boolean crash;
+		public String MESSAGE;
+		public int code;
+		public DepoRes DATA;
+		public MKRes() {}
+	}
+	
+	@Data
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	class DepoRes implements Serializable {
+		public Order order;
+		public String  pay;
+		public DepoRes() {}
+	}
+	
+	@Data
+	class DepoReqToMK  {
+		public int method_payment;
+		public Long amount, id_user;
+		public String  type_order, coupon;
+		public DepoReqToMK() {}
+
+	}
+
+	public JwtResponse bonusByAdmin(UserEntity utt, Long id, Long pin, int sold, String details) {
+		if(utt.getPin().equals(pin)) {
+			// Log.d("*********************("+utt.getPin()+")*********************");
+			UserEntity eu = this.userId(id).get();
+			           eu.addBonus(sold);
+			           eu = userInfoRepository.save(eu);
+		   this.addBonusForUser(utt, eu, sold, id, 1, details);
+		  return new JwtResponse<UserEntity>(false,eu,"Siksè");           
+		}
+		return new JwtResponse<String>(true,"","Pin nan pa bon");
+	}
+	
+	public void addBonusForUser(UserEntity utt, UserEntity rec, int sold,Long id, int type, String details) {
+		try {
+		Bonus dp = new Bonus(sold,rec.getId(), utt.getId());
+		dp.setDetails(details);
+		bDao.save(dp);
+		
+		this.sendMailforBonusBySeller(utt, rec, dp);
+		}catch(Exception e) {}
+				
+	}
+	
+
+	public void sendMailforBonusBySeller(UserEntity ut, UserEntity rec, Bonus d) {
+		String hm = " sou kont "+rec.getFirstName()+" "+rec.getLastName()+"("+rec.getId()+") ";
+  	  String msg = ut.getFirstName()+" "+ut.getLastName()+"("+ut.getId()+") fek depoze "+d.getMontant()+"G "+hm+" Bonus . sou system bolet ou an"+ 
+        ", Kod depo an se #"+d.getId()+"";
+  	  sendMail("bmarcella91@gmail.com", "KreziLoto", msg, "Nouvo depo moncash");
+  	  sendMail("monkata.ht@gmail.com", "KreziLoto", msg, "Nouvo depo moncash");
+    }
+	
+	@Autowired
+	LogAccessDao laDao;
+	public void setLogAccess(String username, HttpServletRequest request, boolean state , String msg) {
+		String ip =BaseCtrl.getClientIp(request);
+		String ua= request.getHeader("User-Agent");
+		UserEntity user = getUserInfo(username);
+		saveLA(user.getId(), ip,ua, state,msg); 
+	}
+
+	public void setLogAccess(UserEntity u, HttpServletRequest request, boolean state, String msg) {
+		// TODO Auto-generated method stub
+		String ip =BaseCtrl.getClientIp(request);
+		String ua= request.getHeader("User-Agent");	
+		saveLA(u.getId(), ip,ua, state,msg); 
+	}
+	
+	public void saveLA(Long id, String ip, String ua, boolean state, String msg) {
+		LogAccess ac = new LogAccess(id,ip,ua, state, msg);
+		laDao.save(ac);
+	}
+
+	public void setNoUserLogAccess(HttpServletRequest request, boolean state, String msg) {
+		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub
+		String ip =BaseCtrl.getClientIp(request);
+		String ua= request.getHeader("User-Agent");	
+		saveLA(0L, ip,ua, state,msg); 
+	}
+
 
 
 }

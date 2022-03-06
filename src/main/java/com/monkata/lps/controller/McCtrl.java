@@ -50,6 +50,7 @@ import com.monkata.lps.entity.Payout;
 import com.monkata.lps.entity.UserEntity;
 import com.monkata.lps.response.AppResponse;
 import com.monkata.lps.response.JwtResponse;
+import com.monkata.lps.service.BankService;
 import com.monkata.lps.service.JwtUserDetailsService;
 import com.monkata.lps.service.KenoService;
 import com.monkata.lps.service.PayoutService;
@@ -98,6 +99,9 @@ public class McCtrl  extends BaseCtrl {
 	    @Autowired
 		private JwtUserDetailsService UserDetails;
 	    
+	    
+	    @Autowired
+	    BankService sb;
 	    
 	  
 	    @Transactional
@@ -153,10 +157,17 @@ public class McCtrl  extends BaseCtrl {
 	  		   if(pay.getSold()<=50) {
 	  				return ResponseEntity.ok(new JwtResponse<String>(true,null,"Montan an dwe plis ke 50g ."));
 	  		   }
-	    	  if(new  BCryptPasswordEncoder().matches(pay.getPass(), user.getPassword())) {
+	  		   
+	  		   // 
+	  		   
+	  		   if(!user.isEnabled()) {
+	        	  return ResponseEntity.ok(new JwtResponse<UserEntity>(true, null,sb.word("MSG_BLOCK_ACCOUNT")));
+	           }
+	  		   
+	    	   if(new  BCryptPasswordEncoder().matches(pay.getPass(), user.getPassword())) {
 	    	    JwtResponse pe =  payouts.setPay(user, pay);
 	    	    return ResponseEntity.ok(pe); 
-	    	  }
+	    	   }
 	    	  // 
 	    	  return ResponseEntity.ok(new JwtResponse<String>(true,null,"Kod sekre a pa bon.")); 
 	    }

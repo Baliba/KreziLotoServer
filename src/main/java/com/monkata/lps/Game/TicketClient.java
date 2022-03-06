@@ -39,16 +39,31 @@ private static final long serialVersionUID = 1L;
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)	
   private Long   id;
+  
+  @Column(nullable=false, updatable = false)
   private LocalDateTime    date_ticket;
+  
+  @Column(nullable=false, updatable = false)
   private String sdatet;
+  
+  @Column(nullable=false, updatable = false)
   private String sheure;
+  
+  @Column(nullable=false, updatable = false)
   private  double total_price;
+  
   private Long  id_game;
   private Long  id_gamemaster;
   private String  game_name;
+  
   private Long id_pg;
+  
+  @Column(nullable=false, updatable = false)
   private Long  id_user;
+  
   private double max_win;
+  
+  @Column(nullable=false, updatable = false)
   private LocalDateTime date_exp;
   //  boule after win 
   @Column(nullable=true)

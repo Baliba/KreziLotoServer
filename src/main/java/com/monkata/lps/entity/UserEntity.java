@@ -24,7 +24,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class UserEntity extends cObj implements Serializable, UserDetails{
+public class UserEntity extends cObj implements Serializable, UserDetails {
 	    private static final long serialVersionUID = 1L;
 	    @Id
 	    @GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,6 +49,9 @@ public class UserEntity extends cObj implements Serializable, UserDetails{
 	    @Column(nullable=true,  columnDefinition = "int default 123456")
 	    Long pin;
 	    
+	    @Column(nullable=true,  columnDefinition = "varchar default 'default.png'")
+	    String avatar;
+	    
 	    @Column(nullable=true)
 	    Long pvbank;
 	    
@@ -63,6 +66,8 @@ public class UserEntity extends cObj implements Serializable, UserDetails{
 	    boolean lock;
 	    
 	    // Bank transfert money 
+	    @Column(nullable=true, columnDefinition = "boolean default false")
+	    boolean threat;
 	    
 	    @Column(nullable=true)
 	    String  swift;
@@ -110,11 +115,24 @@ public class UserEntity extends cObj implements Serializable, UserDetails{
 	    @Column(nullable=true,  columnDefinition = "int default 0")
 	    int is_pay;
 	    
-	    @Column(nullable=true,  columnDefinition = "int default 0")
+	    @Column(nullable=false,  columnDefinition = "int default 0")
 	    Long see_by_admin;
 	     
 	    @Column(nullable=true,  columnDefinition = "int default 0")
 	    int valider; 
+	    
+	    
+	    @Column(nullable=true,  columnDefinition = "int default 0")
+	    double bucks;
+	    
+	    @Column(nullable=true,  columnDefinition = "int default 0")
+	    double hbucks;
+	    
+	    
+	    public void addBucks(double b) {
+	    	 if(this.bucks>0) { this.hbucks = this.bucks; }
+	    	 this.bucks = b;
+	    }
 	    
 	    @Override
 	    public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -54,6 +54,9 @@ public class Depot  extends cObj implements Serializable  {
 	    @Column(nullable=true, columnDefinition = "int default 0")
 	    Long id_deposant;
 	    
+	    @Column(nullable=true, columnDefinition = "varchar default 'Depo Automaik Sistem' ")
+	    String details; 
+	    
 	    @CreationTimestamp
 	    private LocalDateTime date_created;
 	    
@@ -67,9 +70,7 @@ public class Depot  extends cObj implements Serializable  {
 		}
 
 
-		public Depot() {
-
-		}
+		public Depot() {}
 	    
 	   
 }

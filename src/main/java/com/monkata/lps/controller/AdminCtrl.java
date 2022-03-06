@@ -3,6 +3,7 @@ package com.monkata.lps.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.monkata.lps.components.RoleName;
+import com.monkata.lps.controller.AppCtrl.SetUser;
 import com.monkata.lps.dao.BankRepository;
 import com.monkata.lps.dao.BouleClientRepository;
 import com.monkata.lps.dao.BouleRepository;
@@ -35,6 +37,7 @@ import com.monkata.lps.dao.TicketRepository;
 import com.monkata.lps.dao.TirajRepository;
 import com.monkata.lps.dao.UserRepository;
 import com.monkata.lps.entity.Coupon;
+import com.monkata.lps.entity.PVBank;
 import com.monkata.lps.entity.UserEntity;
 import com.monkata.lps.response.JwtResponse;
 import com.monkata.lps.service.AppService;
@@ -44,6 +47,8 @@ import com.monkata.lps.service.NotService;
 import com.monkata.lps.service.TicketService;
 
 import dto.CouponDto;
+import dto.NParamsGame;
+import dto.NRole;
 import dto.SearchTicketRes;
 
 @RestController
@@ -204,6 +209,28 @@ public class AdminCtrl extends BaseCtrl {
 		        
 	    }
 	    
+	    @RequestMapping(value = "/api/depoByAdmin/{id}/{sold}/{pin}/{details}", method = RequestMethod.GET)
+	    public ResponseEntity<?> depoByAdminV2 (@PathVariable("details") String details, @PathVariable("id") Long id,@PathVariable("sold") int sold, @PathVariable("pin") Long pin, Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	      JwtResponse jr = UserDetails.depoByAdmin(utt, id,pin,sold,details);
+		                  return ResponseEntity.ok(jr);
+			    }
+			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
+	    
+	    @RequestMapping(value = "/api/bonusByAdmin/{id}/{sold}/{pin}/{details}", method = RequestMethod.GET)
+	    public ResponseEntity<?> bonusByAdminV2 (@PathVariable("details") String details, @PathVariable("id") Long id,@PathVariable("sold") int sold, @PathVariable("pin") Long pin, Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	      JwtResponse jr = UserDetails.bonusByAdmin(utt, id,pin,sold,details);
+		                  return ResponseEntity.ok(jr);
+			    }
+			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
+	    
 	    @RequestMapping(value = "/api/getDepotStat", method = RequestMethod.GET)
 	    public ResponseEntity<?> getDepotStat (Authentication auth) throws Exception {
 		        UserEntity utt = getUser(auth);
@@ -305,6 +332,69 @@ public class AdminCtrl extends BaseCtrl {
 				return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
 		        
 	    }
+	    
+	    
+	    @RequestMapping(value = "/api/getLogAccess/{debut}/{fin}/{mg}/{id}", method = RequestMethod.GET)
+	    public ResponseEntity<?> getLogAccess (@PathVariable("id") Long id, @PathVariable("mg") int mg,@PathVariable("debut") String debut, @PathVariable("fin") String fin, Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	      JwtResponse jr = apps.getLogAccess(debut,fin, mg, id);
+		                  return ResponseEntity.ok(jr);
+			    }
+			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
+	    
+	    @RequestMapping(value = "/api/getBonus/{debut}/{fin}/{id}", method = RequestMethod.GET)
+	    public ResponseEntity<?> getBonus (@PathVariable("id") Long id ,@PathVariable("debut") String debut, @PathVariable("fin") String fin, Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	      JwtResponse jr = apps.getBonus(debut,fin, id);
+		                  return ResponseEntity.ok(jr);
+			    }
+			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
+	    
+	    @RequestMapping(value = "/api/validerBonus/{id}/{pin}", method = RequestMethod.GET)
+	    public ResponseEntity<?> validerBonus (@PathVariable("pin") Long pin , @PathVariable("id") Long id , Authentication auth) throws Exception {
+		        UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	      JwtResponse jr = (id!=0) ? apps.validerBonus(id, pin, utt) : apps.validerAll( pin, utt);
+		                  return ResponseEntity.ok(jr);
+			    }
+			return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+		        
+	    }
+	    
+		@GetMapping("/newUser")
+		public ResponseEntity<?> setClient(Authentication auth) {
+			List<UserEntity> c = user.getNewUser();
+			return ResponseEntity.ok(new JwtResponse<List<UserEntity>>(false,c,"Siksè"));
+		}
+		
+		    @RequestMapping(value = "/api/validerUser/{id}/{pin}", method = RequestMethod.GET)
+		    public ResponseEntity<?> validerUser (@PathVariable("pin") Long pin , @PathVariable("id") Long id , Authentication auth) throws Exception {
+			        UserEntity utt = getUser(auth);
+			        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+			        	      JwtResponse jr = (id!=0) ? apps.validerUser(id, pin, utt) : apps.validerAllUser( pin, utt);
+			                  return ResponseEntity.ok(jr);
+				    }
+				return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+			        
+		    }
+		    
+		    
+		    @GetMapping("/api/getBlockUser")
+			public ResponseEntity<?> getBlockUser(Authentication auth) {
+		    	    UserEntity utt = getUser(auth);
+			        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+							List<UserEntity> c = user.getBlockUser();
+							return ResponseEntity.ok(new JwtResponse<List<UserEntity>>(false,c,"Siksè"));
+					 }
+			    	return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+					  
+			}
 	    
 	
 }

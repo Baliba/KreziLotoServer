@@ -1,5 +1,6 @@
 package com.monkata.lps.dao;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +41,14 @@ public interface BouleClientRepository extends JpaRepository<BouleClient, Long> 
 	  
 	  @Query("SELECT new dto.NumberTracking(bc.code_mg,bc.lot, COUNT(bc.lot), SUM(bc.montant), SUM(bc.win_price)) FROM BouleClient bc WHERE   bc.ticketclient.over=:live AND bc.ticketclient.date_ticket > CURRENT_DATE - :day AND bc.ticketclient.id_gamemaster = :game GROUP BY bc.lot, code_mg ORDER BY bc.lot ASC ")	
 	  List<NumberTracking> getNumberTrackingByGameAndDay(@Param("day")  int day,@Param("game")  Long game,@Param("live")  boolean live);
+      
+	  
+	  // new code 
+	  @Query("SELECT new dto.NumberTracking(bc.code_mg,bc.lot, COUNT(bc.lot), SUM(bc.montant), SUM(bc.win_price)) FROM BouleClient  bc WHERE  bc.ticketclient.over=:live AND  bc.ticketclient.date_ticket  BETWEEN :debut AND :fin GROUP BY bc.lot, code_mg ORDER BY code_mg, SUM(bc.montant), lot DESC  ")	
+	  List<NumberTracking> getNumberTrackingByDayOnly(LocalDateTime debut, LocalDateTime fin,@Param("live") boolean live); 
+
+	  @Query("SELECT new dto.NumberTracking(bc.code_mg,bc.lot, COUNT(bc.lot), SUM(bc.montant), SUM(bc.win_price)) FROM BouleClient bc WHERE   bc.ticketclient.over=:live AND bc.ticketclient.date_ticket  BETWEEN :debut AND :fin AND bc.ticketclient.id_gamemaster = :game GROUP BY bc.lot, code_mg ORDER BY code_mg, SUM(bc.montant), lot DESC ")	
+	  List<NumberTracking> getNumberTrackingByGameAndDay(LocalDateTime debut, LocalDateTime fin, Long game, @Param("live") boolean live);
 
   
 }

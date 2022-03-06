@@ -58,8 +58,10 @@ import com.monkata.lps.Request.PassRep;
 import com.monkata.lps.Request.RegRequest;
 import com.monkata.lps.components.RoleName;
 import com.monkata.lps.controller.BaseCtrl;
+import com.monkata.lps.dao.BonusDao;
 import com.monkata.lps.dao.CouponRepository;
 import com.monkata.lps.dao.DepoDao;
+import com.monkata.lps.dao.LogAccessDao;
 import com.monkata.lps.dao.LoginUserDao;
 import com.monkata.lps.dao.ModeGameMasterRepository;
 import com.monkata.lps.dao.ParamsGameRepository;
@@ -67,8 +69,10 @@ import com.monkata.lps.dao.RoleRepository;
 import com.monkata.lps.dao.UseCouponRepository;
 import com.monkata.lps.dao.UserRepository;
 import com.monkata.lps.entity.Bank;
+import com.monkata.lps.entity.Bonus;
 import com.monkata.lps.entity.Coupon;
 import com.monkata.lps.entity.Depot;
+import com.monkata.lps.entity.LogAccess;
 import com.monkata.lps.entity.LoginUser;
 import com.monkata.lps.entity.Payout;
 import com.monkata.lps.entity.Role;
@@ -114,12 +118,18 @@ public class AppService  {
     @Autowired 
     BankService banks;
     
+    @Autowired 
+    BonusDao bDao;
+    
     @Autowired
     private ModeGameMasterRepository mgamem;
 
     
     @Autowired
     private UseCouponRepository usecoupon; 
+    
+    @Autowired
+    private LogAccessDao laDao;
     
     public  Optional<UserEntity>  userId(Long id)  {
             Optional<UserEntity> user = userInfoRepository.findById(id);
@@ -190,6 +200,137 @@ public class AppService  {
 	public JwtResponse getModeGameMaster() {
 	  List<ModeGameMaster> mgm = mgamem.findAll();
 	  return  new JwtResponse<List<ModeGameMaster>>(false,mgm,"Siksè");
+	}
+
+	public JwtResponse getLogAccess(String debut, String fin, int mg, Long id) {
+		List<LogAccess> ucs = Arrays.asList();
+		  if (mg>-1) {
+			if(id>0) {
+				return this.getFullLogAccess(debut, fin, mg, id);
+			}else {
+				return this.getStateLogAccess(debut, fin, mg);
+			}
+		   } else {
+			   if(id>0) {
+					return this.getUserLogAccess(debut, fin, id);
+				}else {
+					return this.getLogAccess(debut, fin);
+		       }
+		  }
+	}
+	
+	
+
+	private JwtResponse getFullLogAccess(String debut, String fin, int mg, Long id) {
+		List<LogAccess> ucs = Arrays.asList();
+		boolean state = (mg==1) ? true : false; 
+		if(debut!=null && fin!=null ) {
+	         LocalDateTime deb = BaseCtrl.getLDT(debut+" 00:00:00");
+	         LocalDateTime fn =  BaseCtrl.getLDT(fin+" 23:59:59");
+		     ucs = laDao.getFullLogAccess(id, state, deb, fn); 
+		}
+		return  new JwtResponse<List<LogAccess>>(false,ucs,"Siksè");
+	}
+	
+	private JwtResponse getUserLogAccess(String debut, String fin,Long id) {
+		List<LogAccess> ucs = Arrays.asList();
+		// TODO Auto-generated method stub
+		if(debut!=null && fin!=null ) {
+	         LocalDateTime deb = BaseCtrl.getLDT(debut+" 00:00:00");
+	         LocalDateTime fn =  BaseCtrl.getLDT(fin+" 23:59:59");
+		     ucs = laDao.getUserLogAccess(id, deb, fn); 
+		}
+		return  new JwtResponse<List<LogAccess>>(false,ucs,"Siksè");
+	}
+	
+	private JwtResponse getStateLogAccess(String debut, String fin, int mg) {
+		List<LogAccess> ucs = Arrays.asList();
+		boolean state = (mg==1) ? true : false; 
+		if(debut!=null && fin!=null ) {
+	         LocalDateTime deb = BaseCtrl.getLDT(debut+" 00:00:00");
+	         LocalDateTime fn =  BaseCtrl.getLDT(fin+" 23:59:59");
+		     ucs = laDao.getStateLogAccess(state, deb, fn); 
+		}
+		// TODO Auto-generated method stub
+		return  new JwtResponse<List<LogAccess>>(false,ucs,"Siksè");
+	}
+	
+	private JwtResponse getLogAccess(String debut, String fin) {
+		List<LogAccess> ucs = Arrays.asList();
+		if(debut!=null && fin!=null ) {
+	         LocalDateTime deb = BaseCtrl.getLDT(debut+" 00:00:00");
+	         LocalDateTime fn =  BaseCtrl.getLDT(fin+" 23:59:59");
+		     ucs = laDao.getLogAccess(deb, fn); 
+		}
+		// TODO Auto-generated method stub
+		return  new JwtResponse<List<LogAccess>>(false,ucs,"Siksè");
+	}
+
+	public JwtResponse getBonus(String debut, String fin, Long id) {
+		// TODO Auto-generated method stub
+		List<Bonus> ucs = Arrays.asList();
+		if(debut!=null && fin!=null ) {
+	         LocalDateTime deb = BaseCtrl.getLDT(debut+" 00:00:00");
+	         LocalDateTime fn =  BaseCtrl.getLDT(fin+" 23:59:59");
+		     ucs = (id==0) ? bDao.getBonus(deb, fn) : bDao.getBonusForUser(deb, fn, id) ; 
+		}
+		return new JwtResponse<List<Bonus>>(false,ucs,"Siksè");
+	}
+
+	public JwtResponse validerBonus(Long id, Long pin,  UserEntity utt) {
+		
+		if(utt.getPin().equals(pin)) {
+			Bonus bonus = bDao.findById(id).get();
+			bonus.setSee_by_admin(utt.getId());
+			bDao.save(bonus);
+		  return new JwtResponse<String>(false,null,"Siksè");           
+		}
+		
+		return new JwtResponse<String>(true,"","Pin nan pa bon");
+	}
+
+	public JwtResponse validerAll(Long pin, UserEntity utt) {
+		if(utt.getPin().equals(pin)) {
+			List<Bonus> bonuses = bDao.getAllNonValider();
+			for(Bonus bonus : bonuses) {
+				Long d =bonus.getSee_by_admin();
+				if(d==null || d==0) {
+			          bonus.setSee_by_admin(utt.getId());
+			          bDao.save(bonus);
+				}
+			}
+		  return new JwtResponse<String>(false,null,"Siksè");           
+		}
+		return new JwtResponse<String>(true,"","Pin nan pa bon");
+	}
+
+	public JwtResponse validerUser(Long id, Long pin, UserEntity utt) {
+		if(utt.getPin().equals(pin)) {
+			UserEntity user  = userInfoRepository.findById(id).get();
+	        saveUser(user,utt);
+		  return new JwtResponse<String>(false,null,"Siksè");           
+		}
+		
+		return new JwtResponse<String>(true,"","Pin nan pa bon");
+	}
+	
+	public JwtResponse validerAllUser (Long pin, UserEntity utt) {
+		if(utt.getPin().equals(pin)) {
+			List<UserEntity> users = userInfoRepository.getNewUser();
+			for(UserEntity user : users) {
+				Long d = user.getSee_by_admin();
+				if(d==null || d==0) {
+					  saveUser(user,utt);
+				}
+			}
+		  return new JwtResponse<String>(false,null,"Siksè");           
+		}
+		return new JwtResponse<String>(true,"","Pin nan pa bon");
+	}
+	
+	public void saveUser(UserEntity user , UserEntity utt){
+		user.setSee_by_admin(utt.getId());
+		userInfoRepository.save(user);
 	}
 
 }

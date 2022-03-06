@@ -51,6 +51,12 @@ public class Keno  extends cObj implements Serializable {
 	    @Column(nullable=true)
 	    private double win_sold;
 	    
+	    @Column(nullable=false, columnDefinition = "int default 0")
+	    private double  bank_sold;
+	    
+	    @Column(nullable=true, columnDefinition = "varchar default 'Non Mentioné'")
+	    private String  msg;
+	    
 	    @Column(nullable=true)
 	    private double next_win_sold;
 	    

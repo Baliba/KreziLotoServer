@@ -9,9 +9,8 @@ public class BankSold {
 	
 	public  double bank_sold = 0;
 	double mgwl, wl;
-	public String msg;
+	public String msg="NOT MENTION";
 	public BankSold() {
-		
 	}
 	
 	public void init(double bs){
@@ -20,30 +19,30 @@ public class BankSold {
 		   wl = gWin - gLost;
 		   if(mgwl==0 && wl==0) {
 			  this.bank_sold = 1000;  
-			  msg="GAME NULL";
+			  msg="GAME NULL  "+wl+"G USER "+mgwl+"G";
 			  return;
 		   }
 		  
 		   if(wl<0) {
 			  this.bank_sold = 500;  
-			  msg="GAME LOST";
+			  msg="GAME LOST "+wl+"G USER "+mgwl+"G";;
 			  return; 
 		   }
 		 
 		   if(wl>0 && mgwl>wl) {
 			  this.bank_sold = 500;  
-			  msg="GAME WIN BUT LESS THAN WIN USER";
+			  msg="GAME WIN "+wl+"G BUT LESS THAN WIN USER "+mgwl+"G ";
 			  return; 
 		   }
 		   
 		   if(mgwl<0 && wl>0) {
-			   this.bank_sold =   wl*0.3;
-			   
+			   this.bank_sold =   wl*0.20;
+			   msg="GAME WIN "+wl+"G USER LOST "+mgwl+"G";
 		      } else {
 			   this.bank_sold = (wl*0.1>0)? wl*0.1 : 500 ;
+			   msg="GAME  "+wl+"G | USER  "+mgwl+"G";
 		   }
-		   
-		 this.bank_sold += bs;
+		 this.bank_sold += (bs*0.8);
 	}
 
 

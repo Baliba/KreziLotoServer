@@ -63,34 +63,38 @@ public class AuthCtrl  extends BaseCtrl{
 	        String username = authenticationRequest.getUsername();
 	        String password = authenticationRequest.getPassword();
 		        if (!userInfoRepository.existsByUsername(username)){
+		        	jwtUserDetailsService.setNoUserLogAccess(request,false,sb.word("MSG_BAD_USER"));
 		            return ResponseEntity.ok(new JwtResponse<UserEntity>(true, null,sb.word("MSG_BAD_USER")));
 		        }
-	            UserDetails user = jwtUserDetailsService.loadUserByUsername(username);
+		        
+	             UserDetails user = jwtUserDetailsService.loadUserByUsername(username);
 	            
-
-	            if(!user.isEnabled()) {
-	        	  return ResponseEntity.ok(new JwtResponse<UserEntity>(true, null,sb.word("MSG_BLOCK_ACCOUNT")));
-	            }
 	             UserEntity u = null;
 	             boolean rep = jwtUserDetailsService.autoLogin(user, username, password);
 	             
 	             if(!rep) {
+	            	 jwtUserDetailsService.setLogAccess(username, request,false,sb.word("MSG_BAD_PASS"));
 		        	 return ResponseEntity.ok(new JwtResponse<UserEntity>(true, null,sb.word("MSG_BAD_PASS")));
 		         }
 	      
-		         u = jwtUserDetailsService.getUserInfo(username);
+		          u = jwtUserDetailsService.getUserInfo(username);
+		          
+		          if(!u.isEnabled() || u.isLock()) {
+		        	  jwtUserDetailsService.setLogAccess(u, request,false,sb.word("MSG_BLOCK_ACCOUNT"));
+		        	  return ResponseEntity.ok(new JwtResponse<UserEntity>(true, null,sb.word("MSG_BLOCK_ACCOUNT")));
+		          }
 		         
 		          Bank bank = this.getBankConfig();
 		    	  if(bank!=null && bank.isBlock_login()) {
-		    			  if(!u.getRole().getName().equals(RoleName.ADMIN) &&  !u.getRole().getName().equals(RoleName.MASTER) ) {
+		    		 if(!u.getRole().getName().equals(RoleName.ADMIN) &&  !u.getRole().getName().equals(RoleName.MASTER) ) {
 		    		         return ResponseEntity.ok(new JwtResponse<String>(true, null,"Pou kounya system nan pa bay dwa pou moun konekte retounen pita."));
-		    			   }
+		    		  }
 		    	  }
 		         u.setToken(jwtToken.generateToken(user));
 		         jwtUserDetailsService.setLoginInfo(u.getId(), request);
+		         jwtUserDetailsService.setLogAccess(u, request,true,sb.word("MSG_SUCCESS"));
 		         return ResponseEntity.ok(new JwtResponse<UserEntity>(false, u,sb.word("MSG_SUCCESS")));
-		       
-	     
+		      
 	    }
 	    
 	    

@@ -88,7 +88,6 @@ public class KenoService {
 	            	 
 	             }
 	             return u;
-		
 	}
 
 	public Case getCase(int i, List<Case> cases){
@@ -176,7 +175,6 @@ public class KenoService {
 			kc.setPayoutsNow();
 			kc = kcr.save(kc);
 		}
-		
 		return kc;
 	}
 

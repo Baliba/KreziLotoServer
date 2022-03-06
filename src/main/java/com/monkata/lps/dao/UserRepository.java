@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.monkata.lps.Game.Ticket;
+import com.monkata.lps.entity.Bonus;
 import com.monkata.lps.entity.UserEntity;
 
 
@@ -30,7 +31,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	    @Query("Select T from UserEntity AS T WHERE T.role.name=:role AND enabled=true ")
 	    List<UserEntity> getUserRole(@Param("role") String role);
 	    
-	    @Query("Select T from UserEntity AS T WHERE see_by_admin = 0 ")
+	    @Query("Select T from UserEntity AS T WHERE see_by_admin = 0  OR see_by_admin = null ")
 	    List<UserEntity> getNewUser();
 	    
 	    @Query("Select T from UserEntity AS T WHERE email=:email ")
@@ -38,4 +39,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	    
 	    @Query("Select T from UserEntity AS T WHERE username=:phone ")
 	    Optional<UserEntity> getUserByPhone(String phone);
+	    
+	    @Query("Select T from UserEntity AS T WHERE enabled = false  OR lock = true ")
+		List<UserEntity> getBlockUser();
+	    
 }

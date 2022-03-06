@@ -52,6 +52,7 @@ import com.monkata.lps.response.JwtResponse;
 
 import dto.ChekBoul;
 import dto.NumberTracking;
+import dto.Periode;
 import dto.Sold;
 import lombok.Data;
 
@@ -385,7 +386,7 @@ public class TicketService {
 		LocalDate f = LocalDate.now();
 		LocalDateTime dt =  BaseCtrl.getLDT(d.toString()+" 00:00:00");
         LocalDateTime ft =  BaseCtrl.getLDT(f.toString()+" 23:59:59");
-        Log.d(dt.toString()+" | &&&&&&&&&&&&&&&&& | "+ ft.toString());
+     //   Log.d(dt.toString()+" | &&&&&&&&&&&&&&&&& | "+ ft.toString());
 		for(GameMaster mg : mgs) {
 	
 				Optional<Sold> s  = ticketc.getTotalSoldTicketToDay(mg.getId(), dt,ft);
@@ -526,20 +527,21 @@ public class TicketService {
 	}
 
 
-	public JwtResponse getTrackingNumber(Long game, int day, int mode,int live) {
-		boolean lv = (live==1) ? true : false;
+	public JwtResponse getTrackingNumber(Long game, int day, int mode,int lv) {
+		boolean live = (lv==1) ? true : false;
 		// TODO Auto-generated method stub
 		List<NumberTracking> nt;
+	    Periode p =	BaseCtrl.getPeriodFromDay(day);
+	    LocalDateTime debut = p.getDebut();
+        LocalDateTime fin =  p.getFin();
 		if(mode==0) {
 				if(game==0) {
-					 nt  = bclient.getNumberTrackingByDayOnly(day,lv);
+					 nt  = bclient.getNumberTrackingByDayOnly(debut, fin,live);
 				   } else {
-					 nt  = bclient.getNumberTrackingByGameAndDay(day,game,lv);
+					 nt  = bclient.getNumberTrackingByGameAndDay(debut,fin,game,live);
 				 }
 		} else {
-			
-			nt = ticketc.getGameTrackingByDayOnly(day,lv);
-			
+			nt = ticketc.getGameTrackingByDayOnly(debut,fin,live);
 		}
 		return new JwtResponse<List<NumberTracking>>(false,nt,"Siksè");
 	}

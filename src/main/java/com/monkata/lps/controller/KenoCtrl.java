@@ -161,6 +161,7 @@ public class KenoCtrl extends BaseCtrl {
 		    
 		    Bank bank = this.getBankConfig();
 		    
+		    
 	  		if(bank!=null && bank.isBlock_keno()) {
 	  			return ResponseEntity.ok(new JwtResponse<Double>(true,utt.getCompte(), "Keno pa disponib pou kounya."));   
 	  		}
@@ -168,7 +169,7 @@ public class KenoCtrl extends BaseCtrl {
 		    if(utt.getCompte()>=kr.getBet()) {
 		    	
 		      if(kr.getTotal_num()>10 || kr.getTotal_num()!=kr.getLots().size()) {
-		    	  return ResponseEntity.ok(new JwtResponse<Double>(true,utt.getCompte(), "Numerow chwazi yo pa bon."));
+		    	  return ResponseEntity.ok(new JwtResponse<Double>(true,utt.getCompte(), "Nimerow chwazi yo pa bon."));
 		      } 	
 		      
 		      if(kr.getBet()<10 || kr.getBet()>100) {
@@ -183,16 +184,16 @@ public class KenoCtrl extends BaseCtrl {
 		      k = keno.save(k);
 		      // 
 		      KenoConfig kc = kenos.getKC();
-		      
 		      kc.ordered();
 		      // 
 		      BankSold bs=  this.setBank(utt.getId());
 		      bs.init(kc.getBank_sold());
 		      KenoRes krs= new KenoRes(k, utt);
 		      krs.setBank_sold(bs.getBank_sold());
-		      
 		      krs.setBs(bs);
-		  
+		      k.setBank_sold(bs.getBank_sold());
+		      k.setMsg(bs.getMsg());
+		      k = keno.save(k);
 		      WData index = KenoBrain.getWinIndex(kc.getPayouts(), kr.getTotal_num(), kr.getBet(), bs.getBank_sold(), kc.getWin_occurrence(), kc.getGlobal_occurrence());
 		      double sold = krs.setIWinIndexNow(index, kc.getPayouts(), kr.getTotal_num(), kr.getLots(), kr.get_aNumSelected());
 		      // New Keno ==
@@ -265,7 +266,6 @@ public class KenoCtrl extends BaseCtrl {
 			bs.setGLost(gLost);
 		}
 		
-		
 		try {
 			sold =   keno.getGlobalWin();
 			if(sold.isPresent() &&  sold.get().getSold()>0 ) {
@@ -276,8 +276,6 @@ public class KenoCtrl extends BaseCtrl {
 			gWin = 0;
 			bs.setGWin(gWin);
 		}
-		
-		
 		return bs;
 	}
 	

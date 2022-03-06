@@ -96,8 +96,8 @@ import lombok.Data;
 @RequestMapping({ "/api" })
 public class AppCtrl extends BaseCtrl {
 	
-	 @Autowired
-	 NotService nots;
+	@Autowired
+	NotService nots;
 
 	@Autowired
 	public UserRepository userRepository, user;
@@ -264,13 +264,25 @@ public class AppCtrl extends BaseCtrl {
 
 	@GetMapping("/getGameSetting")
 	public ResponseEntity<?> getGameSetting(Authentication auth) {
+		try {
 		UserEntity utt = getUser(auth);
-		Optional<ParamsGame> opg = pgame.findById(utt.getParamgame());
-		if(opg.isPresent()) {
-			ParamsGame pg = opg.get();
+		if(utt.getParamgame()!=null &&  utt.getParamgame()!=0) {
+			Optional<ParamsGame> opg = pgame.findById(utt.getParamgame());
+			if(opg.isPresent()) {
+				ParamsGame pg = opg.get();
+				ParamsGame npg = getAllValidGame(pg);
+				return ResponseEntity.ok(npg);
+			} else {
+				ParamsGame pg =pgame.findAll().get(0);
+				ParamsGame npg = getAllValidGame(pg);
+				return ResponseEntity.ok(npg);
+			}
+		} else {
+			ParamsGame pg =pgame.findAll().get(0);
 			ParamsGame npg = getAllValidGame(pg);
 			return ResponseEntity.ok(npg);
-		} else {
+		}
+		} catch(Exception e) {
 			ParamsGame pg =pgame.findAll().get(0);
 			ParamsGame npg = getAllValidGame(pg);
 			return ResponseEntity.ok(npg);
@@ -291,20 +303,7 @@ public class AppCtrl extends BaseCtrl {
 		return ResponseEntity.ok(n);
 	} 
 
-	private ParamsGame getAllValidGame(ParamsGame pg) {
-		List<Game> gs = new ArrayList<>();
-		LocalTime now = LocalTime.parse(time());
-		for (Game g : pg.getGames()) {
-			LocalTime tt = LocalTime.parse(g.getGamemaster().getHour_to_block());
-			LocalTime ss = LocalTime.parse(g.getGamemaster().getHour_to_start_sell());
-			if (now.isBefore(tt) && now.isAfter(ss) && g.getGamemaster().isEnabled()) {
-				gs.add(g);
-			}
-		}
-		pg.setGames(gs);
-		return pg;
-	}
-
+	
 	@Transactional
 	@RequestMapping(value = "/addTicketClient/{pay}", method = RequestMethod.POST)
 	public ResponseEntity<?> addTicketClient(@PathVariable("pay") int pay, @RequestBody TicketRequestClient tk,
@@ -640,7 +639,6 @@ public class AppCtrl extends BaseCtrl {
 		su.setRoles(r);
 		su.setBanks(pbs);
 		su.setPgs(pgs);
-
 		return ResponseEntity.ok(su);
 	}
 	
@@ -756,7 +754,7 @@ public class AppCtrl extends BaseCtrl {
 	public ResponseEntity<?> blockUser(@PathVariable("id") Long id, Authentication auth) throws Exception {
 		UserEntity utt = getUser(auth);
 	    if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
-	    	JwtResponse jr = UserDetails.blockUser(id,false);
+	    	JwtResponse jr = UserDetails.blockUser(id, false);
 	    	return ResponseEntity.ok(jr);
 	    }
 		return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa."+utt.getRole().getName()));
@@ -766,7 +764,7 @@ public class AppCtrl extends BaseCtrl {
 	public ResponseEntity<?> unblockUser(@PathVariable("id") Long id, Authentication auth) throws Exception {
 		UserEntity utt = getUser(auth);
 	    if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
-	    	JwtResponse jr = UserDetails.blockUser(id,true);
+	    	JwtResponse jr = UserDetails.blockUser(id, true);
 	    	return ResponseEntity.ok(jr);
 	    }
 		return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa."));

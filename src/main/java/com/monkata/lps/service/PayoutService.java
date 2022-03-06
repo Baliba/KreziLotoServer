@@ -86,7 +86,7 @@ public class PayoutService {
         	po.setState("Prè");
         }
         user =  users.userId(user.getId()).get();
-       if(user.getCompte()>=pay.getSold()) {
+       if((user.getCompte()-50) >= pay.getSold()) {
     	   user.remain(pay.getSold());
     	   user = users.save(user);
     	   po = payout.save(po);
@@ -96,7 +96,7 @@ public class PayoutService {
     	   
     	   return new JwtResponse<PayoutRes>(false, new PayoutRes(user,po, com),"Siksè , ou retire "+pay.getSold()+"G sou kont ou.");   
        } else {
-    	 return   new JwtResponse<String>(true,"","Ou pa gen ase kob pou fe retrè sa");
+    	 return   new JwtResponse<String>(true,""," Ou pa gen ase kob pou fe retrè sa, ou dwe kite o mwen 50g sou kont ou.");
        }
 	}
 	

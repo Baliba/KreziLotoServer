@@ -13,8 +13,6 @@ import com.monkata.lps.response.JwtResponse;
 
 import dto.Sold;
 
-
-
 @CrossOrigin("*")
 @RepositoryRestResource
 public interface DepoDao extends JpaRepository<Depot, Long> {
