@@ -181,6 +181,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 	        user.setLock(false);
 	        user.setBonus(0);
 	        user.setCompte(0);
+	        user.setSee_by_admin(0L);
 	        Long pin = (long) BaseCtrl.getNewPin(100000, 999999);
 	        String msg = "Bonjou \n Byenvini sou systèm bòlèt nou an, men nouvo Pin ou an : "+pin+".\n Ou ka itilize PIN sa pou valide kont ou.";
 	        sendMail(reg.getEmail(), reg.getFirstName()+" "+reg.getLastName(), msg, "Byenveni");

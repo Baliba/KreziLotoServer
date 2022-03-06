@@ -115,7 +115,7 @@ public class UserEntity extends cObj implements Serializable, UserDetails {
 	    @Column(nullable=true,  columnDefinition = "int default 0")
 	    int is_pay;
 	    
-	    @Column(nullable=false,  columnDefinition = "int default 0")
+	    @Column(nullable=true,  columnDefinition = "int default 0")
 	    Long see_by_admin;
 	     
 	    @Column(nullable=true,  columnDefinition = "int default 0")
