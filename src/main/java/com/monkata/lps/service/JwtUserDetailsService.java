@@ -215,8 +215,26 @@ public class JwtUserDetailsService implements UserDetailsService {
         MultiValueMap<String, DepoReqToMK > map= new LinkedMultiValueMap<String,DepoReqToMK>();
         map.add("data",d);
         HttpEntity<MultiValueMap<String, DepoReqToMK>> request = new HttpEntity<MultiValueMap<String,DepoReqToMK >>(map, headers);
+       try {
         Object result = restTemplate.postForObject(MCC.url_depo, request, Object.class);
         return result;
+       }catch(Exception e) {
+    	   return new PDepoRes(true,e.getMessage());
+       }
+       
+    }
+    
+    @Data
+    class PDepoRes{
+    	
+    	boolean crash;
+    	String message;
+    	public PDepoRes() {}
+    	public PDepoRes(boolean b, String msg) {
+			// TODO Auto-generated constructor stub
+    		crash=b;
+    		message = msg;
+		}
     }
 
     @Transactional

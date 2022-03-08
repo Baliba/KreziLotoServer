@@ -689,6 +689,7 @@ public class AppCtrl extends BaseCtrl {
 		if(bank!=null && bank.isBlock_depo()) {
 			return ResponseEntity.ok(new AppResponse<String>(true,"Depo an bloke pou kounya an",""));
 		}
+		
 		return ResponseEntity.ok(UserDetails.prepareDepo(u, utt.getId()));
 	}
 	
