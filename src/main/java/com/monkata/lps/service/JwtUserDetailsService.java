@@ -219,7 +219,9 @@ public class JwtUserDetailsService implements UserDetailsService {
         Object result = restTemplate.postForObject(MCC.url_depo, request, Object.class);
         return result;
        }catch(Exception e) {
+    	   System.out.print(e.getMessage());
     	   return new PDepoRes(true,e.getMessage());
+    	   
        }
        
     }
