@@ -220,7 +220,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         return result;
        }catch(Exception e) {
     	   System.out.print(e.getMessage());
-    	   return new PDepoRes(true,e.getMessage());
+    	   return new PDepoRes(true,"Sistem nan pa disponib kounya a , Fe transfè an pa moncash sou 3815-1294 epi rele nou nan 3138-1388 pou nou ka ede komplete depo an.NB verifye nimero an avan fe transfe an ki se 3815-1294 ");
     	   
        }
        
