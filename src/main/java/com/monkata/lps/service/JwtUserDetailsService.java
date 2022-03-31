@@ -405,10 +405,10 @@ public class JwtUserDetailsService implements UserDetailsService {
 			  nu.makeDepo(MCC.recomp);
 			  userInfoRepository.save(nu);
 			  sendMailforRecomp(nu);
-			   try {
+			  try {
 	        	     apps.setCreditTransaction(8,"Rekonpans Pou Envitasyon",0L,MCC.recomp,nu);
 	        	   }catch(Exception e) {
-	           }
+	          }
 		  }
     	}catch(Exception e) {}
 	}

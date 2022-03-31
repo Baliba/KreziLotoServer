@@ -437,8 +437,8 @@ public class AppCtrl extends BaseCtrl {
 					 utt.setCompte(b);
 	        	     apps.setDebitTransaction(4,"Jwe Bolèt",nt.getId(),nt.getTotal_price(),utt);
 	        	   }catch(Exception e) {
+	        		   
 	             }
-				
 				return ResponseEntity.ok(rst);
 			   } else {
 				 rst.setMessage("Jwet sa  pa disponible");
