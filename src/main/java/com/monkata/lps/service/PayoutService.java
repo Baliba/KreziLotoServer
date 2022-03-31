@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.monkata.lps.Game.TicketClient;
+import com.monkata.lps.Helper.MCC;
 import com.monkata.lps.Request.PayoutReq;
 import com.monkata.lps.Tiraj.NumberFormater.FreeWinLots;
 import com.monkata.lps.Tiraj.NumberFormater.WinLots;
@@ -40,6 +41,9 @@ public class PayoutService {
     
     @Autowired
     JwtUserDetailsService users;
+    
+    @Autowired
+    AppService apps;
     
     public JwtResponse  getCurrentPayout(Long id) {
     	try {
@@ -92,6 +96,13 @@ public class PayoutService {
     	   po = payout.save(po);
     	   
     	   users.sendMailforPayout(user, po);
+    	   
+    	   try {
+      	     apps.setDebitTransaction(3,"Retrè",po.getId(),pay.getSold(),user);
+      	     }catch(Exception e) {
+      	    	 
+            }
+    	   
     	   nots.add(user.getId(),"Ou fèk sot fe on retrè "+pay.getSold()+"G.",1L);
     	   
     	   return new JwtResponse<PayoutRes>(false, new PayoutRes(user,po, com),"Siksè , ou retire "+pay.getSold()+"G sou kont ou.");   

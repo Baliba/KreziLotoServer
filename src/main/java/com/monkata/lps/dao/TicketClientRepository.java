@@ -100,5 +100,13 @@ public interface TicketClientRepository extends JpaRepository<TicketClient, Long
 	
 	@Query("SELECT new dto.Sold(SUM(t.win_pay)) FROM TicketClient t  WHERE id_user =:id GROUP BY id_user ")
 	Optional<Sold> getTotalWinUser(@Param("id") Long id);
+	
+	// new code 
+	
+	@Query("SELECT new dto.Sold(SUM(t.total_price)) FROM TicketClient t WHERE date_ticket BETWEEN :debut AND :fin  ")
+	Optional<Sold> getGainByMonth(LocalDateTime debut, LocalDateTime fin);
+	
+	@Query("SELECT new dto.Sold(SUM(t.win_pay)) FROM TicketClient t WHERE date_ticket BETWEEN :debut AND :fin  ")
+	Optional<Sold> getPerteByMonth(LocalDateTime debut, LocalDateTime fin);
 
 }

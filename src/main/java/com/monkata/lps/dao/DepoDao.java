@@ -1,5 +1,6 @@
 package com.monkata.lps.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,5 +36,8 @@ public interface DepoDao extends JpaRepository<Depot, Long> {
   
   @Query("SELECT new dto.Sold(SUM(d.montant)) from Depot d WHERE id_user=:id GROUP BY id_user  ")
   Optional<Sold> getTotalUserDepot(Long id);
+  
+  @Query("SELECT new dto.Sold(SUM(d.montant))  FROM Depot d WHERE date_created BETWEEN :debut AND :fin ")
+  Optional<Sold> getDepotByMonth(LocalDateTime debut, LocalDateTime fin);
   
 }

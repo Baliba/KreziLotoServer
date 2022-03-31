@@ -40,6 +40,7 @@ import com.monkata.lps.Game.TicketClient;
 import com.monkata.lps.Game.UtilGame;
 import com.monkata.lps.Helper.Lang;
 import com.monkata.lps.Helper.Log;
+import com.monkata.lps.Helper.MCC;
 import com.monkata.lps.Request.DepoReq;
 import com.monkata.lps.Request.PassRep;
 import com.monkata.lps.Request.RBoule;
@@ -421,17 +422,27 @@ public class AppCtrl extends BaseCtrl {
 				rst.setCrash(false);
 				rst.setMessage("Fich la kreye avec siksè...");
 				nots.add(utt.getId(),"Ou fèk sot fè yon fich pou "+nt.getTotal_price()+" G.",1L);
-				//
+				
+
 				try {
-					UserDetails.addTicketForPlay(1, utt.getId(), nt.getTotal_price());
+				UserDetails.addTicketForPlay(1, utt.getId(), nt.getTotal_price());
 				}catch(Exception e) {}
+				
 				try {
 					UserDetails.addUseCouponForPlay(nt, tk.getCoupon());
-				  }catch(Exception e) {}
+			    }catch(Exception e) {}
+				
+				try {
+					 double b = utt.getCompte() - nt.getTotal_price();
+					 utt.setCompte(b);
+	        	     apps.setDebitTransaction(4,"Jwe Bolèt",nt.getId(),nt.getTotal_price(),utt);
+	        	   }catch(Exception e) {
+	             }
+				
 				return ResponseEntity.ok(rst);
 			   } else {
-				rst.setMessage("Jwet sa  pa disponible");
-				return ResponseEntity.ok(rst);
+				 rst.setMessage("Jwet sa  pa disponible");
+				 return ResponseEntity.ok(rst);
 			}
 		} else {
 			rst.setMessage("Kont ou bloke ou paka fe fich");

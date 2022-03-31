@@ -36,6 +36,7 @@ import com.monkata.lps.dao.TicketClientRepository;
 import com.monkata.lps.dao.TicketRepository;
 import com.monkata.lps.dao.TirajRepository;
 import com.monkata.lps.dao.UserRepository;
+import com.monkata.lps.entity.Bank;
 import com.monkata.lps.entity.Coupon;
 import com.monkata.lps.entity.PVBank;
 import com.monkata.lps.entity.UserEntity;
@@ -139,6 +140,44 @@ public class SystemCtrl extends BaseCtrl {
 		        	    JwtResponse jr = apps.getUserStat(id, page, size);
 						return ResponseEntity.ok(jr);
 				 }
+		    	return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+				  
+		}
+	    
+	    @Transactional
+	    @GetMapping("/api/monthlyRepport")
+		public ResponseEntity<?> monthlyRepport(Authentication auth) {
+	    	    UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
+		        	    JwtResponse jr = apps.monthlyRepport();
+						return ResponseEntity.ok(jr);
+				 }
+		    	return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+				  
+	    }
+	    
+	    @Transactional
+	    @GetMapping("/api/changeTicket/{sold}")
+		public ResponseEntity<?> changeTicket(@PathVariable("sold") double sold, Authentication auth) {
+	    	    UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.CLIENT) || utt.getRole().getName().equals(RoleName.MASTER) || utt.getRole().getName().equals(RoleName.ADMIN)) {
+		        	    Bank b =this.getBankConfig();
+		        	    JwtResponse jr = apps.changeTicketToMoney(sold,utt,b);
+						return ResponseEntity.ok(jr);
+				}
+		    	return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
+				  
+		}
+	    
+	    @Transactional
+	    @GetMapping("/api/getTransaction/{debut}/{fin}/{mg}/{id}")
+		public ResponseEntity<?> getTransaction(@PathVariable("id") Long id, @PathVariable("debut") String debut, @PathVariable("fin") String fin, @PathVariable("mg") int mg, Authentication auth) {
+	    	    UserEntity utt = getUser(auth);
+		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER)) {
+		        	    Bank b =this.getBankConfig();
+		        	    JwtResponse jr = apps.getTransaction(id,debut, fin, mg);
+						return ResponseEntity.ok(jr);
+				}
 		    	return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));
 				  
 		}

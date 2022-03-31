@@ -26,6 +26,10 @@ public class ModeGameMaster extends cObj {
 	    
 	    double max_sell;
 	    double min_sell;
+	    
+	    @Column(nullable=true, columnDefinition = "int default 50")
+	    double user_max_sell;
+	    
 	    String mask;
 	    int max_num;
 	    int pas;

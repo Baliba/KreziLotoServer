@@ -118,6 +118,9 @@ public class JwtUserDetailsService implements UserDetailsService {
     @Autowired 
     BonusDao bDao;
     
+    @Autowired
+    AppService apps;
+    
     public  Optional<UserEntity>  userId(Long id)  {
             Optional<UserEntity> user = userInfoRepository.findById(id);
             return user;
@@ -299,6 +302,11 @@ public class JwtUserDetailsService implements UserDetailsService {
         	   ut.makeDepo(o.amount);
         	   UserEntity nut = userInfoRepository.save(ut);
         	   
+        	   try {
+        	     apps.setCreditTransaction(2,"Depo",nd.getId(),d.getMontant(),nut);
+        	   }catch(Exception e) {
+        	   }
+        	   
         	   ed.setMsg("succès");
         	   ed.setAmount(o.getAmount());
                ed.setError(false);
@@ -397,6 +405,10 @@ public class JwtUserDetailsService implements UserDetailsService {
 			  nu.makeDepo(MCC.recomp);
 			  userInfoRepository.save(nu);
 			  sendMailforRecomp(nu);
+			   try {
+	        	     apps.setCreditTransaction(8,"Rekonpans Pou Envitasyon",0L,MCC.recomp,nu);
+	        	   }catch(Exception e) {
+	           }
 		  }
     	}catch(Exception e) {}
 	}

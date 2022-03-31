@@ -9,11 +9,15 @@ package com.monkata.lps.service;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -68,6 +72,7 @@ import com.monkata.lps.dao.ParamsGameRepository;
 import com.monkata.lps.dao.PayoutRepository;
 import com.monkata.lps.dao.RoleRepository;
 import com.monkata.lps.dao.TicketClientRepository;
+import com.monkata.lps.dao.TransactionRepository;
 import com.monkata.lps.dao.UseCouponRepository;
 import com.monkata.lps.dao.UserRepository;
 import com.monkata.lps.entity.Bank;
@@ -78,6 +83,7 @@ import com.monkata.lps.entity.LogAccess;
 import com.monkata.lps.entity.LoginUser;
 import com.monkata.lps.entity.Payout;
 import com.monkata.lps.entity.Role;
+import com.monkata.lps.entity.TransactionUser;
 import com.monkata.lps.entity.UseCoupon;
 import com.monkata.lps.entity.UserEntity;
 import com.monkata.lps.entity.UserEntityReq;
@@ -139,6 +145,9 @@ public class AppService  {
     
     @Autowired
     TicketClientRepository tcDao;
+    
+    @Autowired
+    TransactionRepository transDao;
     
     public  Optional<UserEntity>  userId(Long id)  {
             Optional<UserEntity> user = userInfoRepository.findById(id);
@@ -352,11 +361,11 @@ public class AppService  {
 			r.setTotal(users.size());
 			float x = users.size() / size;
 			double p = Math.ceil(x);
-			Log.d("+++_____PAGE ("+x+")___|____( AFTER CEIL : ("+p+") ");
+			//Log.d("+++_____PAGE ("+x+")___|____( AFTER CEIL : ("+p+") ");
 			r.setPage(p);
 			if(users.size()>0) {
 				List<UserEntity> lusers = getPage(users, page, size);	
-				Log.d("+++____________(Nombre user : "+lusers.size()+")___________+++");
+			//	Log.d("+++____________(Nombre user : "+lusers.size()+")___________+++");
 				for(UserEntity user : lusers) {
 					urs.add(getAllInfo(user));
 				}
@@ -397,7 +406,6 @@ public class AppService  {
 			end = total;
 		}
 		
-		Log.d("+++_____SIZE ("+size+")___|____( Start : ("+s+") | END ("+end+") ___|  __PAGE("+page+")______+++");
 		return users.subList(s,end);
 	}
 
@@ -443,4 +451,199 @@ public class AppService  {
 		return ur;
 	}
 
+	public JwtResponse monthlyRepport() {
+		LocalDate now = LocalDate.now();
+		int month = now.getMonthValue();
+		int year =  now.getYear();
+		List<MRepport> mrs = new ArrayList<>();
+		for(int i = 1 ; i<=12; i++) {
+		    Range range = getRangeDate(month, year, i);
+		    MRepport mr = new MRepport();
+		    mr.setMois(range.getMois());
+		    try {
+				Optional<Sold> depot = dpDao.getDepotByMonth(range.getDebut(), range.getFin());
+				if(depot.isPresent()) {
+					mr.setDepot(depot.get().getSold());
+				}
+				}catch(Exception e) {}
+		    
+		    try {
+				Optional<Sold> retrait = pDao.getRetraitByMonth(range.getDebut(), range.getFin());
+				if(retrait.isPresent()) {
+					mr.setRetrait(retrait.get().getSold());
+				}
+				}catch(Exception e) {}
+		    
+			try {
+				Optional<Sold> gain  = tcDao.getGainByMonth(range.getDebut(), range.getFin());
+				if(gain.isPresent()) {
+					mr.setGain(gain.get().getSold());
+				} 
+				}catch(Exception e) { Log.d("<<<>>>>"+e.getMessage()+" ---> "); }
+				
+				 try {
+					Optional<Sold> perte = tcDao.getPerteByMonth(range.getDebut(), range.getFin());
+					if(perte.isPresent()) {
+						mr.setPerte(perte.get().getSold());
+					}
+				 }catch(Exception e) {Log.d("<<<>>>>"+e.getMessage()+" ---> "); }
+			    mrs.add(mr);
+				if(i==month) {
+					break;
+				}
+		}
+		
+		return  new JwtResponse<List<MRepport>>(false,mrs,"");
+		
+	} 
+	
+	private Range getRangeDate(int month, int year, int i) {
+		
+		Range range = new Range();
+		String mm = (i<10)? "0"+i : ""+i;
+		String str = "01-"+mm+"-"+year+" 00:00:00";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+		LocalDateTime debut =  LocalDateTime.parse(str, formatter);
+		range.setDebut(debut);
+		String fm = (i<10)? "0"+i : ""+i;
+		String ed = getQDM(year, i);
+		str = ed+"-"+fm+"-"+year+" 23:59:59";
+		LocalDateTime fin =  LocalDateTime.parse(str, formatter);
+		range.setFin(fin);
+		range.setMois(debut.getMonth().getDisplayName(TextStyle.FULL, Locale.FRENCH));
+		return range;
+	}
+	private String getQDM(int y, int i) {
+		// TODO Auto-generated method stub
+		YearMonth yearMonthObject = YearMonth.of(y, i);
+		int daysInMonth = yearMonthObject.lengthOfMonth(); //28 
+		return (daysInMonth<10)? "0"+daysInMonth : ""+daysInMonth;
+	}
+	
+	@Data
+	class Range {
+		LocalDateTime debut;
+		LocalDateTime fin;
+		String mois;
+	}
+	
+	@Data
+   class  MRepport {
+	   String mois;
+	   double depot;
+	   double retrait;
+	   double gain;
+	   double perte;
+	   public MRepport() {}
+   }
+
+	public JwtResponse changeTicketToMoney(double sold, UserEntity utt, Bank b) {
+		// TODO Auto-generated method stub
+		UserEntity user = userInfoRepository.getOne(utt.getId());
+	    if(!b.isBlock_cticket()) {
+	    	
+			if(user.getTickets()>=sold) {
+				
+		       if(sold>=250) {
+				   double a =	user.setNewTicket(sold);
+				   user = userInfoRepository.save(user);
+				   this.setCreditTransaction(1, "CHANJMAN TIKè", 0L, a, user);
+				   return  new JwtResponse<UserEntity>(false,user, "Ou chanje "+sold+" tikè an "+a+"G ");
+		           } else {
+		    	   return  new JwtResponse<String>(true,"","Tikè an dwe plis ke 250");
+		           }
+			   } else { return  new JwtResponse<String>(true,"","Ou pa gen ase tikè"); }
+	       } else {
+			       return  new JwtResponse<String>(true,"","Chanjman tikè an pa disponib.");
+	     }
+	}
+	
+	
+	public void setCreditTransaction( int type, String stype,Long id_action,double sold, UserEntity user) {
+		TransactionUser tu = new TransactionUser();
+		tu.setType_transaction(type);
+		tu.setTransaction(stype);
+		tu.setId_user(user.getId());
+		tu.setDate_trans(LocalDateTime.now());
+		tu.setId_action(id_action);
+		tu.setCredit(sold);
+		tu.setBalance(user.getCompte());
+		transDao.save(tu);
+	}
+	
+	public void setCreditTransaction( int type, String stype,Long id_action,double sold,Long id) {
+		UserEntity user = userInfoRepository.getOne(id);
+		TransactionUser tu = new TransactionUser();
+		tu.setType_transaction(type);
+		tu.setTransaction(stype);
+		tu.setId_user(user.getId());
+		tu.setDate_trans(LocalDateTime.now());
+		tu.setId_action(id_action);
+		tu.setCredit(sold);
+		tu.setBalance(user.getCompte());
+		transDao.save(tu);
+	}
+	
+	public void setDebitTransaction( int type, String stype,Long id_action, double sold, UserEntity user) {
+		TransactionUser tu = new TransactionUser();
+		tu.setType_transaction(type);
+		tu.setTransaction(stype);
+		tu.setId_user(user.getId());
+		tu.setDate_trans(LocalDateTime.now());
+		tu.setId_action(id_action);
+		tu.setDebit(sold);
+		tu.setBalance(user.getCompte());
+		transDao.save(tu);
+	}
+
+	public JwtResponse getTransaction(Long id, String debut, String fin, int mg) {
+		// TODO Auto-generated method stub
+		  LocalDateTime deb = BaseCtrl.getLDT(debut+" 00:00:00");
+	      LocalDateTime fn =  BaseCtrl.getLDT(fin+" 23:59:59");
+	      JwtResponse jr = null;
+	      if((long) id == 0) {
+	    	  
+	    	  if(mg==0) {
+	    		  jr = getTransactionByDate(deb,fn);
+	    	    } else {
+	    		  jr = getTransactionByDateAndMg(deb,fn, mg);
+	    	  }
+	    	  
+	      } else {
+	    	  
+            if(mg==0) {
+            	 jr = getTransactionByDateAndUser(deb,fn,id);
+	    	   } else {
+	    		 jr = getTransactionByDateAndUserAndMg(deb,fn,id,mg);
+	    	  }
+	      }
+		  return jr;
+	}
+
+	private JwtResponse getTransactionByDateAndUserAndMg(LocalDateTime deb, LocalDateTime fn, Long id, int mg) {
+		// TODO Auto-generated method stub
+		List<TransactionUser> ts = transDao.getTransactionByDateAndUserAndMg(deb,fn, id,mg);
+		return  new JwtResponse<List<TransactionUser>>(false,ts,"");
+	}
+
+	private JwtResponse getTransactionByDateAndUser(LocalDateTime deb, LocalDateTime fn, Long id) {
+		
+		List<TransactionUser> ts = transDao.getTransactionByDateAndUser(deb,fn, id);
+		return  new JwtResponse<List<TransactionUser>>(false,ts,"");
+		
+	}
+
+	private JwtResponse getTransactionByDateAndMg(LocalDateTime deb, LocalDateTime fn, int mg) {
+		// TODO Auto-generated method stub
+		List<TransactionUser> ts = transDao.getTransactionByDateAndMg(deb,fn, mg);
+		return  new JwtResponse<List<TransactionUser>>(false,ts,"");
+	}
+
+	private JwtResponse getTransactionByDate(LocalDateTime deb, LocalDateTime fn) {
+		// TODO Auto-generated method stub
+		List<TransactionUser> ts = transDao.getTransactionByDate(deb,fn);
+		return  new JwtResponse<List<TransactionUser>>(false,ts,"");
+	}
+
+	
 }

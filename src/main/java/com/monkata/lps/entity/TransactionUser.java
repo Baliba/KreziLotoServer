@@ -25,13 +25,17 @@ public class TransactionUser  extends cObj {
     
     private int type_transaction;
     
+    private String transaction;
+    
     @Column(nullable=true, columnDefinition = "int default 0")
     private double credit;
+    
     @Column(nullable=true, columnDefinition = "int default 0")
     private double debit;
     
     public double balance;
     
     public LocalDateTime date_trans;
+    public TransactionUser() {}
    
 }

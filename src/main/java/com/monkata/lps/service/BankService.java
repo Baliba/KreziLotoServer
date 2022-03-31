@@ -180,6 +180,7 @@ public JwtResponse initNewGame(Long id) {
         	 Game g = og.get();
 			 if(!g.isNotExistModeGame(g,mg)) {
 							 ModeGame mgs = new ModeGame(mg);
+							 mgs.setUser_max_sell(mg.getUser_max_sell());
 							 mgs.setGame(g); 
 							 mgs.setPoint_per_price(1);
 				       	     ModeGame nmg = mgame.save(mgs);

@@ -1,5 +1,6 @@
 package com.monkata.lps.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +52,9 @@ public interface PayoutRepository extends JpaRepository<Payout, Long> {
 
 	  @Query("SELECT new dto.Sold(SUM(p.sold)) from Payout p WHERE id_user=:id  GROUP BY id_user ")
 	  Optional<Sold> getTotalUserRetrait(Long id);
+
+	  @Query("SELECT new dto.Sold(SUM(p.sold)) from Payout p WHERE date_created BETWEEN :debut AND :fin ")
+	  Optional<Sold> getRetraitByMonth(LocalDateTime debut, LocalDateTime fin);
 
 
 

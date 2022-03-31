@@ -207,4 +207,12 @@ public class UserEntity extends cObj implements Serializable, UserDetails {
 			  }
 			 
 		}
+
+		public double setNewTicket(double sold) {
+			this.htickets = this.tickets;
+			this.tickets -=sold;
+			double amount = sold/25;
+			this.add(amount);
+			return amount;
+		}
 }

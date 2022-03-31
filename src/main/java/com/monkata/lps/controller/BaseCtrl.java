@@ -119,16 +119,16 @@ public class BaseCtrl {
 	  }
 	  
 	  
-	    @Autowired
-	 BankRepository bank;
+	@Autowired
+	BankRepository bank;
 	    
-    public Bank getBankConfig() {
+    public  Bank getBankConfig() {
 	    	List<Bank>  bks = bank.findAll();
 	    	if(bks.size()>0) {
 	          return  bks.get(0);
 	    	}
 	    	return null;
-	    }
+	 }
 	    
 	public ParamsGame getAllValidGame(ParamsGame pg) {
 			List<Game> gs = new ArrayList<>();

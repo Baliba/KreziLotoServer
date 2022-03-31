@@ -47,6 +47,7 @@ import com.monkata.lps.entity.Keno;
 import com.monkata.lps.entity.KenoConfig;
 import com.monkata.lps.entity.UserEntity;
 import com.monkata.lps.response.JwtResponse;
+import com.monkata.lps.service.AppService;
 import com.monkata.lps.service.JwtUserDetailsService;
 import com.monkata.lps.service.KenoService;
 import com.monkata.lps.service.NotService;
@@ -130,6 +131,9 @@ public class KenoCtrl extends BaseCtrl {
 	
 	@Autowired
 	KenoService kenos;
+	
+	@Autowired
+	AppService apps;
 
 	public UserEntity getUser(Authentication authentication) {
 		UserDetails me = (UserDetails) authentication.getPrincipal();
@@ -194,6 +198,10 @@ public class KenoCtrl extends BaseCtrl {
 		      k.setBank_sold(bs.getBank_sold());
 		      k.setMsg(bs.getMsg());
 		      k = keno.save(k);
+		      
+		      try {
+				   apps.setDebitTransaction(5,"Jwe Keno",k.getId(),kr.getBet(),utt);
+	          }catch(Exception e) {    }
 		      WData index = KenoBrain.getWinIndex(kc.getPayouts(), kr.getTotal_num(), kr.getBet(), bs.getBank_sold(), kc.getWin_occurrence(), kc.getGlobal_occurrence());
 		      double sold = krs.setIWinIndexNow(index, kc.getPayouts(), kr.getTotal_num(), kr.getLots(), kr.get_aNumSelected());
 		      // New Keno ==
@@ -212,10 +220,16 @@ public class KenoCtrl extends BaseCtrl {
 		    	  ko.setNext_win_sold(sold);
 		    	  utt.add(sold);
 		    	  user.save(utt);
+		    	  try {
+				   apps.setCreditTransaction(5,"Gen Keno",k.getId(),sold, utt);
+		          }catch(Exception e) {    }
 		      }
 		      
 		      keno.save(ko);
 		      krs.retartKeno();
+		      
+		      
+		     
 		  	  return ResponseEntity.ok(new JwtResponse<KenoRes>(false,krs,"Siksè."));
 		    } else {
 		    	return ResponseEntity.ok(new JwtResponse<Double>(true,utt.getCompte(), "Ou pa gen ase lajan."));
