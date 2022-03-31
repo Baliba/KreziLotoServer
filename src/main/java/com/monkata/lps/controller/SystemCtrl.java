@@ -145,11 +145,11 @@ public class SystemCtrl extends BaseCtrl {
 		}
 	    
 	    @Transactional
-	    @GetMapping("/api/monthlyRepport")
-		public ResponseEntity<?> monthlyRepport(Authentication auth) {
+	    @GetMapping("/api/monthlyRepport/{year}")
+		public ResponseEntity<?> monthlyRepport(@PathVariable("year") int year,Authentication auth) {
 	    	    UserEntity utt = getUser(auth);
 		        if(utt.getRole().getName().equals(RoleName.ADMIN) || utt.getRole().getName().equals(RoleName.MASTER) ) {
-		        	    JwtResponse jr = apps.monthlyRepport();
+		        	    JwtResponse jr = apps.monthlyRepport(year);
 						return ResponseEntity.ok(jr);
 				 }
 		    	return ResponseEntity.ok(new JwtResponse<String>(true,"","Ou pa gen dwa sa. "+utt.getRole().getName()));

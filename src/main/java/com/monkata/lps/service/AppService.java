@@ -451,11 +451,12 @@ public class AppService  {
 		return ur;
 	}
 
-	public JwtResponse monthlyRepport() {
+	public JwtResponse monthlyRepport(int year) {
 		LocalDate now = LocalDate.now();
 		int month = now.getMonthValue();
-		int year =  now.getYear();
+		int nyear =  now.getYear();
 		List<MRepport> mrs = new ArrayList<>();
+		if(year<=nyear) {
 		for(int i = 1 ; i<=12; i++) {
 		    Range range = getRangeDate(month, year, i);
 		    MRepport mr = new MRepport();
@@ -488,9 +489,10 @@ public class AppService  {
 					}
 				 }catch(Exception e) {Log.d("<<<>>>>"+e.getMessage()+" ---> "); }
 			    mrs.add(mr);
-				if(i==month) {
+				if(i==month && year==nyear) {
 					break;
 				}
+		}
 		}
 		
 		return  new JwtResponse<List<MRepport>>(false,mrs,"");
