@@ -707,7 +707,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 		dp.setDetails(details);
 		dp = dpDao.save(dp);
 		try {
-     	     apps.setDebitTransaction(9,"Depo Seller",dp.getId(),sold, id);
+     	     apps.setCreditTransaction(9,"Depo Seller",dp.getId(),sold, id);
      	}catch(Exception e) { }
 		
 		this.sendMailforDepoBySeller(utt, rec, dp);

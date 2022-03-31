@@ -286,9 +286,11 @@ public class TicketService {
 		if(sold>0) {
 		  vr.setMsg("Bravo !!! ou fè "+sold+" G");
 		  nots.add(idu,"Ou fèk sot genyen "+sold+" G."+bmsg,1L);
+		  
 		 try {
 		  apps.setCreditTransaction(6,"Gen bòlèt",tk.getId(),sold,idu);
 	     }catch(Exception e) {    }
+		 
 		} else {
 			vr.setMsg("Pa gen youn nan boul ki nan fich ou a ki soti, Ou fè  "+sold+" G");
 		}
