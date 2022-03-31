@@ -423,7 +423,6 @@ public class AppCtrl extends BaseCtrl {
 				rst.setMessage("Fich la kreye avec siksè...");
 				nots.add(utt.getId(),"Ou fèk sot fè yon fich pou "+nt.getTotal_price()+" G.",1L);
 				
-
 				try {
 				UserDetails.addTicketForPlay(1, utt.getId(), nt.getTotal_price());
 				}catch(Exception e) {}
@@ -434,9 +433,7 @@ public class AppCtrl extends BaseCtrl {
 				
 				if(!nt.is_bonus()) {
 				  try {
-					 double b = utt.getCompte() - nt.getTotal_price();
-					 utt.setCompte(b);
-	        	     apps.setDebitTransaction(4,"Jwe Bolèt",nt.getId(),nt.getTotal_price(),utt);
+	        	     apps.setDebitTransaction(4,"Jwe Bolèt",nt.getId(),nt.getTotal_price(),utt.getId());
 	        	   }catch(Exception e) { }
 				}
 				

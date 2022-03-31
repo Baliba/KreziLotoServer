@@ -597,6 +597,19 @@ public class AppService  {
 		tu.setBalance(user.getCompte());
 		transDao.save(tu);
 	}
+	
+	public void setDebitTransaction( int type, String stype,Long id_action, double sold, Long id) {
+		UserEntity user = userInfoRepository.getOne(id);
+		TransactionUser tu = new TransactionUser();
+		tu.setType_transaction(type);
+		tu.setTransaction(stype);
+		tu.setId_user(user.getId());
+		tu.setDate_trans(LocalDateTime.now());
+		tu.setId_action(id_action);
+		tu.setDebit(sold);
+		tu.setBalance(user.getCompte());
+		transDao.save(tu);
+	}
 
 	public JwtResponse getTransaction(Long id, String debut, String fin, int mg) {
 		// TODO Auto-generated method stub
