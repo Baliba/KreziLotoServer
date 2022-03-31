@@ -97,6 +97,7 @@ public class TicketService {
 		for(RBoule r : nbs) {
 			t += r.getMontant();
 		}
+		
 		if(pos==1) {
 			return ue.getCompte()>= t;
 		} else {

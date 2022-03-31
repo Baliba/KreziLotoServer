@@ -406,11 +406,14 @@ public class AppCtrl extends BaseCtrl {
 				 nt.setId_user(utt.getId());
 				 nt.setTotalPrice(sticket.getTotalSoldTicktets(tk.getLots()));
 				 nt = ticketc.save(nt);
+				 
 				 List<BouleClient> nlots = new ArrayList<>();
+				 
 				 for(BouleClient nb : lots) {
 				    nb.setTicketclient(nt);
 				  	nlots.add(boulec.save(nb));
-				 }
+				}
+				 
 				nt.setLots(nlots);
 				nt.setMax_win(sticket.getMaxwin(nlots));
 				// nt.setMGain();
@@ -435,7 +438,7 @@ public class AppCtrl extends BaseCtrl {
 				  try {
 	        	     apps.setDebitTransaction(4,"Jwe Bolèt",nt.getId(),nt.getTotal_price(),utt.getId());
 	        	   }catch(Exception e) { }
-				}
+				 }
 				
 				return ResponseEntity.ok(rst);
 			   } else {
