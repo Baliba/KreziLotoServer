@@ -432,13 +432,14 @@ public class AppCtrl extends BaseCtrl {
 					UserDetails.addUseCouponForPlay(nt, tk.getCoupon());
 			    }catch(Exception e) {}
 				
-				try {
+				if(!nt.is_bonus()) {
+				  try {
 					 double b = utt.getCompte() - nt.getTotal_price();
 					 utt.setCompte(b);
 	        	     apps.setDebitTransaction(4,"Jwe Bolèt",nt.getId(),nt.getTotal_price(),utt);
-	        	   }catch(Exception e) {
-	        		   
-	             }
+	        	   }catch(Exception e) { }
+				}
+				
 				return ResponseEntity.ok(rst);
 			   } else {
 				 rst.setMessage("Jwet sa  pa disponible");
