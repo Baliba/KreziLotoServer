@@ -115,7 +115,10 @@ private static final long serialVersionUID = 1L;
 	    
 	    if(pay==0) {
 	    	this.is_bonus = true;
+	    }else {
+	    	this.is_bonus =false;
 	    }
+	    
 	    
   }
   
