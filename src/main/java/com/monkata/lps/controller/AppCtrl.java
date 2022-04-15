@@ -341,6 +341,8 @@ public class AppCtrl extends BaseCtrl {
 			rst.setMessage("Ou pa ka jwe ak kont sa ");
 			return ResponseEntity.ok(rst);
 		}
+		
+		
 		LocalTime now = LocalTime.now();
 		 
 		try {
@@ -428,16 +430,23 @@ public class AppCtrl extends BaseCtrl {
 				
 				try {
 				UserDetails.addTicketForPlay(1, utt.getId(), nt.getTotal_price());
-				}catch(Exception e) {}
+				}catch(Exception e) {
+					System.out.print("-----------|  "+e.getMessage()+" |++++++++++");
+				}
 				
-				try {
-					UserDetails.addUseCouponForPlay(nt, tk.getCoupon());
-			    }catch(Exception e) {}
 				
 				if(!nt.is_bonus()) {
+					
+					try {
+						UserDetails.addUseCouponForPlay(nt, tk.getCoupon());
+				    }catch(Exception e) {
+				    	System.out.print("-----------|  "+e.getMessage()+" |++++++++++");
+				    }
+					
 				  try {
 	        	     apps.setDebitTransaction(4,"Jwe Bolèt",nt.getId(),nt.getTotal_price(),utt.getId());
 	        	   }catch(Exception e) { }
+				  
 				 }
 				
 				return ResponseEntity.ok(rst);
