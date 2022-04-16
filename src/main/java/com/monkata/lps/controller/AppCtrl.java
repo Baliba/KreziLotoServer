@@ -315,6 +315,7 @@ public class AppCtrl extends BaseCtrl {
 		Optional<ParamsGame> opg = pgame.findById(utt.getParamgame());
 		ParamsGame pg = opg.get();
 		Game CGAME = UtilGame.getGame(pg, tk.getId_game());
+		String coupon = tk.getCoupon();
 		//
 		
 //		// verify boul 
@@ -414,8 +415,7 @@ public class AppCtrl extends BaseCtrl {
 				 for(BouleClient nb : lots) {
 				    nb.setTicketclient(nt);
 				  	nlots.add(boulec.save(nb));
-				}
-				 
+				 }
 				nt.setLots(nlots);
 				nt.setMax_win(sticket.getMaxwin(nlots));
 				// nt.setMGain();
@@ -428,6 +428,7 @@ public class AppCtrl extends BaseCtrl {
 				rst.setMessage("Fich la kreye avec siksè...");
 				nots.add(utt.getId(),"Ou fèk sot fè yon fich pou "+nt.getTotal_price()+" G.",1L);
 				
+			
 				try {
 				UserDetails.addTicketForPlay(1, utt.getId(), nt.getTotal_price());
 				}catch(Exception e) {
@@ -436,19 +437,17 @@ public class AppCtrl extends BaseCtrl {
 				
 				
 				if(!nt.is_bonus()) {
-					
-					try {
-						UserDetails.addUseCouponForPlay(nt, tk.getCoupon());
-				    }catch(Exception e) {
-				    	System.out.print("-----------|  "+e.getMessage()+" |++++++++++");
-				    }
-					
+				 if(coupon != null && !coupon.equals("")) {	
+				      String msg = UserDetails.addUseCouponForPlay(nt, coupon);
+				      rst.setMessage("Fich la kreye avec siksè...\n"+msg);
+		    		} else {
+		    			System.out.print("-----------| CTRL: KOUPON EMPTY |++++++++++");
+		          }
 				  try {
 	        	     apps.setDebitTransaction(4,"Jwe Bolèt",nt.getId(),nt.getTotal_price(),utt.getId());
 	        	   }catch(Exception e) { }
 				  
 				 }
-				
 				return ResponseEntity.ok(rst);
 			   } else {
 				 rst.setMessage("Jwet sa  pa disponible");
