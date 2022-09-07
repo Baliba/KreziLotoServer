@@ -47,6 +47,9 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/spring-tx/5.2.10.RELEASE/spring-tx-5.2.10.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/quartz-scheduler/quartz/2.3.2/quartz-2.3.2.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/mchange/mchange-commons-java/0.2.15/mchange-commons-java-0.2.15.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/jobrunr/jobrunr-spring-boot-starter/3.1.2/jobrunr-spring-boot-starter-3.1.2.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/jobrunr/jobrunr/3.1.2/jobrunr-3.1.2.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/ow2/asm/asm/9.1/asm-9.1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/boot/spring-boot-starter-security/2.3.5.RELEASE/spring-boot-starter-security-2.3.5.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/spring-aop/5.2.10.RELEASE/spring-aop-5.2.10.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/security/spring-security-config/5.3.5.RELEASE/spring-security-config-5.3.5.RELEASE.jar" enabled="true" runInBatchMode="false"/>
@@ -108,9 +111,9 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/spring-core/5.2.10.RELEASE/spring-core-5.2.10.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/security/spring-security-core/5.3.5.RELEASE/spring-security-core-5.3.5.RELEASE.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/com/fasterxml/jackson/core/jackson-core/2.13.0-rc2/jackson-core-2.13.0-rc2.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/jsonwebtoken/jjwt/0.9.0/jjwt-0.9.0.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/fasterxml/jackson/core/jackson-databind/2.11.3/jackson-databind-2.11.3.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/fasterxml/jackson/core/jackson-core/2.11.3/jackson-core-2.11.3.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/heroku/sdk/heroku-maven-plugin/3.0.3/heroku-maven-plugin-3.0.3.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/heroku/sdk/heroku-deploy/3.0.3/heroku-deploy-3.0.3.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/commons/commons-compress/1.19/commons-compress-1.19.jar" enabled="true" runInBatchMode="false"/>
@@ -198,7 +201,6 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/maven/wagon/wagon-provider-api/2.10/wagon-provider-api-2.10.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/codehaus/plexus/plexus-io/3.0.0/plexus-io-3.0.0.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/maven/shared/maven-dependency-analyzer/1.10/maven-dependency-analyzer-1.10.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/org/ow2/asm/asm/6.1.1/asm-6.1.1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/maven/shared/maven-dependency-tree/3.0.1/maven-dependency-tree-3.0.1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/eclipse/aether/aether-util/0.9.0.M2/aether-util-0.9.0.M2.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/maven/shared/maven-common-artifact-filters/3.0.1/maven-common-artifact-filters-3.0.1.jar" enabled="true" runInBatchMode="false"/>
